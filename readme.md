@@ -1,62 +1,155 @@
-# <b>TALENT GRID</b>
+# TALENT GRID
 
-A web platform focused on jobs accross nation, it helps the individuals to explore jobs in different niche accordingly.
+A web platform that connects **job seekers, employers, and educational institutes** through skill-based hiring and verified candidate profiles.
 
-## Key Features 
+TalentGrid allows candidates to discover jobs across the country, build skill-based profiles, and verify their skills through online assessments. Employers can define required skills, conduct assessments, and discover candidates based on their verified skill levels.
 
-- ❌Filter out spam candidates.
-- OA based skills on user profile which give an authencity either they are verifid or not.
+## Key Features
 
-### Job Seekers
+* **Skill Verification** — Candidates can take online assessments to verify their claimed skills.
+* **Skill-Based Profiles** — Candidate profiles display verified and unverified skills along with their proficiency levels.
+* **Job Search** — Job seekers can explore job opportunities across different domains and locations.
+* **Skill-Based Candidate Search** — Employers can search and filter candidates according to their required skills and proficiency levels.
+* **Online Assessments (OA)** — Employers can conduct initial assessments to evaluate candidates.
+* **Campus & Off-Campus Opportunities** — Institutes can facilitate campus placement drives while students can also apply for off-campus opportunities.
 
-- Candidate explore jobs nationally.
-- Provides a feature of campus placement drive for students along with the accessibility to find jobs off campus.
+## Job Seekers
 
-### Organization 
+* Create and manage a professional profile.
+* Add skills to their profile.
+* Take online assessments to verify their skills.
+* Progress through skill levels such as **Beginner, Intermediate, and Advanced**.
+* Explore jobs based on skills and preferences.
+* Apply for jobs and track applications.
+* Access both campus placement and off-campus opportunities.
 
-- Conduct a initial assignment/OA on platform to filter out the candidates.
-- Explore candidate on the basic of the skills set.
+## Employers / Organizations
 
+* Create an organization profile.
+* Post job opportunities.
+* Define required skills and minimum proficiency levels.
+* Conduct an initial assignment or online assessment.
+* Search and filter candidates based on verified skills.
+* View candidate profiles and their skill verification status.
+* Shortlist candidates for further recruitment.
+
+## Institutes / Colleges
+
+* Create and manage an institute profile.
+* Manage participating students.
+* Facilitate campus placement drives.
+* Help students discover relevant job opportunities.
+* Provide academic/student verification where applicable.
 
 ## Architecture
 
-```mermaid 
-    flowchart TB
+```mermaid
+flowchart TB
+
     U["Users"]
 
     U --> JS["Job Seeker"]
     U --> E["Employer"]
     U --> I["Institute"]
 
-    JS --> P["Profile"]
+    %% Job Seeker
+    JS --> P["Candidate Profile"]
     JS --> S["Skills"]
-    S --> A["Skill Assessment"]
+    S --> A["Online Assessment"]
     A --> V["Verified Skill Level"]
 
+    %% Employer
     E --> J["Post Job"]
     J --> R["Required Skills"]
+    E --> OA["Employer Assessment"]
 
-    V --> M["Matching / Filtering"]
+    %% Matching
+    V --> M["Search / Matching"]
     R --> M
-
     M --> C["Candidate Results"]
     C --> AP["Job Application"]
 
+    %% Institute
     I --> ST["Student Profiles"]
-    ST --> V
+    I --> CP["Campus Placement"]
+    ST --> P
+    CP --> J
 
-    P --> DB[("Database")]
+    %% Database
+    P --> DB[("PostgreSQL")]
     V --> DB
     J --> DB
+    OA --> DB
     AP --> DB
     ST --> DB
 ```
 
-## Tools and Technologies 
+## Core Workflow
 
-- React & tailwind (for frontend) and vercel for hosting
-- Express (for backend)
-- PostgreSQL (for database) and Supabase for hosting
-- Python (for OA)
-    
+```mermaid
+flowchart LR
 
+    A["Candidate adds skill"]
+    --> B["Skill starts as unverified"]
+
+    B --> C["Online Assessment"]
+
+    C --> D{"Assessment Result"}
+
+    D -->|Pass| E["Verified Skill"]
+    D -->|Fail| F["Remain Unverified"]
+
+    E --> G["Skill Level"]
+
+    G --> H["Beginner"]
+    G --> I["Intermediate"]
+    G --> J["Advanced"]
+
+    H --> K["Candidate Search"]
+    I --> K
+    J --> K
+
+    K --> L["Employer"]
+    L --> M["Job Application"]
+```
+
+## Search & Matching
+
+Employers can search candidates using criteria such as:
+
+* Skill
+* Minimum skill level
+* Verification status
+* Location
+* Experience
+
+For example:
+
+```text
+Job Requirement
+
+Java        → Intermediate
+Spring Boot → Beginner
+SQL         → Intermediate
+
+                ↓
+
+       Candidate Matching
+
+                ↓
+
+Candidate A → 92% Match
+Candidate B → 78% Match
+Candidate C → 61% Match
+```
+
+The initial implementation will use **PostgreSQL queries and backend matching logic** rather than a dedicated search engine.
+
+## Technology Stack
+
+* **Frontend:** React + Tailwind CSS
+* **Frontend Hosting:** Vercel
+* **Backend:** Node.js + Express
+* **Database:** PostgreSQL
+* **Database Hosting:** Supabase
+* **Assessment Engine:** Python
