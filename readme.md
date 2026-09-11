@@ -41,53 +41,10 @@ TalentGrid allows candidates to discover jobs across the country, build skill-ba
 * Help students discover relevant job opportunities.
 * Provide academic/student verification where applicable.
 
-## Architecture
-
-```mermaid
-flowchart TB
-
-    U["Users"]
-
-    U --> JS["Job Seeker"]
-    U --> E["Employer"]
-    U --> I["Institute"]
-
-    %% Job Seeker
-    JS --> P["Candidate Profile"]
-    JS --> S["Skills"]
-    S --> A["Online Assessment"]
-    A --> V["Verified Skill Level"]
-
-    %% Employer
-    E --> J["Post Job"]
-    J --> R["Required Skills"]
-    E --> OA["Employer Assessment"]
-
-    %% Matching
-    V --> M["Search / Matching"]
-    R --> M
-    M --> C["Candidate Results"]
-    C --> AP["Job Application"]
-
-    %% Institute
-    I --> ST["Student Profiles"]
-    I --> CP["Campus Placement"]
-    ST --> P
-    CP --> J
-
-    %% Database
-    P --> DB[("PostgreSQL")]
-    V --> DB
-    J --> DB
-    OA --> DB
-    AP --> DB
-    ST --> DB
-```
-
 ## Core Workflow
 
 ```mermaid
-flowchart LR
+flowchart TB
 
     A["Candidate adds skill"]
     --> B["Skill starts as unverified"]
@@ -150,6 +107,15 @@ The initial implementation will use **PostgreSQL queries and backend matching lo
 * **Frontend:** React + Tailwind CSS
 * **Frontend Hosting:** Vercel
 * **Backend:** Node.js + Express
-* **Database:** PostgreSQL
-* **Database Hosting:** Supabase
+* **Database:** PostgreSQL + MongoDB
+* **Database Hosting:** Supabase + MongoDB Atlas
 * **Assessment Engine:** Python
+
+## How to run it
+
+* **client:** npm run dev
+* **server:** npm run dev
+
+## Links
+
+* **Architecture Overview :** [overview.md](./docs/architecture/overview.md)
