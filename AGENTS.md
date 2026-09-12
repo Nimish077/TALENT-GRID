@@ -9,10 +9,10 @@ TalentGrid is currently a minimal scaffold. Keep browser-facing code in `client/
 No build system, package manifest, or test runner is configured yet. When introducing a stack, add the corresponding manifest and document the exact commands in `readme.md` and here. Prefer conventional scripts such as:
 
 ```text
-npm install       # install dependencies
-npm run dev       # start local development services
-npm test          # run the test suite
-npm run build     # create a production build
+npm install     # install dependencies
+npm run dev     # start local development services
+npm test        # run the test suite
+npm run build   # create a production build
 ```
 
 Run commands from the directory containing the relevant manifest, or provide a root-level script that coordinates `client/` and `server/`.
@@ -27,7 +27,62 @@ There are no tests or coverage thresholds yet. Add unit tests for business logic
 
 ## Commit & Pull Request Guidelines
 
-Existing history uses short, broad messages such as `All files Uploaded`; improve this going forward with imperative, specific subjects (for example, `Add user profile API`). Keep commits focused. Pull requests should explain the change, identify affected areas (`client/` or `server/`), include validation commands and results, link relevant issues, and attach screenshots or request/response examples for UI or API changes.
+Existing history uses short, broad messages such as `All files Uploaded`; improve this going forward with imperative, specific subjects (for example, `Add user profile API`). Keep commits focused.
+
+Pull requests should explain the change, identify affected areas (`client/` or `server/`), include validation commands and results, link relevant issues, and attach screenshots or request/response examples for UI or API changes.
+
+### Branching Rules
+
+Every feature, bug fix, refactor, or significant change **must be developed on a new dedicated branch**.
+
+Do not develop new features directly on `main`.
+
+Use descriptive branch names such as:
+
+```text
+feature/candidate-profile
+feature/job-search
+feature/employer-dashboard
+feature/assessment-engine
+feature/institute-management
+
+fix/application-status
+fix/login-validation
+
+refactor/api-client
+```
+
+Follow these rules:
+
+* One branch should represent one logical feature, fix, refactor, or change.
+* Create the branch before starting implementation.
+* Do not reuse an old feature branch for an unrelated task.
+* Do not modify another developer's branch unless explicitly instructed.
+* Do not overwrite or discard another developer's uncommitted work.
+* Keep feature branches focused and reasonably small.
+* Do not commit unrelated changes to a feature branch.
+* Do not force-push shared branches without explicit team approval.
+
+Before starting work, inspect the current repository state:
+
+```text
+git status
+git branch
+```
+
+Then create a new branch:
+
+```text
+git switch -c feature/<feature-name>
+```
+
+or:
+
+```text
+git checkout -b feature/<feature-name>
+```
+
+Before creating a pull request, review the diff and ensure that only changes related to the branch's purpose are included.
 
 ## Security & Configuration Tips
 
