@@ -4,6 +4,8 @@ A web platform that connects **job seekers, employers, and educational institute
 
 TalentGrid allows candidates to discover jobs across the country, build skill-based profiles, and verify their skills through online assessments. Employers can define required skills, conduct assessments, and discover candidates based on their verified skill levels.
 
+[Live](https://connect-talentgrid.vercel.app/)
+
 ## Key Features
 
 * **Skill Verification** — Candidates can take online assessments to verify their claimed skills.

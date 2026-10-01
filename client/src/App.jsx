@@ -1,17 +1,13 @@
-import { useState } from 'react'
-import Navbar from './components/layout/navbar.jsx'
+import Navbar from "./components/layout/navbar.jsx";
+import Landing from "./components/landing/landing-page.jsx";
 
 function App() {
-
   return (
     <>
       <Navbar />
-
-      <main>
-        <h1 className='text-center text-3xl p-4'>Welcome to TalentGrid</h1>
-      </main>
+      <Landing />
     </>
-  )
+  );
 }
 
-export default App
+export default App;
