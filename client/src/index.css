@@ -4,27 +4,21 @@
 
 @theme {
 
-  /* =========================================================
-     BRAND
-     ========================================================= */
+  /*BRAND*/
 
   --color-brand: #4338CA;
   --color-brand-dark: #3730A3;
   --color-brand-light: #EEF2FF;
 
-  /* =========================================================
-     ACCENT
-     Used for verification, growth and positive actions
-     ========================================================= */
+  /*ACCENT
+   Used for verification, growth and positive actions*/
 
   --color-accent: #10B981;
   --color-accent-dark: #059669;
   --color-accent-light: #ECFDF5;
   --color-accent-muted: #D1FAE5;
 
-  /* =========================================================
-     PRODUCT STATES
-     ========================================================= */
+  /*PRODUCT STATES*/
 
   --color-success: #16A34A;
   --color-success-light: #F0FDF4;
@@ -51,9 +45,7 @@
   --color-text-secondary: #475569;
   --color-text-muted: #94A3B8;
 
-  /* =========================================================
-     BORDERS
-     ========================================================= */
+  /*BORDERS*/
 
   --color-border: #E2E8F0;
   --color-border-strong: #CBD5E1;
