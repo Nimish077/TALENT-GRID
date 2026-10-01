@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 
 const variants = {
   primary:
-    "bg-brand text-white hover:bg-brand-dark",
+    "bg-brand text-surface hover:bg-brand-dark",
   secondary:
     "bg-surface-muted text-text-primary hover:bg-border",
   outline:

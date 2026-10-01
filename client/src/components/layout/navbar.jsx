@@ -1,84 +1,68 @@
-import { Link } from "react-router-dom";
 import Button from "../ui/button.jsx";
+import logo from "../../assets/TalentGrid-Logo (2).svg";
 
 const navigationLinks = [
   {
     label: "Candidates",
-    to: "/candidates",
+    to: "#candidates",
   },
   {
     label: "Employers",
-    to: "/employers",
+    to: "#employers",
   },
   {
     label: "Institutes",
-    to: "/institutes",
+    to: "#institutes",
   },
   {
     label: "How It Works",
-    to: "/how-it-works",
+    to: "#how-it-works",
   },
 ];
 
 function TalentGridLogo() {
   return (
-    <Link
-      to="/"
+    <a
+      href="#top"
       className="flex items-center gap-2.5"
       aria-label="TalentGrid home"
     >
-      <div
-        className="grid h-8 w-8 grid-cols-2 gap-1 rounded-[var(--radius)] bg-brand p-1.5"
-        aria-hidden="true"
-      >
-        <span className="rounded-[2px] bg-white" />
-        <span className="rounded-[2px] bg-white" />
-        <span className="rounded-[2px] bg-white" />
-        <span className="rounded-[2px] bg-white" />
-      </div>
+      <img src={logo} alt="" className="h-8 w-8" />
 
       <span className="text-[17px] font-semibold tracking-tight text-text-primary">
         TalentGrid
       </span>
-    </Link>
+    </a>
   );
 }
 
 function Navbar() {
   return (
-    <header className="border-b border-border bg-surface">
-      <nav className="mx-auto flex h-[70px] max-w-7xl items-center px-6">
+    <header className="sticky top-0 z-20 border-b border-border bg-surface/95 backdrop-blur">
+      <nav className="mx-auto flex h-16 max-w-[1280px] items-center px-5 sm:px-8">
         {/* Brand */}
         <TalentGridLogo />
 
         {/* Navigation */}
-        <div className="ml-12 flex items-center gap-8">
+        <div className="ml-10 hidden items-center gap-7 md:flex">
           {navigationLinks.map((link) => (
-            <Link
+            <a
               key={link.to}
-              to={link.to}
+              href={link.to}
               className="text-sm font-normal text-text-secondary transition-colors hover:text-text-primary"
             >
               {link.label}
-            </Link>
+            </a>
           ))}
         </div>
 
         {/* Actions */}
-        <div className="ml-auto flex items-center gap-4">
-          <Button
-            to="/login"
-            variant="ghost"
-            size="sm"
-          >
+        <div className="ml-auto flex items-center gap-2 sm:gap-4">
+          <Button variant="ghost" size="sm">
             Log In
           </Button>
 
-          <Button
-            to="/register"
-            variant="primary"
-            size="sm"
-          >
+          <Button variant="primary" size="sm">
             Get Started
           </Button>
         </div>
