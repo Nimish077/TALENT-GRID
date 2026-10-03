@@ -1,5 +1,5 @@
 import Button from "../ui/button.jsx";
-import logo from "../../assets/TalentGrid-Logo (2).svg";
+import logo from "../../assets/TalentGrid-Logo.svg";
 
 const navigationLinks = [
   {

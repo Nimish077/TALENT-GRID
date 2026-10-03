@@ -1,5 +1,5 @@
 import Button from "../components/ui/button.jsx";
-import logo from "../assets/TalentGrid-Logo (2).svg";
+import logo from "../assets/TalentGrid-Logo.svg";
 
 const steps = [
   {
@@ -75,7 +75,7 @@ function HeroProfile() {
   return (
     <article className="w-full max-w-[390px] overflow-hidden rounded-xl border border-border bg-surface shadow-lg">
       <header className="flex items-start gap-3 border-b border-border bg-surface-muted px-5 py-4">
-        <span className="flex h-11 w-11 items-center justify-center rounded-full bg-brand-light font-semibold text-brand">AS</span>
+        <span className="flex h-11 w-11 items-center justify-center rounded-full bg-brand-light font-semibold text-brand">NU</span>
         <div className="min-w-0">
           <p className="font-semibold text-text-primary">Nimish Upadhyay</p>
           <p className="text-sm text-text-secondary">Full Stack Developer</p>
