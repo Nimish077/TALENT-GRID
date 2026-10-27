@@ -118,6 +118,29 @@ The initial implementation will use **PostgreSQL queries and backend matching lo
 * **client:** npm run dev
 * **server:** npm run dev
 
+## Backend (server)
+
+The API lives in [`server/`](./server) (Express 5 + Prisma 7 + PostgreSQL),
+served under `/api/v1` with cookie-first auth (access/refresh/CSRF cookies,
+refresh-token rotation) and role/tenant enforcement for candidates, employers,
+institutes, and admins.
+
+```bash
+cd server
+npm install
+copy .env.example .env    # fill DATABASE_URI, JWT_SECRET, TEST_DATABASE_URI
+npm run prisma:deploy     # apply migrations
+npm run db:seed           # seed skill catalog
+npm run admin:create      # create the first admin
+npm run dev               # http://localhost:8000
+```
+
+See [`server/README.md`](./server/README.md) for setup details and
+[`server/API.md`](./server/API.md) for the endpoint reference. Deep backend
+documentation (architecture, database, security, per-module pages, workflows,
+and a verified known-issues register) starts at
+[`server/docs/index.md`](./server/docs/index.md).
+
 ## Links
 
 * **Architecture Overview :** [overview.md](./docs/architecture/overview.md)
