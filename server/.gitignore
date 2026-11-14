@@ -137,3 +137,7 @@ dist
 
 # SvelteKit build / generate output
 .svelte-kit
+# Local backups of pre-rebuild data
+backups/
+
+docs/
