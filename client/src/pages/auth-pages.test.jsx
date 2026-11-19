@@ -13,6 +13,18 @@ vi.mock("../lib/api.js", async (importOriginal) => {
   };
 });
 
+// The real dashboards are covered in dashboards.test.jsx; here we only need to
+// know that an authenticated user reaches /dashboard.
+vi.mock("./dashboard.jsx", async () => {
+  const { useAuth } = await import("../context/auth-context.js");
+  return {
+    default: function DashboardStub() {
+      const { user } = useAuth();
+      return <h1>Welcome, {user.full_name}</h1>;
+    },
+  };
+});
+
 const candidate = { id: "1", email: "a@b.com", full_name: "Arjun Sharma", role: "candidate" };
 
 function renderAt(path) {
