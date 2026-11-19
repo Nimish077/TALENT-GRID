@@ -58,11 +58,11 @@ function Navbar() {
 
         {/* Actions */}
         <div className="ml-auto flex items-center gap-2 sm:gap-4">
-          <Button variant="ghost" size="sm">
+          <Button to="/login" variant="ghost" size="sm">
             Log In
           </Button>
 
-          <Button variant="primary" size="sm">
+          <Button to="/register" variant="primary" size="sm">
             Get Started
           </Button>
         </div>

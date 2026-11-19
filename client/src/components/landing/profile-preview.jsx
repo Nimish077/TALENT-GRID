@@ -11,7 +11,7 @@ function ProfilePreview() {
       <header className="flex items-start gap-3 border-b border-border bg-surface-muted px-5 py-4">
         <span className="flex h-11 w-11 items-center justify-center rounded-full bg-brand-light font-semibold text-brand">AS</span>
         <div className="min-w-0">
-          <p className="font-semibold text-text-primary">Nimish Upadhyay</p>
+          <p className="font-semibold text-text-primary">Arjun Sharma</p>
           <p className="text-sm text-text-secondary">Full Stack Developer</p>
           <p className="mt-1 text-xs text-text-muted">Bengaluru, India &middot; 4 yr exp</p>
         </div>

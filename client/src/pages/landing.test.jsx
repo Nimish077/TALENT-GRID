@@ -27,13 +27,13 @@ describe("Landing", () => {
     expect(screen.getByText("Institutes")).toBeInTheDocument();
   });
 
-  it("provides same-page audience targets and non-navigating CTAs", () => {
+  it("provides same-page audience targets and CTAs that link to registration", () => {
     const { container } = renderLanding();
 
     expect(container.querySelector("#candidates")).toBeInTheDocument();
     expect(container.querySelector("#employers")).toBeInTheDocument();
     expect(container.querySelector("#institutes")).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: /find opportunities/i })).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: /create your account/i })).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: /find opportunities/i })).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: /create your account/i })).toBeInTheDocument();
   });
 });
