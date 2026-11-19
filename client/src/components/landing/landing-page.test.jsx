@@ -1,7 +1,7 @@
 import { cleanup, render, screen } from "@testing-library/react";
 import { BrowserRouter } from "react-router-dom";
 import { afterEach, describe, expect, it } from "vitest";
-import Landing from "../components/landing/landing-page.jsx";
+import Landing from "./landing-page.jsx";
 
 afterEach(cleanup);
 
