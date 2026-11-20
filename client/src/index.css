@@ -76,6 +76,8 @@
 }
 
 
+@layer base {
+
 /* =========================================================
    BASE
    ========================================================= */
@@ -203,4 +205,5 @@ select {
 ::selection {
   background: var(--color-brand-light);
   color: var(--color-brand-dark);
+}
 }

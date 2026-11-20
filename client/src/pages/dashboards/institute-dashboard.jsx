@@ -80,24 +80,24 @@ function InstituteContent({ data }) {
 
   return (
     <>
-      <h1 className="text-[28px] tracking-[-0.03em]">Institute Dashboard</h1>
-      <p className="mt-1.5 text-text-secondary">{institution ? `${institution.name} · Skill development overview` : "Skill development overview"}</p>
+      <h1 className="text-[22px] tracking-[-0.03em]">Institute Dashboard</h1>
+      <p className="mt-1 text-sm text-text-secondary">{institution ? `${institution.name} · Skill development overview` : "Skill development overview"}</p>
 
       {pending && <PendingNotice kind="institution" />}
 
-      <div className="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+      <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <StatCard icon={<Icon name="people" />} label="Total Students" value={students} tone="text-brand" />
         <StatCard icon={<Icon name="check" />} iconTone="bg-accent-muted text-accent-dark" label="Verified Students" value={data.verified ?? 0} tone="text-accent-dark" />
         <StatCard icon={<Icon name="flag" />} iconTone="bg-warning-light text-warning" label="Placement Drives" value={drives.length} tone="text-warning" />
         <StatCard icon={<Icon name="briefcase" />} label="Open Drives" value={openDrives.length} tone="text-brand" />
       </div>
 
-      <Card className="mt-8 p-6">
+      <Card className="mt-6 p-5">
         <CardHeader title="Skill Development Pipeline" />
-        <ol className="mt-6 grid gap-4 md:grid-cols-4">
+        <ol className="mt-5 grid gap-3 md:grid-cols-4">
           {pipeline.map((stage, index) => (
-            <li key={stage.label} className={`rounded-lg p-5 text-center ${stage.tone.split(" ")[0]}`}>
-              <p className={`text-[28px] font-semibold leading-none ${stage.tone.split(" ")[1]}`}>{stage.value}</p>
+            <li key={stage.label} className={`rounded-lg p-4 text-center ${stage.tone.split(" ")[0]}`}>
+              <p className={`text-2xl font-semibold leading-none ${stage.tone.split(" ")[1]}`}>{stage.value}</p>
               <p className={`mt-2 text-sm ${stage.tone.split(" ")[1]}`}>{stage.label}</p>
               <div className="mt-4"><ProgressBar percent={index < 3 ? percentOf(stage.value) : drives.length ? Math.round((stage.value / drives.length) * 100) : 0} color={stage.bar} label={`${stage.label} share`} /></div>
             </li>
@@ -105,8 +105,8 @@ function InstituteContent({ data }) {
         </ol>
       </Card>
 
-      <div className="mt-6 grid gap-6 lg:grid-cols-2">
-        <Card className="p-6">
+      <div className="mt-5 grid gap-5 lg:grid-cols-2">
+        <Card className="p-5">
           <CardHeader title="Verification Status" />
           <ul className="mt-5 space-y-4">
             {status.map((row) => (
@@ -121,7 +121,7 @@ function InstituteContent({ data }) {
           </ul>
         </Card>
 
-        <Card className="p-6">
+        <Card className="p-5">
           <CardHeader title="Recent Students" />
           {(data.recent ?? []).length === 0 ? (
             <EmptyState>No students imported yet.</EmptyState>
@@ -149,7 +149,7 @@ function InstituteContent({ data }) {
 function InstituteDashboard() {
   const { data, error, loading, reload } = useResource(loadInstituteDashboard);
   return (
-    <main className="mx-auto max-w-[1210px] px-5 pb-20 pt-10 sm:px-8">
+    <main className="mx-auto max-w-5xl px-5 pb-16 pt-8 sm:px-8">
       <PageState loading={loading} error={error} onRetry={reload}>
         {data && <InstituteContent data={data} />}
       </PageState>

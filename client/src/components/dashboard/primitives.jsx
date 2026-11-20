@@ -9,7 +9,7 @@ export function Card({ children, className = "", ...props }) {
 export function CardHeader({ title, action }) {
   return (
     <div className="flex items-center justify-between">
-      <h2 className="text-base font-semibold tracking-tight">{title}</h2>
+      <h2 className="text-[15px] font-semibold tracking-tight">{title}</h2>
       {action}
     </div>
   );
@@ -17,15 +17,15 @@ export function CardHeader({ title, action }) {
 
 export function StatCard({ label, value, hint, tone = "text-text-primary", icon, iconTone = "bg-brand-light text-brand" }) {
   return (
-    <Card className="p-6">
+    <Card className="p-5">
       {icon ? (
-        <span aria-hidden="true" className={`mb-4 flex h-10 w-10 items-center justify-center rounded-lg ${iconTone}`}>{icon}</span>
+        <span aria-hidden="true" className={`mb-3 flex h-9 w-9 items-center justify-center rounded-lg ${iconTone}`}>{icon}</span>
       ) : (
-        <p className="text-sm text-text-secondary">{label}</p>
+        <p className="text-[13px] text-text-secondary">{label}</p>
       )}
-      <p className={`${icon ? "" : "mt-2 "}text-[32px] font-semibold leading-none tracking-[-0.03em] ${tone}`}>{value}</p>
-      {icon && <p className="mt-2 text-sm text-text-secondary">{label}</p>}
-      {hint && <p className="mt-3 text-xs text-text-secondary">{hint}</p>}
+      <p className={`${icon ? "" : "mt-2 "}text-[26px] font-semibold leading-none tracking-[-0.03em] ${tone}`}>{value}</p>
+      {icon && <p className="mt-1.5 text-[13px] text-text-secondary">{label}</p>}
+      {hint && <p className="mt-2.5 text-xs text-text-secondary">{hint}</p>}
     </Card>
   );
 }
