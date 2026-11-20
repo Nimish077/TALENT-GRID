@@ -41,6 +41,7 @@ describe("environment guards", () => {
       NODE_ENV: "production",
       MAILER: "console",
       CORS_ORIGINS: "https://app.example.com",
+      CSRF_SECRET: "c".repeat(32),
     });
     expect(result.status).not.toBe(0);
     expect(result.stderr).toContain(
@@ -49,7 +50,11 @@ describe("environment guards", () => {
   });
 
   it("requires explicit CORS origins in production", () => {
-    const result = loadEnv({ NODE_ENV: "production", CORS_ORIGINS: "" });
+    const result = loadEnv({
+      NODE_ENV: "production",
+      CORS_ORIGINS: "",
+      CSRF_SECRET: "c".repeat(32),
+    });
     expect(result.status).not.toBe(0);
     expect(result.stderr).toContain(
       "CORS_ORIGINS must be set explicitly in production"
@@ -63,10 +68,35 @@ describe("environment guards", () => {
       MAILER: "smtp",
       COOKIE_SAMESITE: "none",
       COOKIE_SECURE: "false",
+      CSRF_SECRET: "c".repeat(32),
     });
     expect(result.status).not.toBe(0);
     expect(result.stderr).toContain(
       'COOKIE_SAMESITE="none" requires COOKIE_SECURE=true'
     );
+  });
+
+  it("requires a separate CSRF secret in production", () => {
+    const result = loadEnv({
+      NODE_ENV: "production",
+      CORS_ORIGINS: "https://app.example.com",
+      MAILER: "smtp",
+      CSRF_SECRET: "",
+    });
+    expect(result.status).not.toBe(0);
+    expect(result.stderr).toContain("missing required variable CSRF_SECRET");
+  });
+
+  it("refuses a production CSRF secret equal to JWT_SECRET", () => {
+    const secret = "s".repeat(32);
+    const result = loadEnv({
+      NODE_ENV: "production",
+      CORS_ORIGINS: "https://app.example.com",
+      MAILER: "smtp",
+      JWT_SECRET: secret,
+      CSRF_SECRET: secret,
+    });
+    expect(result.status).not.toBe(0);
+    expect(result.stderr).toContain("CSRF_SECRET must differ from JWT_SECRET");
   });
 });

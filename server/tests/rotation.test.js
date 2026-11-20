@@ -35,6 +35,11 @@ describe("refresh rotation", () => {
     expect(refresh2).toBeTruthy();
     expect(refresh2).not.toBe(refresh);
 
+    const csrf2 = res.body.data.csrf_token;
+    expect(csrf2).toBeTruthy();
+    expect(csrf2).not.toBe(csrf);
+    expect(csrf2).toBe(cookieValue(res, "csrf_token"));
+
     const oldSession = await prisma.session.findFirst({
       where: { revoke_reason: "rotated" },
     });
@@ -44,6 +49,18 @@ describe("refresh rotation", () => {
     const res2 = await refreshWith(refresh2, cookieValue(res, "csrf_token"));
     expect(res2.status).toBe(200);
     expect(await activeSessionCount()).toBe(1);
+  });
+
+  it("rejects refresh without the CSRF header", async () => {
+    const { refresh, csrf } = await registerUser();
+
+    const res = await request(app)
+      .post("/api/v1/auth/refresh")
+      .set("Cookie", `refresh_token=${refresh}; csrf_token=${csrf}`)
+      .set("Origin", ORIGIN);
+
+    expect(res.status).toBe(403);
+    expect(res.body.message).toMatch(/CSRF/);
   });
 
   it("answers a just-rotated token within the grace window with a retry 401 and keeps cookies", async () => {

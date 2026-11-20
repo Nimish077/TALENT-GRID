@@ -62,6 +62,7 @@ export async function registerUser({
     accessToken: res.body.data.tokens.access_token,
     cookies: cookieHeaderFrom(res),
     csrf: cookieValue(res, "csrf_token"),
+    csrfToken: res.body.data.csrf_token,
     refresh: cookieValue(res, "refresh_token"),
   };
 }
@@ -76,7 +77,19 @@ export async function login(email, password) {
     accessToken: res.body.data?.tokens?.access_token,
     cookies: cookieHeaderFrom(res),
     csrf: cookieValue(res, "csrf_token"),
+    csrfToken: res.body.data?.csrf_token,
     refresh: cookieValue(res, "refresh_token"),
+  };
+}
+
+export async function bootstrapCsrf(cookies) {
+  const req = request(app).get("/api/v1/auth/csrf");
+  if (cookies) req.set("Cookie", cookies);
+  const res = await req;
+  return {
+    res,
+    csrf: res.body.data?.csrf_token,
+    cookie: cookieValue(res, "csrf_token"),
   };
 }
 

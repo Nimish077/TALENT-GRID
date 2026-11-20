@@ -56,6 +56,18 @@ function appendCookie(res, cookie) {
 const ACCESS_PATH = "/api/v1";
 const REFRESH_PATH = "/api/v1/auth";
 
+export function setCsrfCookie(res, csrfToken) {
+  appendCookie(
+    res,
+    serializeCookie("csrf_token", csrfToken, {
+      ...env.cookieBase,
+      httpOnly: false,
+      path: "/",
+      maxAge: env.sessionTtlSeconds,
+    })
+  );
+}
+
 export function setAuthCookies(res, { accessToken, refreshToken, csrfToken }) {
   appendCookie(
     res,
@@ -78,15 +90,7 @@ export function setAuthCookies(res, { accessToken, refreshToken, csrfToken }) {
     );
   }
   if (csrfToken) {
-    appendCookie(
-      res,
-      serializeCookie("csrf_token", csrfToken, {
-        ...env.cookieBase,
-        httpOnly: false,
-        path: "/",
-        maxAge: env.sessionTtlSeconds,
-      })
-    );
+    setCsrfCookie(res, csrfToken);
   }
 }
 

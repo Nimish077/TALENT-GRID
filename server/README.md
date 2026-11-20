@@ -78,17 +78,64 @@ server/
   response (no cookies cleared); beyond that it is treated as reuse and the
   whole session family is revoked with reason `reuse_detected`.
 - **CSRF.** Cookie-authenticated mutating requests need a matching `Origin`
-  plus the `x-csrf-token` header; cookie-less `register`/`login` are exempt.
+  plus the `x-csrf-token` header. `POST /auth/login` and `POST /auth/register`
+  are public session-establishment endpoints, so stale auth cookies do not
+  trigger CSRF there; `refresh`, `logout`, and all other mutations remain
+  protected. See the browser flow below.
 - **Locked accounts.** Suspended users get `403`; suspending a user revokes all
   their sessions (`admin` reason).
+
+### CSRF for browser clients
+
+`GET /api/v1/auth/csrf` is a public bootstrap endpoint. It generates a fresh
+signed token, sets the readable `csrf_token` cookie, and returns
+`data.csrf_token`. `register`, `login`, and `refresh` also return
+`data.csrf_token` alongside the existing envelope.
+
+Browser clients should:
+
+1. Call `GET /api/v1/auth/csrf` on load (or let the API client do it before the
+   first mutation).
+2. Keep the token in memory — never in `localStorage`/`sessionStorage`.
+3. Send it as `X-CSRF-Token` on `POST`, `PUT`, `PATCH`, and `DELETE` requests
+   to the API. `GET`, `HEAD`, and `OPTIONS` do not require it.
+4. Send cookies with `credentials: "include"` (Fetch) or
+   `withCredentials: true` (Axios).
+
+Login and registration do not require the CSRF token. They are public
+session-establishment endpoints: stale `access_token`/`refresh_token` cookies
+are ignored for CSRF, but a present `Origin` must still be in `CORS_ORIGINS`.
+
+The cookie is intentionally **not HttpOnly**: JavaScript must read/copy it for
+the double-submit pattern. It is not an authentication credential; the auth
+cookies remain HttpOnly. The token format is
+`<nonce>.<HMAC-SHA256(nonce, CSRF_SECRET)>`.
+
+Non-browser clients can ignore this flow and use Bearer tokens. If a request
+carries both `Authorization: Bearer` and auth cookies, CSRF is still required
+(a leftover cookie must not weaken the check).
+
+**Postman (cookie auth):** login/register work with stale cookies and do not
+require `Origin` or `X-CSRF-Token`. For refresh, logout, and other cookie
+mutations, call `GET /api/v1/auth/csrf`, copy `data.csrf_token`, then send the
+auth cookies, an allowed `Origin` (for example `http://localhost:5173`), and
+`X-CSRF-Token`. Postman does not add `Origin` automatically. Alternatively use
+`Authorization: Bearer ...` with no cookies.
+
+**Cross-site deployments:** set `CORS_ORIGINS` to the exact frontend origin,
+`COOKIE_SECURE=true`, and use `COOKIE_SAMESITE=none` only when the frontend and
+API are genuinely cross-site. Browser third-party-cookie restrictions can still
+block cookie authentication; prefer a custom domain that keeps both under one
+registrable domain. Leave `COOKIE_DOMAIN` unset (host-only) unless a shared
+parent domain is genuinely required.
 
 ## Safety guards
 
 - `NODE_ENV=test` requires `TEST_DATABASE_URI`, which must differ from
   `DATABASE_URI` and contain `test` in the database name — tests can never
   touch development data (`tests/setup.js` re-checks this).
-- Production rejects `MAILER=console`, requires explicit `CORS_ORIGINS`, and
-  requires `COOKIE_SECURE` when `COOKIE_SAMESITE=none`.
+- Production rejects `MAILER=console`, requires explicit `CORS_ORIGINS`, a
+  distinct `CSRF_SECRET`, and `COOKIE_SECURE` when `COOKIE_SAMESITE=none`.
 - Employer/institute accounts are created `pending` until a platform admin
   verifies the organization/institution; verification activates the pending
   owner membership. The first admin comes from `npm run admin:create`.

@@ -8,6 +8,7 @@ import {
   login,
   makeAdmin,
   uniqueEmail,
+  cookieValue,
   ORIGIN,
 } from "./helpers/index.js";
 
@@ -34,6 +35,7 @@ describe("registration & login", () => {
     expect(refresh).toContain("Path=/api/v1/auth");
     expect(csrf).not.toContain("HttpOnly");
     expect(csrf).toContain("Path=/");
+    expect(res.body.data.csrf_token).toBe(cookieValue(res, "csrf_token"));
   });
 
   it("rejects duplicate emails with 409", async () => {
@@ -138,6 +140,7 @@ describe("session endpoints", () => {
     const cleared = res.headers["set-cookie"].join(";");
     expect(cleared).toContain("access_token=;");
     expect(cleared).toContain("refresh_token=;");
+    expect(cleared).toContain("csrf_token=;");
 
     const session = await prisma.session.findFirst({
       where: { revoke_reason: "logout" },
@@ -232,6 +235,116 @@ describe("CSRF protection", () => {
       .send({ email, password: "Password123!" })
       .set("Origin", ORIGIN);
     expect(res.status).toBe(200);
+  });
+});
+
+describe("public session establishment with stale cookies", () => {
+  it("logs in with stale auth cookies and an allowed Origin", async () => {
+    const stale = await registerUser();
+    const target = await registerUser();
+
+    const res = await request(app)
+      .post("/api/v1/auth/login")
+      .set("Cookie", stale.cookies)
+      .set("Origin", ORIGIN)
+      .send({ email: target.email, password: target.password });
+
+    expect(res.status).toBe(200);
+    expect(res.body.data.user.id).toBe(target.user.id);
+    expect(cookieValue(res, "refresh_token")).not.toBe(stale.refresh);
+  });
+
+  it("logs in with stale auth cookies and no Origin (non-browser client)", async () => {
+    const stale = await registerUser();
+
+    const res = await request(app)
+      .post("/api/v1/auth/login")
+      .set("Cookie", stale.cookies)
+      .send({ email: stale.email, password: stale.password });
+
+    expect(res.status).toBe(200);
+    expect(res.body.data.user.id).toBe(stale.user.id);
+  });
+
+  it("registers with stale auth cookies and an allowed Origin", async () => {
+    const stale = await registerUser();
+    const email = uniqueEmail("stale-register");
+
+    const res = await request(app)
+      .post("/api/v1/auth/register")
+      .set("Cookie", stale.cookies)
+      .set("Origin", ORIGIN)
+      .send({
+        email,
+        password: "Password123!",
+        full_name: "Stale Register",
+        role: "candidate",
+      });
+
+    expect(res.status).toBe(201);
+    expect(res.body.data.user.email).toBe(email);
+    const created = await prisma.user.findUnique({ where: { email } });
+    expect(created).not.toBeNull();
+  });
+
+  it("registers with stale auth cookies and no Origin (non-browser client)", async () => {
+    const stale = await registerUser();
+    const email = uniqueEmail("stale-register-no-origin");
+
+    const res = await request(app)
+      .post("/api/v1/auth/register")
+      .set("Cookie", stale.cookies)
+      .send({
+        email,
+        password: "Password123!",
+        full_name: "Stale Register No Origin",
+        role: "candidate",
+      });
+
+    expect(res.status).toBe(201);
+  });
+
+  it("rejects login with stale cookies and a disallowed Origin", async () => {
+    const stale = await registerUser();
+
+    const res = await request(app)
+      .post("/api/v1/auth/login")
+      .set("Cookie", stale.cookies)
+      .set("Origin", "https://evil.example.com")
+      .send({ email: stale.email, password: stale.password });
+
+    expect(res.status).toBe(403);
+    expect(res.body.message).toMatch(/origin/i);
+  });
+
+  it("rejects registration with stale cookies and a disallowed Origin", async () => {
+    const stale = await registerUser();
+
+    const res = await request(app)
+      .post("/api/v1/auth/register")
+      .set("Cookie", stale.cookies)
+      .set("Origin", "https://evil.example.com")
+      .send({
+        email: uniqueEmail("evil-stale-register"),
+        password: "Password123!",
+        full_name: "Evil Stale Register",
+        role: "candidate",
+      });
+
+    expect(res.status).toBe(403);
+    expect(res.body.message).toMatch(/origin/i);
+  });
+
+  it("rejects cookie-authenticated logout without the CSRF header", async () => {
+    const { refresh } = await registerUser();
+
+    const res = await request(app)
+      .post("/api/v1/auth/logout")
+      .set("Cookie", `refresh_token=${refresh}`)
+      .set("Origin", ORIGIN);
+
+    expect(res.status).toBe(403);
+    expect(res.body.message).toMatch(/CSRF/);
   });
 });
 

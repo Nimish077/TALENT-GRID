@@ -2,8 +2,10 @@
 //
 // Policy (user-approved):
 //   - Bearer requests are the deliberate non-browser transport → exempt.
-//   - A fresh (cookie-less) login/register carries nothing to forge → exempt
-//     from double-submit, but Origin is still validated when present.
+//   - POST /auth/login and POST /auth/register are public session-establishment
+//     endpoints → exempt from double-submit even with stale auth cookies;
+//     Origin is still validated when present. Exact method+path only, so
+//     refresh/logout and all other mutations remain protected.
 //   - Everything else authenticated via cookies must pass BOTH:
 //       1. exact Origin allowlist match (header must be present)
 //       2. signed double-submit: X-CSRF-Token header equals the csrf_token
@@ -15,6 +17,17 @@ import { constantTimeEqual, isValidCsrfToken } from "../utils/tokens.js";
 
 const MUTATING_METHODS = new Set(["POST", "PUT", "PATCH", "DELETE"]);
 
+const SESSION_ESTABLISHMENT_PATHS = new Set([
+  "/api/v1/auth/login",
+  "/api/v1/auth/register",
+]);
+
+function isSessionEstablishment(req) {
+  if (req.method !== "POST") return false;
+  const path = req.path.toLowerCase().replace(/\/+$/, "");
+  return SESSION_ESTABLISHMENT_PATHS.has(path);
+}
+
 export function csrfProtection(req, res, next) {
   if (!MUTATING_METHODS.has(req.method)) return next();
 
@@ -22,6 +35,8 @@ export function csrfProtection(req, res, next) {
   if (origin && !env.corsOrigins.includes(origin)) {
     throw new ApiError(403, "Request origin is not allowed");
   }
+
+  if (isSessionEstablishment(req)) return next();
 
   const bearer = Boolean(req.get("authorization")?.startsWith("Bearer "));
   const hasAuthCookie = Boolean(
