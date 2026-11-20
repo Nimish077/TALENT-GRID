@@ -77,8 +77,11 @@ server/
   the old token inside `REFRESH_REUSE_GRACE_SECONDS` gets a harmless "retry"
   response (no cookies cleared); beyond that it is treated as reuse and the
   whole session family is revoked with reason `reuse_detected`.
-- **CSRF.** Cookie-authenticated mutating requests need a matching `Origin`
-  plus the `x-csrf-token` header; cookie-less `register`/`login` are exempt.
+- **CSRF.** Browser clients bootstrap a signed token from `GET /auth/csrf`
+  (also returned by `register`, `login`, and `refresh`), keep it in memory, and
+  send it as `x-csrf-token` on cookie-authenticated mutations. `register` and
+  `login` are always exempt from double-submit, even with stale cookies, but
+  still validate `Origin` when present.
 - **Locked accounts.** Suspended users get `403`; suspending a user revokes all
   their sessions (`admin` reason).
 
@@ -89,6 +92,8 @@ server/
   touch development data (`tests/setup.js` re-checks this).
 - Production rejects `MAILER=console`, requires explicit `CORS_ORIGINS`, and
   requires `COOKIE_SECURE` when `COOKIE_SAMESITE=none`.
+- Production requires an explicit `CSRF_SECRET` of at least 32 characters that
+  differs from `JWT_SECRET`; development/test derive one via HKDF when omitted.
 - Employer/institute accounts are created `pending` until a platform admin
   verifies the organization/institution; verification activates the pending
   owner membership. The first admin comes from `npm run admin:create`.
@@ -144,5 +149,5 @@ npm test
 Vitest + supertest, serial execution. The suite sets `MAILER=test` (in-memory
 outbox), `BCRYPT_ROUNDS=4`, and `ASSESSMENT_ENGINE_TOKEN=test-engine-token`
 itself; only `TEST_DATABASE_URI` must exist in `.env`. Coverage includes auth +
-rotation, RBAC/tenant isolation, assessments/verification, applications,
-institutions (imports/claims), and placement drives.
+CSRF + refresh rotation, RBAC/tenant isolation, assessments/verification,
+applications, institutions (imports/claims), and placement drives.

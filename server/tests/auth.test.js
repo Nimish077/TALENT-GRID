@@ -8,6 +8,7 @@ import {
   login,
   makeAdmin,
   uniqueEmail,
+  cookieValue,
   ORIGIN,
 } from "./helpers/index.js";
 
@@ -34,6 +35,8 @@ describe("registration & login", () => {
     expect(refresh).toContain("Path=/api/v1/auth");
     expect(csrf).not.toContain("HttpOnly");
     expect(csrf).toContain("Path=/");
+    expect(res.body.data.csrf_token).toBe(cookieValue(res, "csrf_token"));
+    expect(res.headers["cache-control"]).toBe("no-store");
   });
 
   it("rejects duplicate emails with 409", async () => {

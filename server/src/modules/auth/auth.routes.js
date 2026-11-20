@@ -4,7 +4,11 @@ import { asyncHandler } from "../../utils/asyncHandler.js";
 import { validate } from "../../middleware/validate.js";
 import { authenticate } from "../../middleware/authenticate.js";
 import { authLimiter } from "../../middleware/rateLimits.js";
-import { setAuthCookies, clearAuthCookies } from "../../utils/cookies.js";
+import {
+  setAuthCookies,
+  setCsrfCookie,
+  clearAuthCookies,
+} from "../../utils/cookies.js";
 import { createCsrfToken } from "../../utils/tokens.js";
 import { sendSuccess } from "../../utils/response.js";
 import { ApiError } from "../../errors/apiError.js";
@@ -20,8 +24,15 @@ import {
 
 const router = Router();
 
+router.use((req, res, next) => {
+  res.set("Cache-Control", "no-store");
+  next();
+});
+
 function setSessionCookies(res, tokens) {
-  setAuthCookies(res, { ...tokens, csrfToken: createCsrfToken() });
+  const csrfToken = createCsrfToken();
+  setAuthCookies(res, { ...tokens, csrfToken });
+  return csrfToken;
 }
 
 // The access token is also returned in the body for non-browser (Bearer)
@@ -35,6 +46,18 @@ function bodyTokens(tokens) {
   };
 }
 
+router.get(
+  "/csrf",
+  asyncHandler(async (req, res) => {
+    const csrfToken = createCsrfToken();
+    setCsrfCookie(res, csrfToken);
+    return sendSuccess(res, {
+      message: "CSRF token issued",
+      data: { csrf_token: csrfToken },
+    });
+  })
+);
+
 router.post(
   "/register",
   authLimiter,
@@ -42,11 +65,15 @@ router.post(
   asyncHandler(async (req, res) => {
     const user = await registerUser(req.body);
     const tokens = await createSession(user, req);
-    setSessionCookies(res, tokens);
+    const csrfToken = setSessionCookies(res, tokens);
     return sendSuccess(res, {
       statusCode: 201,
       message: "Registration successful",
-      data: { user: sanitizeUser(user), tokens: bodyTokens(tokens) },
+      data: {
+        user: sanitizeUser(user),
+        tokens: bodyTokens(tokens),
+        csrf_token: csrfToken,
+      },
     });
   })
 );

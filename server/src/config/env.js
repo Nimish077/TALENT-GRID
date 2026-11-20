@@ -87,14 +87,22 @@ if (jwtSecret.length < 32) {
   fail("JWT_SECRET must be at least 32 characters long");
 }
 
+const configuredCsrfSecret = optionalString("CSRF_SECRET");
+if (isProduction && !configuredCsrfSecret) {
+  fail("missing required variable CSRF_SECRET");
+}
+
 const csrfSecret =
-  optionalString("CSRF_SECRET") ??
+  configuredCsrfSecret ??
   Buffer.from(
     hkdfSync("sha256", jwtSecret, "talentgrid", "csrf-token", 32)
   ).toString("hex");
 
 if (csrfSecret.length < 32) {
   fail("CSRF_SECRET must be at least 32 characters long");
+}
+if (isProduction && csrfSecret === jwtSecret) {
+  fail("CSRF_SECRET must differ from JWT_SECRET");
 }
 
 const accessTokenTtlSeconds = intVar("ACCESS_TOKEN_TTL_SECONDS", 15 * 60);

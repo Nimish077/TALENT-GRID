@@ -31,6 +31,7 @@ describe("refresh rotation", () => {
 
     const res = await refreshWith(refresh, csrf);
     expect(res.status).toBe(200);
+    expect(res.body.data.csrf_token).toBe(cookieValue(res, "csrf_token"));
     const refresh2 = cookieValue(res, "refresh_token");
     expect(refresh2).toBeTruthy();
     expect(refresh2).not.toBe(refresh);

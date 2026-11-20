@@ -11,9 +11,13 @@ Base URL: `/api/v1` (server default `http://localhost:8000`).
   `{ path, message }` entries; not found `404`; tenant/role denials `403`;
   conflicts (duplicates, illegal transitions) `409`.
 - Auth: httpOnly cookies by default; `Authorization: Bearer <access_token>` is
-  also accepted (skip CSRF). Mutating cookie-authenticated requests must send a
-  matching `Origin` and `x-csrf-token` header (value of the `csrf_token`
-  cookie).
+  also accepted (skip CSRF). Browser clients bootstrap a signed CSRF token from
+  `GET /auth/csrf` (or read `data.csrf_token` from register/login/refresh),
+  keep it in memory, and send it as `x-csrf-token` on mutating requests.
+  Cookie-authenticated mutations also need a matching `Origin`.
+- `POST /auth/login` and `POST /auth/register` are exempt from the CSRF
+  double-submit check, even when stale auth cookies are present; their `Origin`
+  is still validated when provided. `refresh` and `logout` require CSRF.
 - Roles: `candidate`, `employer`, `institute`, `admin`.
 - "member" below means an `active` user of that organization/institution;
   "owner/admin" means tenant role `owner` or `admin`. Pending/suspended
@@ -21,13 +25,14 @@ Base URL: `/api/v1` (server default `http://localhost:8000`).
 
 ## Auth — `/api/v1/auth`
 
-| Method | Path        | Access                  | Notes                                                                                                                                                                  |
-| ------ | ----------- | ----------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| POST   | `/register` | public                  | role-discriminated body (`candidate` / `employer` / `institute`); employer/institute also create their tenant (owner, `pending`). Sets cookies; returns `data.tokens`. |
-| POST   | `/login`    | public                  | sets cookies; returns `data.tokens`.                                                                                                                                   |
-| POST   | `/refresh`  | refresh cookie          | rotates refresh token; sets cookies; returns `data.tokens`. Reuse beyond grace revokes the session family.                                                             |
-| POST   | `/logout`   | public (refresh cookie) | revokes the presented session (idempotent; no auth middleware); clears cookies.                                                                                        |
-| GET    | `/me`       | authenticated           | current user + role profile.                                                                                                                                           |
+| Method | Path        | Access                  | Notes                                                                                                                                                                                      |
+| ------ | ----------- | ----------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| GET    | `/csrf`     | public                  | issues a signed CSRF token, sets the readable `csrf_token` cookie, and returns `data.csrf_token`.                                                                                          |
+| POST   | `/register` | public                  | role-discriminated body (`candidate` / `employer` / `institute`); employer/institute also create their tenant (owner, `pending`). Sets cookies; returns `data.tokens` + `data.csrf_token`. |
+| POST   | `/login`    | public                  | sets cookies; returns `data.tokens` + `data.csrf_token`.                                                                                                                                   |
+| POST   | `/refresh`  | refresh cookie          | requires CSRF; rotates refresh token; sets cookies; returns `data.tokens` + a new `data.csrf_token`. Reuse beyond grace revokes the session family.                                        |
+| POST   | `/logout`   | public (refresh cookie) | requires CSRF when auth cookies are present; revokes the presented session (idempotent; no auth middleware); clears cookies.                                                               |
+| GET    | `/me`       | authenticated           | current user + role profile.                                                                                                                                                               |
 
 ## Candidates — `/api/v1/candidates`
 

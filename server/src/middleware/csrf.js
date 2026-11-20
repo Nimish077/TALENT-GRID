@@ -14,6 +14,15 @@ import { ApiError } from "../errors/apiError.js";
 import { constantTimeEqual, isValidCsrfToken } from "../utils/tokens.js";
 
 const MUTATING_METHODS = new Set(["POST", "PUT", "PATCH", "DELETE"]);
+const PUBLIC_SESSION_ESTABLISHMENT = new Set([
+  "/api/v1/auth/login",
+  "/api/v1/auth/register",
+]);
+
+function normalizedPath(req) {
+  const path = req.path.toLowerCase().replace(/\/+$/, "");
+  return path || "/";
+}
 
 export function csrfProtection(req, res, next) {
   if (!MUTATING_METHODS.has(req.method)) return next();
@@ -21,6 +30,13 @@ export function csrfProtection(req, res, next) {
   const origin = req.get("origin");
   if (origin && !env.corsOrigins.includes(origin)) {
     throw new ApiError(403, "Request origin is not allowed");
+  }
+
+  if (
+    req.method === "POST" &&
+    PUBLIC_SESSION_ESTABLISHMENT.has(normalizedPath(req))
+  ) {
+    return next();
   }
 
   const bearer = Boolean(req.get("authorization")?.startsWith("Bearer "));

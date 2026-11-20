@@ -4,6 +4,9 @@
 import { describe, expect, it } from "vitest";
 import { spawnSync } from "node:child_process";
 
+const JWT_SECRET = "j".repeat(64);
+const CSRF_SECRET = "c".repeat(64);
+
 function loadEnv(overrides) {
   return spawnSync(
     process.execPath,
@@ -41,6 +44,8 @@ describe("environment guards", () => {
       NODE_ENV: "production",
       MAILER: "console",
       CORS_ORIGINS: "https://app.example.com",
+      JWT_SECRET,
+      CSRF_SECRET,
     });
     expect(result.status).not.toBe(0);
     expect(result.stderr).toContain(
@@ -49,7 +54,12 @@ describe("environment guards", () => {
   });
 
   it("requires explicit CORS origins in production", () => {
-    const result = loadEnv({ NODE_ENV: "production", CORS_ORIGINS: "" });
+    const result = loadEnv({
+      NODE_ENV: "production",
+      CORS_ORIGINS: "",
+      JWT_SECRET,
+      CSRF_SECRET,
+    });
     expect(result.status).not.toBe(0);
     expect(result.stderr).toContain(
       "CORS_ORIGINS must be set explicitly in production"
@@ -61,6 +71,8 @@ describe("environment guards", () => {
       NODE_ENV: "production",
       CORS_ORIGINS: "https://app.example.com",
       MAILER: "smtp",
+      JWT_SECRET,
+      CSRF_SECRET,
       COOKIE_SAMESITE: "none",
       COOKIE_SECURE: "false",
     });
@@ -68,5 +80,52 @@ describe("environment guards", () => {
     expect(result.stderr).toContain(
       'COOKIE_SAMESITE="none" requires COOKIE_SECURE=true'
     );
+  });
+
+  it("requires an explicit CSRF_SECRET in production", () => {
+    const result = loadEnv({
+      NODE_ENV: "production",
+      CORS_ORIGINS: "https://app.example.com",
+      MAILER: "smtp",
+      JWT_SECRET,
+      CSRF_SECRET: "",
+    });
+    expect(result.status).not.toBe(0);
+    expect(result.stderr).toContain("missing required variable CSRF_SECRET");
+  });
+
+  it("requires CSRF_SECRET to be at least 32 characters", () => {
+    const result = loadEnv({
+      NODE_ENV: "production",
+      CORS_ORIGINS: "https://app.example.com",
+      MAILER: "smtp",
+      JWT_SECRET,
+      CSRF_SECRET: "too-short",
+    });
+    expect(result.status).not.toBe(0);
+    expect(result.stderr).toContain(
+      "CSRF_SECRET must be at least 32 characters long"
+    );
+  });
+
+  it("requires CSRF_SECRET to differ from JWT_SECRET in production", () => {
+    const result = loadEnv({
+      NODE_ENV: "production",
+      CORS_ORIGINS: "https://app.example.com",
+      MAILER: "smtp",
+      JWT_SECRET,
+      CSRF_SECRET: JWT_SECRET,
+    });
+    expect(result.status).not.toBe(0);
+    expect(result.stderr).toContain("CSRF_SECRET must differ from JWT_SECRET");
+  });
+
+  it("derives CSRF_SECRET from JWT_SECRET outside production", () => {
+    const result = loadEnv({
+      NODE_ENV: "development",
+      JWT_SECRET,
+      CSRF_SECRET: "",
+    });
+    expect(result.status).toBe(0);
   });
 });
