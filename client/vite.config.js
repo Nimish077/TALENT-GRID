@@ -8,6 +8,12 @@ export default defineConfig({
     react(),
     tailwindcss()
   ],
+  server: {
+    // Same-origin API in dev so httpOnly/CSRF cookies just work.
+    proxy: {
+      '/api': 'http://localhost:8000',
+    },
+  },
   test: {
     environment: "jsdom",
     setupFiles: "./src/test/setup.js",
