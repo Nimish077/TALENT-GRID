@@ -26,14 +26,14 @@ function RoleIcon({ id }) {
 
 function Stepper({ step }) {
   return (
-    <ol className="flex items-center justify-center gap-3 text-sm" aria-label="Registration progress">
+    <ol className="flex items-center justify-center gap-3 text-[13px]" aria-label="Registration progress">
       <li className="flex items-center gap-2.5 text-text-secondary" aria-current={step === 1 ? "step" : undefined}>
-        <span className="flex h-[30px] w-[30px] items-center justify-center rounded-full bg-brand text-xs font-semibold text-surface">{step > 1 ? "✓" : "1"}</span>
+        <span className="flex h-6 w-6 items-center justify-center rounded-full bg-brand text-[11px] font-semibold text-surface">{step > 1 ? "✓" : "1"}</span>
         Choose role
       </li>
-      <li aria-hidden="true" className="h-px w-10 bg-border" />
+      <li aria-hidden="true" className="h-px w-8 bg-border" />
       <li className="flex items-center gap-2.5 text-text-secondary" aria-current={step === 2 ? "step" : undefined}>
-        <span className={`flex h-[30px] w-[30px] items-center justify-center rounded-full text-xs font-semibold ${step === 2 ? "bg-brand text-surface" : "bg-surface-muted text-text-muted"}`}>2</span>
+        <span className={`flex h-6 w-6 items-center justify-center rounded-full text-[11px] font-semibold ${step === 2 ? "bg-brand text-surface" : "bg-surface-muted text-text-muted"}`}>2</span>
         Your details
       </li>
     </ol>
@@ -91,17 +91,17 @@ function Register() {
 
   return (
     <AuthLayout>
-      <div className="w-full max-w-[640px]">
+      <div className="w-full max-w-lg">
         <Stepper step={step} />
 
         {step === 1 ? (
           <>
-            <div className="mt-12 text-center">
-              <h1 className="text-[28px] tracking-[-0.03em]">Create your account</h1>
-              <p className="mt-2 text-text-secondary">Choose how you want to use TalentGrid</p>
+            <div className="mt-9 text-center">
+              <h1 className="text-2xl tracking-[-0.03em]">Create your account</h1>
+              <p className="mt-1.5 text-sm text-text-secondary">Choose how you want to use TalentGrid</p>
             </div>
 
-            <div role="radiogroup" aria-label="Account type" className="mt-9 space-y-4">
+            <div role="radiogroup" aria-label="Account type" className="mt-7 space-y-3">
               {roles.map((r) => {
                 const selected = role === r.id;
                 return (
@@ -111,14 +111,14 @@ function Register() {
                     role="radio"
                     aria-checked={selected}
                     onClick={() => setRole(r.id)}
-                    className={`flex w-full items-center gap-4 rounded-lg border bg-surface p-[25px] text-left transition-colors ${selected ? "border-brand bg-brand-light ring-2 ring-brand/40" : "border-border hover:border-border-strong"}`}
+                    className={`flex w-full items-center gap-4 rounded-lg border bg-surface p-5 text-left transition-colors ${selected ? "border-brand bg-brand-light ring-2 ring-brand/40" : "border-border hover:border-border-strong"}`}
                   >
-                    <span className={`flex h-[50px] w-[50px] shrink-0 items-center justify-center rounded-lg ${selected ? "bg-brand text-surface" : "bg-surface-muted text-text-secondary"}`}>
+                    <span className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-lg ${selected ? "bg-brand text-surface" : "bg-surface-muted text-text-secondary"}`}>
                       <RoleIcon id={r.id} />
                     </span>
                     <span className="min-w-0 flex-1">
                       <span className={`block font-semibold ${selected ? "text-brand" : "text-text-primary"}`}>{r.label}</span>
-                      <span className="mt-1 block text-sm text-text-secondary">{r.description}</span>
+                      <span className="mt-0.5 block text-[13px] text-text-secondary">{r.description}</span>
                     </span>
                     {selected && <span aria-hidden="true" className="flex h-6 w-6 items-center justify-center rounded-full bg-brand text-xs text-surface">✓</span>}
                   </button>
@@ -126,18 +126,18 @@ function Register() {
               })}
             </div>
 
-            <Button size="lg" className="mt-8 w-full" disabled={!role} onClick={() => setStep(2)}>Continue</Button>
+            <Button size="md" className="mt-6 w-full" disabled={!role} onClick={() => setStep(2)}>Continue</Button>
           </>
         ) : (
           <>
-            <div className="mt-10 text-center">
-              <h1 className="text-[28px] tracking-[-0.03em]">Your details</h1>
-              <p className="mt-2 text-text-secondary">
+            <div className="mt-9 text-center">
+              <h1 className="text-2xl tracking-[-0.03em]">Your details</h1>
+              <p className="mt-1.5 text-sm text-text-secondary">
                 Creating a <span className="font-medium text-brand">{roleMeta.label}</span> account
               </p>
             </div>
 
-            <form onSubmit={handleSubmit} className="mt-9 space-y-5 rounded-xl border border-border bg-surface p-7 shadow-sm">
+            <form onSubmit={handleSubmit} className="mt-7 space-y-4 rounded-xl border border-border bg-surface p-6 shadow-sm">
               {error && (
                 <p role="alert" className="rounded-[var(--radius)] border border-error/30 bg-error-light px-3.5 py-2.5 text-sm text-error">{error}</p>
               )}
@@ -148,14 +148,14 @@ function Register() {
               <FormField label={role === "candidate" ? "Email" : "Work email"} type="email" required autoComplete="email" placeholder="you@example.com" value={form.email} onChange={update("email")} error={fieldErrors.email} />
               <FormField label="Password" type="password" required autoComplete="new-password" placeholder="Min. 8 characters" minLength={8} maxLength={72} hint="Must be at least 8 characters" value={form.password} onChange={update("password")} error={fieldErrors.password} />
               <div className="flex gap-4 pt-1">
-                <Button variant="outline" size="lg" className="flex-1" onClick={() => setStep(1)}>Back</Button>
-                <Button type="submit" size="lg" className="flex-1" disabled={submitting}>{submitting ? "Creating…" : "Create account"}</Button>
+                <Button variant="outline" size="md" className="flex-1" onClick={() => setStep(1)}>Back</Button>
+                <Button type="submit" size="md" className="flex-1" disabled={submitting}>{submitting ? "Creating…" : "Create account"}</Button>
               </div>
             </form>
           </>
         )}
 
-        <p className="mt-6 text-center text-text-secondary">
+        <p className="mt-5 text-center text-sm text-text-secondary">
           Already have an account?{" "}
           <Link to="/login" className="font-medium text-brand hover:text-brand-dark">Sign in</Link>
         </p>

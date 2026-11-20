@@ -12,7 +12,7 @@ function AuthLayout({ children }) {
           </Link>
         </div>
       </header>
-      <main className="flex flex-col items-center px-5 pb-16 pt-16 sm:pt-24">{children}</main>
+      <main className="flex flex-col items-center px-5 pb-16 pt-16 sm:pt-28">{children}</main>
     </div>
   );
 }

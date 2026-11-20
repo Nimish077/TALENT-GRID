@@ -52,26 +52,26 @@ function EmployerContent({ data }) {
     <>
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div>
-          <h1 className="text-[28px] tracking-[-0.03em]">Hiring Dashboard</h1>
-          <p className="mt-1.5 text-text-secondary">{organization ? `${organization.name} · Overview` : "Overview"}</p>
+          <h1 className="text-[22px] tracking-[-0.03em]">Hiring Dashboard</h1>
+          <p className="mt-1 text-sm text-text-secondary">{organization ? `${organization.name} · Overview` : "Overview"}</p>
         </div>
-        <Button size="lg" disabled title="Job posting is coming soon">+ Post a Job</Button>
+        <Button size="md" disabled title="Job posting is coming soon">+ Post a Job</Button>
       </div>
 
       {pending && <PendingNotice kind="organization" />}
 
-      <div className="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+      <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <StatCard icon={<Icon name="briefcase" />} label="Active Jobs" value={activeJobs.length} tone="text-brand" />
         <StatCard icon={<Icon name="people" />} iconTone="bg-surface-muted text-text-secondary" label="Total Applicants" value={total} />
         <StatCard icon={<Icon name="trend" />} iconTone="bg-purple-100 text-purple-700" label="Shortlisted" value={stages[1].value} tone="text-purple-700" />
         <StatCard icon={<Icon name="check" />} iconTone="bg-accent-muted text-accent-dark" label="Selected" value={stages[2].value} tone="text-accent-dark" />
       </div>
 
-      <div className="mt-8 grid gap-6 lg:grid-cols-[1fr_440px]">
-        <div className="space-y-6">
-          <Card className="p-6">
+      <div className="mt-6 grid gap-5 lg:grid-cols-[1fr_352px]">
+        <div className="space-y-5">
+          <Card className="p-5">
             <CardHeader title="Hiring Pipeline" />
-            <ul className="mt-6 space-y-3.5">
+            <ul className="mt-5 space-y-3">
               {stages.map((stage) => {
                 const percent = total ? Math.round((stage.value / total) * 100) : 0;
                 return (
@@ -87,7 +87,7 @@ function EmployerContent({ data }) {
             </ul>
           </Card>
 
-          <Card className="p-6">
+          <Card className="p-5">
             <CardHeader title="Active Jobs" />
             {activeJobs.length === 0 ? (
               <EmptyState>No published jobs yet.</EmptyState>
@@ -112,7 +112,7 @@ function EmployerContent({ data }) {
           </Card>
         </div>
 
-        <Card className="h-fit p-6">
+        <Card className="h-fit p-5">
           <CardHeader title="Recent Applicants" />
           {recent.length === 0 ? (
             <EmptyState>No applicants yet.</EmptyState>
@@ -142,7 +142,7 @@ function EmployerContent({ data }) {
 function EmployerDashboard() {
   const { data, error, loading, reload } = useResource(loadEmployerDashboard);
   return (
-    <main className="mx-auto max-w-[1370px] px-5 pb-20 pt-10 sm:px-8">
+    <main className="mx-auto max-w-[1096px] px-5 pb-16 pt-8 sm:px-8">
       <PageState loading={loading} error={error} onRetry={reload}>
         {data && <EmployerContent data={data} />}
       </PageState>

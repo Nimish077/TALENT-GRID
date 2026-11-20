@@ -6,7 +6,7 @@ function FormField({ label, error, hint, required = false, className = "", ...in
 
   return (
     <div className={className}>
-      <label htmlFor={id} className="mb-2 block text-sm font-medium text-text-primary">
+      <label htmlFor={id} className="mb-1.5 block text-[13px] font-medium text-text-primary">
         {label}
         {required && <span className="ml-0.5 text-error" aria-hidden="true">*</span>}
       </label>
@@ -16,7 +16,7 @@ function FormField({ label, error, hint, required = false, className = "", ...in
         aria-invalid={error ? "true" : undefined}
         aria-describedby={describedBy}
         className={[
-          "h-11 w-full rounded-[var(--radius)] border bg-surface px-3.5 text-sm text-text-primary",
+          "h-10 w-full rounded-[var(--radius)] border bg-surface px-3 text-sm text-text-primary",
           "placeholder:text-text-muted focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand/20",
           error ? "border-error" : "border-border",
         ].join(" ")}

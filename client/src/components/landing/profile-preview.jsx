@@ -1,3 +1,5 @@
+import { BriefcaseIcon, CircleCheckIcon, PinIcon } from "./landing-primitives.jsx";
+
 const previewSkills = [
   ["React", "Advanced", "91%"],
   ["Node.js", "Intermediate", "84%"],
@@ -13,9 +15,9 @@ function ProfilePreview() {
         <div className="min-w-0">
           <p className="font-semibold text-text-primary">Arjun Sharma</p>
           <p className="text-sm text-text-secondary">Full Stack Developer</p>
-          <p className="mt-1 text-xs text-text-muted">Bengaluru, India &middot; 4 yr exp</p>
+          <p className="mt-1.5 flex items-center gap-1.5 text-xs text-text-muted"><PinIcon />Bengaluru, India<span aria-hidden="true">&middot;</span><BriefcaseIcon />4 yr exp</p>
         </div>
-        <span className="ml-auto whitespace-nowrap rounded bg-accent-muted px-2 py-1 text-xs font-medium text-accent">&check; 4 Verified</span>
+        <span className="ml-auto inline-flex items-center gap-1 whitespace-nowrap rounded bg-accent-muted px-2 py-1 text-xs font-medium text-accent-dark"><CircleCheckIcon size={12} />4 Verified</span>
       </header>
       <div className="px-5 py-4">
         <p className="mb-3 text-[10px] font-semibold tracking-wide text-text-muted">SKILLS</p>
@@ -24,7 +26,7 @@ function ProfilePreview() {
             <div key={skill} className="flex items-center text-sm">
               <span className="font-medium text-text-primary">{skill}</span>
               <span className="ml-2 text-xs text-text-muted">{level}</span>
-              <span className="ml-auto text-xs font-medium text-accent">{score === "Unverified" ? score : `Verified ${score}`}</span>
+              {score === "Unverified" ? <span className="ml-auto text-xs text-text-muted">Unverified</span> : <span className="ml-auto inline-flex items-center gap-1 text-xs font-medium text-accent-dark"><CircleCheckIcon size={13} />{score}</span>}
             </div>
           ))}
         </div>

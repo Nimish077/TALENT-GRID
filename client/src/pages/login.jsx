@@ -35,11 +35,11 @@ function Login() {
 
   return (
     <AuthLayout>
-      <div className="w-full max-w-[480px] text-center">
-        <h1 className="text-[28px] tracking-[-0.03em]">Welcome back</h1>
-        <p className="mt-2 text-text-secondary">Sign in to your TalentGrid account</p>
+      <div className="w-full max-w-[384px] text-center">
+        <h1 className="text-2xl tracking-[-0.03em]">Welcome back</h1>
+        <p className="mt-1.5 text-sm text-text-secondary">Sign in to your TalentGrid account</p>
 
-        <form onSubmit={handleSubmit} className="mt-9 space-y-5 rounded-xl border border-border bg-surface p-7 text-left shadow-sm">
+        <form onSubmit={handleSubmit} className="mt-7 space-y-4 rounded-xl border border-border bg-surface p-6 text-left shadow-sm">
           {error && (
             <p role="alert" className="rounded-[var(--radius)] border border-error/30 bg-error-light px-3.5 py-2.5 text-sm text-error">
               {error}
@@ -47,12 +47,12 @@ function Login() {
           )}
           <FormField label="Email address" type="email" autoComplete="email" placeholder="you@example.com" required value={form.email} onChange={update("email")} />
           <FormField label="Password" type="password" autoComplete="current-password" placeholder="••••••••" required value={form.password} onChange={update("password")} />
-          <Button type="submit" size="lg" className="w-full" disabled={submitting}>
+          <Button type="submit" size="md" className="w-full" disabled={submitting}>
             {submitting ? "Signing in…" : "Sign in"}
           </Button>
         </form>
 
-        <p className="mt-6 text-text-secondary">
+        <p className="mt-5 text-sm text-text-secondary">
           Don&apos;t have an account?{" "}
           <Link to="/register" className="font-medium text-brand hover:text-brand-dark">Create one</Link>
         </p>

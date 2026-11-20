@@ -43,7 +43,7 @@ function CheckIcon() {
 function SkillChip({ requirement }) {
   const { skill, required_level, verified } = requirement;
   return (
-    <span className={`inline-flex items-center gap-1.5 rounded-md border px-3 py-1.5 text-sm ${verified ? "border-accent/30 bg-accent-light text-accent-dark" : "border-border bg-surface text-text-primary"}`}>
+    <span className={`inline-flex items-center gap-1.5 rounded-md border px-2.5 py-1 text-[13px] ${verified ? "border-accent/30 bg-accent-light text-accent-dark" : "border-border bg-surface text-text-primary"}`}>
       {verified && <CheckIcon />}
       {skill.name}
       <span className="text-xs text-text-muted">· {capitalize(required_level)}</span>
@@ -67,14 +67,14 @@ function JobCard({ entry, applied, onApply, error }) {
   }
 
   return (
-    <Card className="p-6">
+    <Card className="p-5">
       <div className="flex items-start justify-between gap-4">
         <div className="min-w-0">
-          <h3 className="text-base font-semibold tracking-tight">{job.title}</h3>
-          <p className="mt-1.5 text-sm text-text-secondary">{meta.join(" · ")}</p>
+          <h3 className="text-[15px] font-semibold tracking-tight">{job.title}</h3>
+          <p className="mt-1 text-[13px] text-text-secondary">{meta.join(" · ")}</p>
         </div>
         <div className="shrink-0 text-right">
-          {salary && <p className="text-sm font-semibold">{salary}</p>}
+          {salary && <p className="text-[13px] font-semibold">{salary}</p>}
           {job.experience_level && <p className="mt-0.5 text-xs text-text-muted">{capitalize(job.experience_level)}</p>}
         </div>
       </div>
@@ -82,7 +82,7 @@ function JobCard({ entry, applied, onApply, error }) {
         <div className="flex flex-wrap gap-2">
           {requirements.map((req) => <SkillChip key={req.id} requirement={req} />)}
         </div>
-        <Button variant="secondary" size="md" className="shrink-0 !bg-brand-light !text-brand hover:!bg-brand/10" disabled={applied || pending} onClick={handleApply}>
+        <Button variant="secondary" size="sm" className="shrink-0 !bg-brand-light !text-brand hover:!bg-brand/10" disabled={applied || pending} onClick={handleApply}>
           {applied ? "Applied" : pending ? "Applying…" : "Apply"}
         </Button>
       </div>
@@ -94,12 +94,12 @@ function JobCard({ entry, applied, onApply, error }) {
 function SkillVerificationPanel({ skills }) {
   const unverified = skills.filter((s) => s.verification_status !== "verified").length;
   return (
-    <Card className="p-6">
+    <Card className="p-5">
       <CardHeader title="Skill Verification" />
       {skills.length === 0 ? (
         <EmptyState>No skills yet. Add skills to your profile to start verifying them.</EmptyState>
       ) : (
-        <ul className="mt-5 space-y-3.5">
+        <ul className="mt-4 space-y-3">
           {skills.map((item) => {
             const verified = item.verification_status === "verified";
             return (
@@ -117,7 +117,7 @@ function SkillVerificationPanel({ skills }) {
         </ul>
       )}
       {unverified > 0 && (
-        <Button variant="secondary" size="lg" className="mt-6 w-full !bg-brand-light !text-brand" disabled title="Assessments are coming soon">
+        <Button variant="secondary" size="md" className="mt-5 w-full !bg-brand-light !text-brand" disabled title="Assessments are coming soon">
           Verify {unverified} {unverified === 1 ? "skill" : "skills"}
         </Button>
       )}
@@ -128,12 +128,12 @@ function SkillVerificationPanel({ skills }) {
 function ApplicationsPanel({ applications }) {
   const recent = applications.slice(0, 4);
   return (
-    <Card className="p-6">
+    <Card className="p-5">
       <CardHeader title="Applications" />
       {recent.length === 0 ? (
         <EmptyState>You haven&apos;t applied to any jobs yet.</EmptyState>
       ) : (
-        <ul className="mt-5 space-y-4">
+        <ul className="mt-4 space-y-3.5">
           {recent.map((app) => (
             <li key={app.id} className="flex items-center justify-between gap-3">
               <div className="min-w-0">
@@ -169,7 +169,7 @@ function CandidateDashboard() {
   }
 
   return (
-    <main className="mx-auto max-w-[1210px] px-5 pb-20 pt-10 sm:px-8">
+    <main className="mx-auto max-w-5xl px-5 pb-16 pt-8 sm:px-8">
       <PageState loading={loading && !data} error={error} onRetry={reload}>
         {data && <Content data={data} user={user} applied={applied} applyErrors={applyErrors} onApply={handleApply} />}
       </PageState>
@@ -188,15 +188,15 @@ function Content({ data, user, applied, applyErrors, onApply }) {
 
   return (
     <>
-      <h1 className="text-[28px] tracking-[-0.03em]">
+      <h1 className="text-[22px] tracking-[-0.03em]">
         {greeting()}, {firstName(user.full_name)} <span aria-hidden="true">👋</span>
       </h1>
-      <p className="mt-1.5 text-text-secondary">Here&apos;s what&apos;s happening with your profile today.</p>
+      <p className="mt-1 text-sm text-text-secondary">Here&apos;s what&apos;s happening with your profile today.</p>
 
-      <div className="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
-        <Card className="p-6">
-          <p className="text-sm text-text-secondary">Profile complete</p>
-          <p className="mt-2 text-[32px] font-semibold leading-none tracking-[-0.03em] text-brand">{completeness.percent}%</p>
+      <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        <Card className="p-5">
+          <p className="text-[13px] text-text-secondary">Profile complete</p>
+          <p className="mt-2 text-[26px] font-semibold leading-none tracking-[-0.03em] text-brand">{completeness.percent}%</p>
           <div className="mt-3"><ProgressBar percent={completeness.percent} label="Profile completeness" /></div>
           <p className="mt-3 text-xs text-text-secondary">{completeness.missing ? `Add ${completeness.missing} to reach 100%` : "Your profile is complete"}</p>
         </Card>
@@ -205,14 +205,14 @@ function Content({ data, user, applied, applyErrors, onApply }) {
         <StatCard label="Open assessments" value={openAssessments} tone="text-warning" hint="Start verifying skills" />
       </div>
 
-      <div className="mt-10 grid gap-6 lg:grid-cols-[1fr_468px]">
+      <div className="mt-8 grid gap-5 lg:grid-cols-[1fr_374px]">
         <section aria-labelledby="recommended-heading">
           <div className="flex items-center justify-between">
             <h2 id="recommended-heading" className="text-base font-semibold tracking-tight">Recommended Jobs</h2>
           </div>
-          <div className="mt-5 space-y-5">
+          <div className="mt-4 space-y-4">
             {recommended.length === 0 ? (
-              <Card className="p-6"><EmptyState>No open jobs right now. Check back soon.</EmptyState></Card>
+              <Card className="p-5"><EmptyState>No open jobs right now. Check back soon.</EmptyState></Card>
             ) : (
               recommended.map((entry) => (
                 <JobCard key={entry.job.id} entry={entry} applied={appliedIds.has(entry.job.id)} onApply={onApply} error={applyErrors[entry.job.id]} />
@@ -220,7 +220,7 @@ function Content({ data, user, applied, applyErrors, onApply }) {
             )}
           </div>
         </section>
-        <div className="space-y-6">
+        <div className="space-y-5">
           <SkillVerificationPanel skills={skills} />
           <ApplicationsPanel applications={applications} />
         </div>

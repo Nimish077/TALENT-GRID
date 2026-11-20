@@ -23,7 +23,7 @@ function AppHeader() {
 
   return (
     <header className="border-b border-border bg-surface">
-      <div className="mx-auto flex h-[70px] max-w-[1370px] items-center gap-4 px-5 sm:px-8">
+      <div className="flex h-14 items-center gap-4 px-5 sm:px-6">
         <Link to="/dashboard" className="flex items-center gap-2.5" aria-label="TalentGrid dashboard">
           <img src={logo} alt="" className="h-8 w-8" />
           <span className="text-[17px] font-semibold tracking-tight">TalentGrid</span>
@@ -32,7 +32,7 @@ function AppHeader() {
           <button type="button" aria-label="Notifications" className="rounded-full p-2 text-text-secondary hover:bg-surface-muted">
             <BellIcon />
           </button>
-          <span aria-hidden="true" className="flex h-9 w-9 items-center justify-center rounded-full bg-brand-light text-sm font-semibold text-brand">
+          <span aria-hidden="true" className="flex h-8 w-8 items-center justify-center rounded-full bg-brand-light text-xs font-semibold text-brand">
             {initials(user?.full_name)}
           </span>
           <button type="button" onClick={handleLogout} className="text-sm font-medium text-text-secondary hover:text-text-primary">
