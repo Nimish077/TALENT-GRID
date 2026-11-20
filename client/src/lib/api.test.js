@@ -192,3 +192,56 @@ describe("request token handling", () => {
     expect(getCsrfToken()).toBeNull();
   });
 });
+
+describe("error messages", () => {
+  const login = () => apiRequest("/auth/login", { method: "POST", body: {} });
+
+  it("hides raw server errors behind a friendly message", async () => {
+    vi.stubGlobal(
+      "fetch",
+      vi.fn().mockResolvedValue(
+        jsonResponse(500, {
+          success: false,
+          message: "\nInvalid `prisma.user.findUnique()` invocation",
+          error: [],
+        })
+      )
+    );
+
+    const error = await login().catch((e) => e);
+    expect(error.message).toMatch(/having trouble/i);
+    expect(error.message).not.toMatch(/prisma/i);
+  });
+
+  it("treats a non-JSON reply (no API deployed) as a server problem", async () => {
+    vi.stubGlobal(
+      "fetch",
+      vi.fn().mockResolvedValue({
+        ok: false,
+        status: 404,
+        json: vi.fn().mockRejectedValue(new Error("not json")),
+      })
+    );
+
+    const error = await login().catch((e) => e);
+    expect(error.status).toBe(404);
+    expect(error.message).toMatch(/having trouble/i);
+  });
+
+  it("keeps 4xx messages and field errors from the API", async () => {
+    vi.stubGlobal(
+      "fetch",
+      vi.fn().mockResolvedValue(
+        jsonResponse(422, {
+          success: false,
+          message: "Validation failed",
+          error: [{ path: "email", message: "Invalid email" }],
+        })
+      )
+    );
+
+    const error = await login().catch((e) => e);
+    expect(error.message).toBe("Validation failed");
+    expect(error.fieldErrors).toEqual({ email: "Invalid email" });
+  });
+});

@@ -71,10 +71,18 @@ async function fetchJson(url, options) {
 }
 
 function apiError(response, payload) {
+  // Non-JSON replies (e.g. a host 404 when no API is deployed) and 5xx errors
+  // carry nothing a user can act on, so never surface their raw text.
+  if (!payload || response.status >= 500) {
+    return new ApiError(
+      response.status,
+      "The server is having trouble right now. Please try again in a moment."
+    );
+  }
   return new ApiError(
     response.status,
-    payload?.message ?? "Something went wrong. Please try again.",
-    payload?.error ?? []
+    payload.message ?? "Something went wrong. Please try again.",
+    payload.error ?? []
   );
 }
 
