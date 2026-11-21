@@ -32,19 +32,19 @@ Health check: `GET /health`.
 
 ## Commands
 
-| Command                                   | Purpose                                              |
-| ----------------------------------------- | ---------------------------------------------------- |
-| `npm run dev` / `npm start`               | start the server (`--watch` / plain)                 |
-| `npm test` / `npm run test:watch`         | run the vitest suite                                 |
-| `npm run format` / `npm run format:check` | prettier write / check                               |
-| `npm run prisma:generate`                 | regenerate the Prisma client                         |
-| `npm run prisma:migrate`                  | `prisma migrate dev` (development)                   |
-| `npm run prisma:deploy`                   | `prisma migrate deploy`                              |
-| `npm run prisma:status`                   | `prisma migrate status`                              |
-| `npm run db:create -- <name>`             | create a database using the maintenance connection   |
-| `npm run db:seed`                         | seed/refresh the skill catalog (idempotent)          |
-| `npm run admin:create`                    | create or update an admin user                       |
-| `npm run db:reconcile`                    | one-time legacy data reconciliation (see `scripts/`) |
+| Command                                   | Purpose                                                                |
+| ----------------------------------------- | ---------------------------------------------------------------------- |
+| `npm run dev` / `npm start`               | start the server (`--watch` / plain; `start` applies migrations first) |
+| `npm test` / `npm run test:watch`         | run the vitest suite                                                   |
+| `npm run format` / `npm run format:check` | prettier write / check                                                 |
+| `npm run prisma:generate`                 | regenerate the Prisma client                                           |
+| `npm run prisma:migrate`                  | `prisma migrate dev` (development)                                     |
+| `npm run prisma:deploy`                   | `prisma migrate deploy`                                                |
+| `npm run prisma:status`                   | `prisma migrate status`                                                |
+| `npm run db:create -- <name>`             | create a database using the maintenance connection                     |
+| `npm run db:seed`                         | seed/refresh the skill catalog (idempotent)                            |
+| `npm run admin:create`                    | create or update an admin user                                         |
+| `npm run db:reconcile`                    | one-time legacy data reconciliation (see `scripts/`)                   |
 
 ## Layout
 
@@ -97,6 +97,17 @@ server/
 - Employer/institute accounts are created `pending` until a platform admin
   verifies the organization/institution; verification activates the pending
   owner membership. The first admin comes from `npm run admin:create`.
+
+## Deployment (Render)
+
+- Root directory: `server`; build: `npm install`; start: `npm start`.
+- `npm start` runs `prisma migrate deploy` through `prestart`, so a fresh
+  database is migrated automatically before the API accepts traffic. Do not
+  override the start command with `node index.js`.
+- Set `TRUST_PROXY=1` (Render terminates TLS in front of one proxy hop).
+  `TRUST_PROXY=true` is rejected in production because it trusts
+  client-supplied `X-Forwarded-For` and lets callers bypass IP rate limits.
+- `CORS_ORIGINS` must list bare browser origins (no trailing slash).
 
 ## Skill verification
 

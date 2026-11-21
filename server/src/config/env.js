@@ -136,7 +136,16 @@ const corsOrigins = (
 )
   .split(",")
   .map((origin) => origin.trim())
-  .filter(Boolean);
+  .filter(Boolean)
+  .map((origin) => {
+    try {
+      // Normalize to a bare origin: strips trailing slashes and paths so the
+      // value matches the browser's Origin header exactly.
+      return new URL(origin).origin;
+    } catch {
+      return fail(`CORS_ORIGINS entry "${origin}" is not a valid origin`);
+    }
+  });
 
 const cookieBase = {
   httpOnly: true,
@@ -181,6 +190,11 @@ if (trustProxyRaw !== undefined) {
       fail("TRUST_PROXY must be true, false or a hop count");
     trustProxy = hops;
   }
+}
+if (isProduction && trustProxy === true) {
+  fail(
+    'TRUST_PROXY=true is unsafe in production (spoofable X-Forwarded-For); set the proxy hop count instead (Render: "1")'
+  );
 }
 
 export const env = Object.freeze({

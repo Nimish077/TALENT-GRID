@@ -66,6 +66,77 @@ describe("environment guards", () => {
     );
   });
 
+  it("normalizes CORS origins to bare origins", () => {
+    const result = spawnSync(
+      process.execPath,
+      [
+        "--input-type=module",
+        "-e",
+        "import('./src/config/env.js').then(({ env }) => console.log('CORS_ORIGINS_JSON=' + JSON.stringify(env.corsOrigins)))",
+      ],
+      {
+        cwd: process.cwd(),
+        env: {
+          ...process.env,
+          NODE_ENV: "production",
+          CORS_ORIGINS: "https://app.example.com/, https://admin.example.com",
+          MAILER: "smtp",
+          JWT_SECRET,
+          CSRF_SECRET,
+        },
+        encoding: "utf8",
+      }
+    );
+
+    expect(result.status).toBe(0);
+    const line = result.stdout
+      .split(/\r?\n/)
+      .find((value) => value.startsWith("CORS_ORIGINS_JSON="));
+    expect(JSON.parse(line.slice("CORS_ORIGINS_JSON=".length))).toEqual([
+      "https://app.example.com",
+      "https://admin.example.com",
+    ]);
+  });
+
+  it("rejects malformed CORS origins", () => {
+    const result = loadEnv({
+      NODE_ENV: "production",
+      CORS_ORIGINS: "not-an-origin",
+      MAILER: "smtp",
+      JWT_SECRET,
+      CSRF_SECRET,
+    });
+    expect(result.status).not.toBe(0);
+    expect(result.stderr).toContain(
+      'CORS_ORIGINS entry "not-an-origin" is not a valid origin'
+    );
+  });
+
+  it("rejects a permissive trust proxy in production", () => {
+    const result = loadEnv({
+      NODE_ENV: "production",
+      CORS_ORIGINS: "https://app.example.com",
+      MAILER: "smtp",
+      JWT_SECRET,
+      CSRF_SECRET,
+      TRUST_PROXY: "true",
+    });
+    expect(result.status).not.toBe(0);
+    expect(result.stderr).toContain("TRUST_PROXY=true is unsafe in production");
+  });
+
+  it("accepts a proxy hop count in production", () => {
+    const result = loadEnv({
+      NODE_ENV: "production",
+      CORS_ORIGINS: "https://app.example.com",
+      MAILER: "smtp",
+      JWT_SECRET,
+      CSRF_SECRET,
+      TRUST_PROXY: "1",
+    });
+    expect(result.status).toBe(0);
+  });
+
   it("requires secure cookies for SameSite=None", () => {
     const result = loadEnv({
       NODE_ENV: "production",

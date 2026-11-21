@@ -85,10 +85,14 @@ router.post(
   asyncHandler(async (req, res) => {
     const user = await loginUser(req.body);
     const tokens = await createSession(user, req);
-    setSessionCookies(res, tokens);
+    const csrfToken = setSessionCookies(res, tokens);
     return sendSuccess(res, {
       message: "Login successful",
-      data: { user: sanitizeUser(user), tokens: bodyTokens(tokens) },
+      data: {
+        user: sanitizeUser(user),
+        tokens: bodyTokens(tokens),
+        csrf_token: csrfToken,
+      },
     });
   })
 );
@@ -118,7 +122,7 @@ router.post(
       );
     }
 
-    setSessionCookies(res, {
+    const csrfToken = setSessionCookies(res, {
       accessToken: result.accessToken,
       refreshToken: result.refreshToken,
     });
@@ -130,6 +134,7 @@ router.post(
           accessToken: result.accessToken,
           refreshToken: result.refreshToken,
         }),
+        csrf_token: csrfToken,
       },
     });
   })
