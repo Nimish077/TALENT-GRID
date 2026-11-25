@@ -1,9 +1,15 @@
+import { Link } from "react-router-dom";
+
 export function Card({ children, className = "", ...props }) {
   return (
     <section className={`rounded-xl border border-border bg-surface ${className}`} {...props}>
       {children}
     </section>
   );
+}
+
+export function CardLink({ to, children }) {
+  return <Link to={to} className="text-[13px] font-medium text-brand hover:text-brand-dark">{children} →</Link>;
 }
 
 export function CardHeader({ title, action }) {

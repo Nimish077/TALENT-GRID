@@ -148,7 +148,7 @@ describe("employer dashboard", () => {
     expect(jobsApi.applications).toHaveBeenCalledTimes(1);
     expect(screen.getAllByText("Senior React Developer").length).toBeGreaterThan(0);
     expect(screen.queryByText("Draft Role")).not.toBeInTheDocument();
-    expect(screen.getByRole("button", { name: /post a job/i })).toBeDisabled();
+    expect(screen.getByRole("link", { name: /post a job/i })).toHaveAttribute("href", "/employer/jobs/new");
   });
 
   it("builds pipeline stages from real statuses", () => {

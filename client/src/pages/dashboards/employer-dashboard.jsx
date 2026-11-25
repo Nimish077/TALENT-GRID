@@ -1,4 +1,4 @@
-import { Badge, Card, CardHeader, EmptyState, PageState, PendingNotice, ProgressBar, StatCard } from "../../components/dashboard/primitives.jsx";
+import { Badge, Card, CardHeader, CardLink, EmptyState, PageState, PendingNotice, ProgressBar, StatCard } from "../../components/dashboard/primitives.jsx";
 import Button from "../../components/ui/button.jsx";
 import { jobsApi, organizationsApi } from "../../lib/endpoints.js";
 import { applicationStatusStyle, capitalize, initials } from "../../lib/format.js";
@@ -61,7 +61,7 @@ function EmployerContent({ data }) {
           <h1 className="text-[22px] tracking-[-0.03em]">Hiring Dashboard</h1>
           <p className="mt-1 text-sm text-text-secondary">{organization ? `${organization.name} · Overview` : "Overview"}</p>
         </div>
-        <Button size="md" disabled title="Job posting is coming soon">+ Post a Job</Button>
+        {!pending && <Button to="/employer/jobs/new" size="md">+ Post a Job</Button>}
       </div>
 
       {pending && <PendingNotice kind="organization" suspended={suspended} />}
@@ -94,7 +94,7 @@ function EmployerContent({ data }) {
           </Card>
 
           <Card className="p-5">
-            <CardHeader title="Active Jobs" />
+            <CardHeader title="Active Jobs" action={<CardLink to="/employer/jobs">View all</CardLink>} />
             {activeJobs.length === 0 ? (
               <EmptyState>No published jobs yet.</EmptyState>
             ) : (
@@ -119,7 +119,7 @@ function EmployerContent({ data }) {
         </div>
 
         <Card className="h-fit p-5">
-          <CardHeader title="Recent Applicants" />
+          <CardHeader title="Recent Applicants" action={<CardLink to="/employer/jobs">View all</CardLink>} />
           {recent.length === 0 ? (
             <EmptyState>No applicants yet.</EmptyState>
           ) : (

@@ -1,4 +1,4 @@
-import { Badge, Card, CardHeader, EmptyState, PageState, PendingNotice, ProgressBar, StatCard } from "../../components/dashboard/primitives.jsx";
+import { Badge, Card, CardHeader, CardLink, EmptyState, PageState, PendingNotice, ProgressBar, StatCard } from "../../components/dashboard/primitives.jsx";
 import { institutionsApi } from "../../lib/endpoints.js";
 import { capitalize } from "../../lib/format.js";
 import { useResource } from "../../lib/use-resource.js";
@@ -133,7 +133,7 @@ function InstituteContent({ data }) {
         </Card>
 
         <Card className="p-5">
-          <CardHeader title="Recent Students" />
+          <CardHeader title="Recent Students" action={<CardLink to="/institute/students">View all</CardLink>} />
           {(data.recent ?? []).length === 0 ? (
             <EmptyState>No students imported yet.</EmptyState>
           ) : (
