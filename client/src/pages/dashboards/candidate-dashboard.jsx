@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Card, CardHeader, Badge, EmptyState, PageState, ProgressBar, StatCard } from "../../components/dashboard/primitives.jsx";
+import { Card, CardHeader, CardLink, Badge, EmptyState, PageState, ProgressBar, StatCard } from "../../components/dashboard/primitives.jsx";
 import Button from "../../components/ui/button.jsx";
 import { useAuth } from "../../context/auth-context.js";
 import { applicationsApi, assessmentsApi, candidateApi, jobsApi } from "../../lib/endpoints.js";
@@ -95,7 +95,7 @@ function SkillVerificationPanel({ skills }) {
   const unverified = skills.filter((s) => s.verification_status !== "verified").length;
   return (
     <Card className="p-5">
-      <CardHeader title="Skill Verification" />
+      <CardHeader title="Skill Verification" action={<CardLink to="/assessments">Start</CardLink>} />
       {skills.length === 0 ? (
         <EmptyState>No skills yet. Add skills to your profile to start verifying them.</EmptyState>
       ) : (
@@ -117,7 +117,7 @@ function SkillVerificationPanel({ skills }) {
         </ul>
       )}
       {unverified > 0 && (
-        <Button variant="secondary" size="md" className="mt-5 w-full !bg-brand-light !text-brand" disabled title="Assessments are coming soon">
+        <Button to="/assessments" variant="secondary" size="md" className="mt-5 w-full !bg-brand-light !text-brand">
           Verify {unverified} {unverified === 1 ? "skill" : "skills"}
         </Button>
       )}
@@ -129,7 +129,7 @@ function ApplicationsPanel({ applications }) {
   const recent = applications.slice(0, 4);
   return (
     <Card className="p-5">
-      <CardHeader title="Applications" />
+      <CardHeader title="Applications" action={<CardLink to="/applications">View all</CardLink>} />
       {recent.length === 0 ? (
         <EmptyState>You haven&apos;t applied to any jobs yet.</EmptyState>
       ) : (
@@ -209,6 +209,7 @@ function Content({ data, user, applied, applyErrors, onApply }) {
         <section aria-labelledby="recommended-heading">
           <div className="flex items-center justify-between">
             <h2 id="recommended-heading" className="text-base font-semibold tracking-tight">Recommended Jobs</h2>
+            <CardLink to="/jobs">View all</CardLink>
           </div>
           <div className="mt-4 space-y-4">
             {recommended.length === 0 ? (

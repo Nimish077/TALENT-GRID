@@ -137,6 +137,6 @@ describe("register", () => {
     await user.type(screen.getByLabelText(/^password/i), "secret123");
     await user.click(screen.getByRole("button", { name: /create account/i }));
 
-    expect(await screen.findByRole("alert")).toHaveTextContent("Email already registered");
+    expect(await screen.findByRole("alert")).toHaveTextContent(/already exists/i);
   });
 });

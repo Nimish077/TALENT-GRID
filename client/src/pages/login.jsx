@@ -6,7 +6,7 @@ import FormField from "../components/ui/form-field.jsx";
 import { useAuth } from "../context/auth-context.js";
 
 function Login() {
-  const { user, login } = useAuth();
+  const { user, loading, login } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
   const destination = location.state?.from?.pathname ?? "/dashboard";
@@ -15,6 +15,7 @@ function Login() {
   const [error, setError] = useState("");
   const [submitting, setSubmitting] = useState(false);
 
+  if (loading) return null;
   if (user) return <Navigate to={destination} replace />;
 
   const update = (field) => (event) => setForm((prev) => ({ ...prev, [field]: event.target.value }));

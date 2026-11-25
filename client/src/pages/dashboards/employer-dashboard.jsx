@@ -1,4 +1,4 @@
-import { Badge, Card, CardHeader, EmptyState, PageState, PendingNotice, ProgressBar, StatCard } from "../../components/dashboard/primitives.jsx";
+import { Badge, Card, CardHeader, CardLink, EmptyState, PageState, PendingNotice, ProgressBar, StatCard } from "../../components/dashboard/primitives.jsx";
 import Button from "../../components/ui/button.jsx";
 import { jobsApi, organizationsApi } from "../../lib/endpoints.js";
 import { applicationStatusStyle, capitalize, initials } from "../../lib/format.js";
@@ -14,7 +14,13 @@ async function loadEmployerDashboard() {
 
   const { organization } = membership;
   if (!isActive(membership.status) || !isActive(organization.status)) {
-    return { organization, jobs: [], applications: [], pending: true };
+    return {
+      organization,
+      jobs: [],
+      applications: [],
+      pending: true,
+      suspended: organization.status === "suspended" || membership.status === "suspended",
+    };
   }
 
   const { jobs } = await organizationsApi.jobs(organization.id);
@@ -42,7 +48,7 @@ function Icon({ name }) {
 }
 
 function EmployerContent({ data }) {
-  const { organization, jobs, applications, pending } = data;
+  const { organization, jobs, applications, pending, suspended } = data;
   const activeJobs = jobs.filter((job) => job.status === "published");
   const stages = pipelineStages(applications);
   const total = stages[0].value;
@@ -55,10 +61,10 @@ function EmployerContent({ data }) {
           <h1 className="text-[22px] tracking-[-0.03em]">Hiring Dashboard</h1>
           <p className="mt-1 text-sm text-text-secondary">{organization ? `${organization.name} · Overview` : "Overview"}</p>
         </div>
-        <Button size="md" disabled title="Job posting is coming soon">+ Post a Job</Button>
+        {!pending && <Button to="/employer/jobs/new" size="md">+ Post a Job</Button>}
       </div>
 
-      {pending && <PendingNotice kind="organization" />}
+      {pending && <PendingNotice kind="organization" suspended={suspended} />}
 
       <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <StatCard icon={<Icon name="briefcase" />} label="Active Jobs" value={activeJobs.length} tone="text-brand" />
@@ -88,7 +94,7 @@ function EmployerContent({ data }) {
           </Card>
 
           <Card className="p-5">
-            <CardHeader title="Active Jobs" />
+            <CardHeader title="Active Jobs" action={<CardLink to="/employer/jobs">View all</CardLink>} />
             {activeJobs.length === 0 ? (
               <EmptyState>No published jobs yet.</EmptyState>
             ) : (
@@ -113,7 +119,7 @@ function EmployerContent({ data }) {
         </div>
 
         <Card className="h-fit p-5">
-          <CardHeader title="Recent Applicants" />
+          <CardHeader title="Recent Applicants" action={<CardLink to="/employer/jobs">View all</CardLink>} />
           {recent.length === 0 ? (
             <EmptyState>No applicants yet.</EmptyState>
           ) : (

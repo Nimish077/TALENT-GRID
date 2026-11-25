@@ -1,4 +1,4 @@
-import { Badge, Card, CardHeader, EmptyState, PageState, PendingNotice, ProgressBar, StatCard } from "../../components/dashboard/primitives.jsx";
+import { Badge, Card, CardHeader, CardLink, EmptyState, PageState, PendingNotice, ProgressBar, StatCard } from "../../components/dashboard/primitives.jsx";
 import { institutionsApi } from "../../lib/endpoints.js";
 import { capitalize } from "../../lib/format.js";
 import { useResource } from "../../lib/use-resource.js";
@@ -11,7 +11,13 @@ async function loadInstituteDashboard() {
   if (!membership) return { institution: null, pending: false };
 
   const { institution } = membership;
-  if (!isActive(membership.status) || !isActive(institution.status)) return { institution, pending: true };
+  if (!isActive(membership.status) || !isActive(institution.status)) return {
+      institution,
+      pending: true,
+      suspended: institution.status === "suspended" || membership.status === "suspended",
+    };
+
+  if (membership.role === "member") return { institution, pending: false, restricted: true };
 
   const id = institution.id;
   const total = (params) => institutionsApi.memberships(id, { limit: 1, ...params }).then((r) => r.pagination.total);
@@ -59,7 +65,7 @@ const verificationStyle = {
 };
 
 function InstituteContent({ data }) {
-  const { institution, pending } = data;
+  const { institution, pending, suspended, restricted } = data;
   const students = data.students ?? 0;
   const drives = data.drives ?? [];
   const openDrives = drives.filter((d) => d.status === "open");
@@ -83,7 +89,12 @@ function InstituteContent({ data }) {
       <h1 className="text-[22px] tracking-[-0.03em]">Institute Dashboard</h1>
       <p className="mt-1 text-sm text-text-secondary">{institution ? `${institution.name} · Skill development overview` : "Skill development overview"}</p>
 
-      {pending && <PendingNotice kind="institution" />}
+      {restricted && (
+        <div role="status" className="mt-8 rounded-xl border border-border bg-surface p-5 text-sm text-text-secondary">
+          Student and drive statistics are only visible to institute owners and admins.
+        </div>
+      )}
+      {pending && <PendingNotice kind="institution" suspended={suspended} />}
 
       <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <StatCard icon={<Icon name="people" />} label="Total Students" value={students} tone="text-brand" />
@@ -122,7 +133,7 @@ function InstituteContent({ data }) {
         </Card>
 
         <Card className="p-5">
-          <CardHeader title="Recent Students" />
+          <CardHeader title="Recent Students" action={<CardLink to="/institute/students">View all</CardLink>} />
           {(data.recent ?? []).length === 0 ? (
             <EmptyState>No students imported yet.</EmptyState>
           ) : (
