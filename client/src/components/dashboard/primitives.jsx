@@ -59,7 +59,15 @@ export function PageState({ loading, error, onRetry, children }) {
   return children;
 }
 
-export function PendingNotice({ kind }) {
+export function PendingNotice({ kind, suspended = false }) {
+  if (suspended) {
+    return (
+      <div role="status" className="mt-8 rounded-xl border border-error/30 bg-error-light p-5 text-sm text-text-primary">
+        <p className="font-semibold">Account suspended</p>
+        <p className="mt-1 text-text-secondary">Your {kind} has been suspended by a TalentGrid admin. Contact support to restore access.</p>
+      </div>
+    );
+  }
   return (
     <div role="status" className="mt-8 rounded-xl border border-warning/30 bg-warning-light p-5 text-sm text-text-primary">
       <p className="font-semibold">Verification pending</p>

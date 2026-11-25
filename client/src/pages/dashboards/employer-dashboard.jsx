@@ -14,7 +14,13 @@ async function loadEmployerDashboard() {
 
   const { organization } = membership;
   if (!isActive(membership.status) || !isActive(organization.status)) {
-    return { organization, jobs: [], applications: [], pending: true };
+    return {
+      organization,
+      jobs: [],
+      applications: [],
+      pending: true,
+      suspended: organization.status === "suspended" || membership.status === "suspended",
+    };
   }
 
   const { jobs } = await organizationsApi.jobs(organization.id);
@@ -42,7 +48,7 @@ function Icon({ name }) {
 }
 
 function EmployerContent({ data }) {
-  const { organization, jobs, applications, pending } = data;
+  const { organization, jobs, applications, pending, suspended } = data;
   const activeJobs = jobs.filter((job) => job.status === "published");
   const stages = pipelineStages(applications);
   const total = stages[0].value;
@@ -58,7 +64,7 @@ function EmployerContent({ data }) {
         <Button size="md" disabled title="Job posting is coming soon">+ Post a Job</Button>
       </div>
 
-      {pending && <PendingNotice kind="organization" />}
+      {pending && <PendingNotice kind="organization" suspended={suspended} />}
 
       <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <StatCard icon={<Icon name="briefcase" />} label="Active Jobs" value={activeJobs.length} tone="text-brand" />

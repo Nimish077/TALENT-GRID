@@ -7,6 +7,7 @@ import {
   clearCsrfToken,
   getCsrfToken,
   setCsrfToken,
+  setUnauthorizedHandler,
 } from "./api.js";
 
 function jsonResponse(status, body) {
@@ -243,5 +244,73 @@ describe("error messages", () => {
     const error = await login().catch((e) => e);
     expect(error.message).toBe("Validation failed");
     expect(error.fieldErrors).toEqual({ email: "Invalid email" });
+  });
+});
+
+describe("session refresh", () => {
+  const ok = (data = {}) => jsonResponse(200, { success: true, data });
+  const unauthorized = () =>
+    jsonResponse(401, { success: false, message: "Authentication required", error: [] });
+
+  afterEach(() => setUnauthorizedHandler(null));
+
+  it("refreshes once on a 401 and retries the original request", async () => {
+    const fetchMock = vi
+      .fn()
+      .mockResolvedValueOnce(unauthorized()) // GET /auth/me
+      .mockResolvedValueOnce(ok({ csrf_token: "t.sig" })) // csrf bootstrap for refresh
+      .mockResolvedValueOnce(ok({ csrf_token: "t.sig" })) // POST /auth/refresh
+      .mockResolvedValueOnce(ok({ user: { id: "1" } })); // retried GET /auth/me
+    vi.stubGlobal("fetch", fetchMock);
+
+    await expect(authApi.me()).resolves.toEqual({ user: { id: "1" } });
+    const urls = fetchMock.mock.calls.map((call) => call[0]);
+    expect(urls.filter((url) => url.endsWith("/auth/refresh"))).toHaveLength(1);
+    expect(urls.filter((url) => url.endsWith("/auth/me"))).toHaveLength(2);
+  });
+
+  it("signs the user out when the refresh fails", async () => {
+    const handler = vi.fn();
+    setUnauthorizedHandler(handler);
+    vi.stubGlobal(
+      "fetch",
+      vi.fn().mockImplementation(async (url) =>
+        url.endsWith("/auth/csrf")
+          ? ok({ csrf_token: "t.sig" })
+          : unauthorized()
+      )
+    );
+
+    await expect(authApi.me()).rejects.toMatchObject({ status: 401 });
+    expect(handler).toHaveBeenCalledTimes(1);
+  });
+
+  it("shares one refresh between concurrent 401s", async () => {
+    const calls = [];
+    vi.stubGlobal(
+      "fetch",
+      vi.fn().mockImplementation(async (url) => {
+        calls.push(url);
+        if (url.endsWith("/auth/csrf") || url.endsWith("/auth/refresh")) {
+          return ok({ csrf_token: "t.sig" });
+        }
+        const secondTime = calls.filter((u) => u === url).length > 1;
+        return secondTime ? ok({ items: [] }) : unauthorized();
+      })
+    );
+
+    await Promise.all([
+      apiRequest("/jobs"),
+      apiRequest("/applications/mine"),
+    ]);
+    expect(calls.filter((url) => url.endsWith("/auth/refresh"))).toHaveLength(1);
+  });
+
+  it("does not try to refresh after a failed login", async () => {
+    const fetchMock = vi.fn().mockResolvedValue(unauthorized());
+    vi.stubGlobal("fetch", fetchMock);
+
+    await expect(authApi.login({ email: "a@b.com", password: "x" })).rejects.toMatchObject({ status: 401 });
+    expect(fetchMock).toHaveBeenCalledTimes(1);
   });
 });

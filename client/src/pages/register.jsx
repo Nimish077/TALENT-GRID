@@ -41,7 +41,7 @@ function Stepper({ step }) {
 }
 
 function Register() {
-  const { user, register } = useAuth();
+  const { user, loading, register } = useAuth();
   const navigate = useNavigate();
   const [params] = useSearchParams();
   const requestedRole = params.get("role");
@@ -54,6 +54,7 @@ function Register() {
   const [fieldErrors, setFieldErrors] = useState({});
   const [submitting, setSubmitting] = useState(false);
 
+  if (loading) return null;
   if (user) return <Navigate to="/dashboard" replace />;
 
   const update = (field) => (event) => setForm((prev) => ({ ...prev, [field]: event.target.value }));
@@ -81,6 +82,12 @@ function Register() {
         else if (path.endsWith(".name")) mapped.orgName = message;
       }
       setFieldErrors(mapped);
+      if (err.status === 409) {
+        // Unique email (or institution code) collision.
+        setFieldErrors({});
+        setError("An account with these details already exists. Try signing in instead.");
+        return;
+      }
       // Show the banner for anything not attributable to a single field
       // (e.g. 409 "email already registered", network errors).
       setError(Object.keys(mapped).length ? "" : err.message);

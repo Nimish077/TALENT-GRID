@@ -133,7 +133,51 @@ function isCsrfFailure(response, payload) {
   return response.status === 403 && /csrf/i.test(payload?.message ?? "");
 }
 
-export async function apiRequest(path, { method = "GET", body, headers } = {}) {
+// Endpoints that must never trigger a silent session refresh on a 401.
+const NO_REFRESH = new Set([
+  "/auth/login",
+  "/auth/register",
+  "/auth/refresh",
+  "/auth/logout",
+  "/auth/csrf",
+]);
+
+let unauthorizedHandler = null;
+let refreshInFlight = null;
+
+// Called when the session is gone for good (refresh failed), so the UI can
+// sign the user out and send them to the login page.
+export function setUnauthorizedHandler(handler) {
+  unauthorizedHandler = handler;
+}
+
+const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
+// The access cookie only lives ~15 minutes; the refresh cookie lives for weeks.
+// Concurrent 401s share one refresh so the rotating refresh token is only
+// spent once.
+function refreshSessionOnce() {
+  refreshInFlight ??= apiRequest("/auth/refresh", { method: "POST" })
+    .then(() => true)
+    .catch(async (error) => {
+      // Another tab rotated the token a moment ago; its new cookie is already
+      // in the browser, so the original request can simply be retried.
+      if (error.status === 401 && /already in progress/i.test(error.message)) {
+        await sleep(300);
+        return true;
+      }
+      return false;
+    })
+    .finally(() => {
+      refreshInFlight = null;
+    });
+  return refreshInFlight;
+}
+
+export async function apiRequest(
+  path,
+  { method = "GET", body, headers, retriedAfterRefresh = false } = {}
+) {
   const mutating = MUTATING.has(method);
   const csrf = mutating ? await csrfTokenForRequest(path) : null;
 
@@ -148,6 +192,22 @@ export async function apiRequest(path, { method = "GET", body, headers } = {}) {
       `${API_BASE}${path}`,
       requestOptions({ method, body, headers }, retryToken)
     ));
+  }
+
+  if (
+    response.status === 401 &&
+    !NO_REFRESH.has(path) &&
+    !retriedAfterRefresh
+  ) {
+    if (await refreshSessionOnce()) {
+      return apiRequest(path, {
+        method,
+        body,
+        headers,
+        retriedAfterRefresh: true,
+      });
+    }
+    unauthorizedHandler?.();
   }
 
   if (!response.ok || payload?.success === false) {

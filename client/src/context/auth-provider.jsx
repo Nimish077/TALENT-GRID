@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { authApi } from "../lib/api.js";
+import { authApi, setUnauthorizedHandler } from "../lib/api.js";
 import { AuthContext } from "./auth-context.js";
 
 export default function AuthProvider({ children }) {
@@ -17,6 +17,13 @@ export default function AuthProvider({ children }) {
     return () => {
       active = false;
     };
+  }, []);
+
+  // If a refresh fails mid-session, drop the user so ProtectedRoute sends them
+  // to the login page instead of leaving a dashboard full of 401 errors.
+  useEffect(() => {
+    setUnauthorizedHandler(() => setUser(null));
+    return () => setUnauthorizedHandler(null);
   }, []);
 
   const login = useCallback(async (credentials) => {

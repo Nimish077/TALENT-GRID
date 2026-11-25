@@ -187,3 +187,20 @@ describe("institute dashboard", () => {
     expect(screen.getByText("3/10")).toBeInTheDocument(); // unverified = 10 - 6 - 1 - 0
   });
 });
+
+describe("account state notices", () => {
+  it("tells a suspended organization it is suspended, not pending", async () => {
+    organizationsApi.mine.mockResolvedValue({ memberships: [{ status: "active", organization: { id: "o1", name: "Acme", status: "suspended" } }] });
+    renderDashboard({ id: "u", role: "employer", full_name: "Test Employer" });
+
+    expect(await screen.findByText(/account suspended/i)).toBeInTheDocument();
+  });
+
+  it("explains restricted access for institute staff members", async () => {
+    institutionsApi.mine.mockResolvedValue({ memberships: [{ status: "active", role: "member", institution: { id: "i1", name: "BITS", status: "active" } }] });
+    renderDashboard({ id: "u", role: "institute", full_name: "Staff" });
+
+    expect(await screen.findByText(/only visible to institute owners and admins/i)).toBeInTheDocument();
+    expect(institutionsApi.memberships).not.toHaveBeenCalled();
+  });
+});
