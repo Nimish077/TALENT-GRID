@@ -83,7 +83,6 @@ function AssessmentCard({ assessment, expanded, onStart, onCancel, onBegin, busy
               return (
                 <li key={link.id ?? link.skill?.id} className="flex flex-wrap items-center gap-2 text-[13px]">
                   <span className="font-medium">{link.skill?.name}</span>
-                  {link.target_level && <span className="text-text-muted">target {capitalize(link.target_level)}</span>}
                   {verified ? (
                     <Badge className={`${levelStyle[mine.verified_level] ?? "bg-accent-muted text-accent-dark"}`}>✓ Verified at {capitalize(mine.verified_level)}</Badge>
                   ) : (

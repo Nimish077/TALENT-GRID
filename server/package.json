@@ -22,7 +22,8 @@
     "db:create": "node scripts/create-db.js",
     "db:seed": "node scripts/seed-skills.js",
     "admin:create": "node scripts/create-admin.js",
-    "db:seed-demo": "node scripts/seed-demo.js"
+    "db:seed-demo": "node scripts/seed-demo.js",
+    "db:reset-demo": "node scripts/reset-demo.js"
   },
   "dependencies": {
     "@prisma/adapter-pg": "7.10.1",

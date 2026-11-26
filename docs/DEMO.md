@@ -10,7 +10,11 @@ A 7-minute story: **a skill becomes verified, and an employer hires on it.**
    ```
    It is safe to run again. It prints the demo accounts. Use the same password for all of them.
 2. **Warm up the backend.** Render's free tier sleeps. Open the live site and sign in once, so the first request during the demo is not a 30-60 second wait.
-3. **Reset the live candidate** if you rehearsed: the candidate `candidate@talentgrid.demo` should have *no verified skills*. (Rehearse with a different account, for example `arjun@talentgrid.demo` for read-only screens.)
+3. **Reset to a clean demo state** (after any rehearsal), from `server/` with the production `DATABASE_URI`:
+   ```bash
+   npm run db:reset-demo
+   ```
+   It clears the fresh candidate's attempts and verified skills and puts the two "awaiting approval" accounts back to pending. It touches nothing else.
 4. Keep a second browser window signed in as the **employer** and a third as the **admin**.
 5. Have the assessments in mind: JavaScript, Python, React, Node.js, SQL, Machine Learning (12 questions, 15 minutes each).
 
