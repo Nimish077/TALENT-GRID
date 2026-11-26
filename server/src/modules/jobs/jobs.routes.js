@@ -112,7 +112,9 @@ router.get(
     const isPublic =
       job.status === "published" && job.organization.status === "active";
     if (!isPublic) {
-      await assertJobAccess(req.auth?.user.id, job.id);
+      // Anonymous visitors must not learn that a non-public job exists.
+      if (!req.auth?.user) throw new ApiError(404, "Job not found");
+      await assertJobAccess(req.auth.user.id, job.id);
     }
     return sendSuccess(res, { data: { job } });
   })
@@ -315,8 +317,8 @@ router.post(
     const { job } = await assertJobAccess(req.auth.user.id, req.params.jobId, {
       roles: ["owner", "admin", "member"],
     });
-    if (job.status === "archived") {
-      throw new ApiError(409, "Cannot invite candidates to an archived job");
+    if (job.status !== "published") {
+      throw new ApiError(409, "Candidates can only be invited to published jobs");
     }
 
     const profile = await prisma.candidateProfile.findUnique({

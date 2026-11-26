@@ -106,17 +106,19 @@ The initial implementation will use **PostgreSQL queries and backend matching lo
 
 ## Technology Stack
 
-* **Frontend:** React + Tailwind CSS
-* **Frontend Hosting:** Vercel
-* **Backend:** Node.js + Express
-* **Database:** PostgreSQL + MongoDB
-* **Database Hosting:** Supabase + MongoDB Atlas
-* **Assessment Engine:** Python
+* **Frontend:** React 19 + Vite + Tailwind CSS 4
+* **Frontend Hosting:** Vercel (`/api/*` is rewritten to the backend, so the browser sees one origin)
+* **Backend:** Node.js + Express 5 + Prisma 7
+* **Database:** PostgreSQL
+* **Backend Hosting:** Render (database migrations run on start)
+* **Assessment Engine:** built into the API (server-graded multiple-choice tests; see `server/API.md`)
 
 ## How to run it
 
-* **client:** npm run dev
-* **server:** npm run dev
+* **client:** `npm run dev` (from `client/`; proxies `/api` to the local server)
+* **server:** `npm run dev` (from `server/`; needs `server/.env`, see `server/.env.example`)
+* **demo data:** `npm run db:seed-demo` (from `server/`), then see [docs/DEMO.md](./docs/DEMO.md)
+* **tests:** `npm test` in `client/` and in `server/` (the server tests need a PostgreSQL test database)
 
 ## Backend (server)
 
