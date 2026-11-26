@@ -227,3 +227,5 @@ organizations/institutions for the admin approval queue. The demo accounts (`*@t
 - **Job detail:** `GET /jobs/:jobId` for a job that is not public returns `404` to anonymous visitors, `403` to unrelated signed-in users.
 - **Salaries:** `salary_min` and `salary_max` must be at most `9,999,999,999` (`422` otherwise).
 - **Drives:** students need an `active` and `verified` membership to view or apply to a drive. They can only see `open`, `closed` and `completed` drives, and only the `published` jobs linked to them. Staff see everything for their institution.
+
+On a deployed server, set `SEED_DEMO=true` to run the same seed automatically on start-up (it never blocks the API from starting if it fails).
