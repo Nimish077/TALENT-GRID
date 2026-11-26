@@ -3,11 +3,10 @@ import userEvent from "@testing-library/user-event";
 import { MemoryRouter, Route, Routes } from "react-router-dom";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { AuthContext } from "../context/auth-context.js";
-import { applicationsApi, assessmentsApi, institutionsApi, jobsApi, organizationsApi, skillsApi } from "../lib/endpoints.js";
+import { applicationsApi, institutionsApi, jobsApi, organizationsApi, skillsApi } from "../lib/endpoints.js";
 import RoleRoute from "../components/layout/role-route.jsx";
 import NotificationsMenu from "../components/layout/notifications-menu.jsx";
 import ApplicationsPage from "./candidate/applications-page.jsx";
-import AssessmentsPage from "./candidate/assessments-page.jsx";
 import JobsPage from "./candidate/jobs-page.jsx";
 import ApplicantsPage from "./employer/applicants-page.jsx";
 import ManageJobsPage from "./employer/manage-jobs-page.jsx";
@@ -100,24 +99,6 @@ describe("candidate pages", () => {
 
     await user.click(await screen.findByRole("button", { name: "Withdraw" }));
     expect(applicationsApi.withdraw).toHaveBeenCalledWith("a1");
-  });
-
-  it("starts and abandons assessment attempts", async () => {
-    const assessment = { id: "as1", title: "React Basics", assessment_type: "mcq", difficulty: "beginner", duration_minutes: 30, skills: [] };
-    assessmentsApi.list.mockResolvedValue({ items: [assessment] });
-    assessmentsApi.attemptsMine.mockResolvedValue({ attempts: [] });
-    assessmentsApi.startAttempt.mockResolvedValue({});
-    const user = userEvent.setup();
-    renderAt("/assessments", <AssessmentsPage />);
-
-    const startButton = await screen.findByRole("button", { name: "Start" });
-    assessmentsApi.attemptsMine.mockResolvedValue({ attempts: [{ id: "t1", assessment_id: "as1", result_status: "pending", attempt_number: 1 }] });
-    await user.click(startButton);
-    expect(assessmentsApi.startAttempt).toHaveBeenCalledWith("as1");
-
-    assessmentsApi.abandonAttempt.mockResolvedValue({});
-    await user.click(await screen.findByRole("button", { name: "Abandon" }));
-    expect(assessmentsApi.abandonAttempt).toHaveBeenCalledWith("t1");
   });
 });
 

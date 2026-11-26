@@ -61,7 +61,12 @@ function EmployerContent({ data }) {
           <h1 className="text-[22px] tracking-[-0.03em]">Hiring Dashboard</h1>
           <p className="mt-1 text-sm text-text-secondary">{organization ? `${organization.name} · Overview` : "Overview"}</p>
         </div>
-        {!pending && <Button to="/employer/jobs/new" size="md">+ Post a Job</Button>}
+        {!pending && (
+          <div className="flex flex-wrap gap-2">
+            <Button to="/employer/talent" size="md">Find verified talent</Button>
+            <Button to="/employer/jobs/new" size="md" variant="outline">+ Post a Job</Button>
+          </div>
+        )}
       </div>
 
       {pending && <PendingNotice kind="organization" suspended={suspended} />}
