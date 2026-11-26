@@ -219,3 +219,11 @@ organizations/institutions for the admin approval queue.
 | ------ | --------------------------------------- | ----------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | GET    | `/institutions/:id/memberships`         | owner/admin | Each item now includes `skills: { profile_id, verified_count, verified: [{ name, level }] }`. `profile_id` is `null` for students without a linked candidate account.                |
 | GET    | `/institutions/:id/skills-summary`      | owner/admin | `{ students, linked, with_verified, job_ready, top_skills: [{ name, verified_students }] }` over active students. Job-ready = at least 2 skills verified through graded assessments. |
+
+## Access rules worth knowing
+
+- **Owner role:** only an existing `owner` of an organization or institution can add a member as `owner` or promote someone to `owner` (`403` otherwise). Admins can still manage `admin` and `member` accounts.
+- **Invitations:** `POST /jobs/:jobId/invitations` only works for `published` jobs (`409` otherwise).
+- **Job detail:** `GET /jobs/:jobId` for a job that is not public returns `404` to anonymous visitors, `403` to unrelated signed-in users.
+- **Salaries:** `salary_min` and `salary_max` must be at most `9,999,999,999` (`422` otherwise).
+- **Drives:** students need an `active` and `verified` membership to view or apply to a drive. They can only see `open`, `closed` and `completed` drives, and only the `published` jobs linked to them. Staff see everything for their institution.

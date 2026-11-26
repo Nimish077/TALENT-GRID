@@ -42,6 +42,9 @@ export function errorHandler(error, req, res, next) {
     if (error.code === "P2025") {
       return respond(404, "Record not found");
     }
+    if (error.code === "P2020") {
+      return respond(422, "A numeric value is out of range");
+    }
   }
 
   if (error.type === "entity.parse.failed") {

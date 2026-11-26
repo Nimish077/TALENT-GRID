@@ -34,6 +34,18 @@ function isWithinWindow(drive) {
   return true;
 }
 
+// Students only get drive access through a verified, active membership.
+function isVerifiedMember(membership) {
+  return (
+    Boolean(membership) &&
+    membership.membership_status === "active" &&
+    membership.verification_status === "verified"
+  );
+}
+
+// Drive statuses a student may see (never drafts or cancelled drives).
+const STUDENT_VISIBLE_STATUSES = new Set(["open", "closed", "completed"]);
+
 async function membershipFor(userId, institutionId) {
   return prisma.institutionMembership.findFirst({
     where: { institution_id: institutionId, user_id: userId },
@@ -163,15 +175,23 @@ router.get(
 
     let membership = null;
     if (viewer?.user.role === "candidate") {
-      membership = await membershipFor(viewer.user.id, drive.institution_id);
+      const found = await membershipFor(viewer.user.id, drive.institution_id);
+      membership = isVerifiedMember(found) ? found : null;
     }
 
-    const canView =
-      isAdmin ||
-      (instituteMember && instituteMember.status === "active") ||
-      Boolean(membership);
+    const isStaff =
+      isAdmin || (instituteMember && instituteMember.status === "active");
+    const studentCanView =
+      Boolean(membership) && STUDENT_VISIBLE_STATUSES.has(drive.status);
 
-    if (!canView) throw new ApiError(404, "Placement drive not found");
+    if (!isStaff && !studentCanView) {
+      throw new ApiError(404, "Placement drive not found");
+    }
+
+    // Students must not see jobs that are still drafts or already closed.
+    if (!isStaff) {
+      drive.jobs = drive.jobs.filter((link) => link.job.status === "published");
+    }
 
     let eligibility = null;
     if (membership) {
@@ -226,6 +246,12 @@ router.post(
     );
     if (!membership) {
       throw new ApiError(403, "You are not a member of this institution");
+    }
+    if (!isVerifiedMember(membership)) {
+      throw new ApiError(
+        403,
+        "Your institution membership must be verified before you can apply"
+      );
     }
 
     const existing = await prisma.placementDriveCandidate.findUnique({

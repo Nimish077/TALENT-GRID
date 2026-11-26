@@ -1,5 +1,8 @@
 import { z } from "zod";
 
+// jobs.salary_* is NUMERIC(12,2): anything larger would overflow in the database.
+const MAX_SALARY = 9_999_999_999;
+
 const levelEnum = z.enum(["beginner", "intermediate", "advanced"]);
 const uuid = z.string().uuid();
 const url = z.string().trim().url().max(500);
@@ -14,8 +17,8 @@ export const jobCreateSchema = z
       .enum(["full_time", "part_time", "internship", "contract"])
       .nullish(),
     experience_level: z.string().trim().max(80).nullish(),
-    salary_min: z.number().min(0).nullish(),
-    salary_max: z.number().min(0).nullish(),
+    salary_min: z.number().min(0).max(MAX_SALARY).nullish(),
+    salary_max: z.number().min(0).max(MAX_SALARY).nullish(),
     application_deadline: z.coerce.date().nullish(),
   })
   .refine(
@@ -41,8 +44,8 @@ export const jobUpdateSchema = z
       .enum(["full_time", "part_time", "internship", "contract"])
       .nullish(),
     experience_level: z.string().trim().max(80).nullish(),
-    salary_min: z.number().min(0).nullish(),
-    salary_max: z.number().min(0).nullish(),
+    salary_min: z.number().min(0).max(MAX_SALARY).nullish(),
+    salary_max: z.number().min(0).max(MAX_SALARY).nullish(),
     application_deadline: z.coerce.date().nullish(),
   })
   .refine(

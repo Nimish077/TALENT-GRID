@@ -148,6 +148,9 @@ router.post(
   requireOrgAccess({ roles: ["owner", "admin"] }),
   validate({ body: memberAddSchema }),
   asyncHandler(async (req, res) => {
+    if (req.body.role === "owner" && req.orgMembership.role !== "owner") {
+      throw new ApiError(403, "Only an owner can assign the owner role");
+    }
     const user = await prisma.user.findUnique({
       where: { email: req.body.email },
     });
@@ -221,6 +224,9 @@ router.patch(
     }
     if (target.role === "owner" && req.orgMembership.role !== "owner") {
       throw new ApiError(403, "Only an owner can modify another owner");
+    }
+    if (req.body.role === "owner" && req.orgMembership.role !== "owner") {
+      throw new ApiError(403, "Only an owner can assign the owner role");
     }
     await assertOwnerChangeAllowed(req.organization.id, target, req.body);
 
