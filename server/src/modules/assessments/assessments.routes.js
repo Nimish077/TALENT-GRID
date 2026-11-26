@@ -9,6 +9,20 @@ import { authenticate } from "../../middleware/authenticate.js";
 import { requireRole } from "../../middleware/authorize.js";
 import { constantTimeEqual } from "../../utils/tokens.js";
 import { evaluateAttempt } from "../../services/scoring.js";
+import {
+  activeQuestions,
+  attemptView,
+  createQuestionAttempt,
+  finalizeExpiredFor,
+  finalizeIfExpired,
+  gradeAttempt,
+  lastFinishedAttempt,
+  recordAnswer,
+  recordFocusLoss,
+  retryAt,
+  testLength,
+} from "../../services/assessment-engine.js";
+import { z } from "zod";
 import { parsePagination, paginatedData } from "../../utils/pagination.js";
 import { getProfileForUser } from "../candidates/candidates.service.js";
 import { idParam } from "../candidates/candidates.schemas.js";
@@ -48,6 +62,88 @@ function engineTokenOrAdmin(req, res, next) {
 // Catalog
 // ---------------------------------------------------------------------------
 
+
+// Adds engine details to catalogue rows: how many questions a test has and, for
+// candidates, where they stand (open attempt, last result, retake time, and
+// their current verification of each skill).
+async function enrichCatalogue(req, items) {
+  if (items.length === 0) return items;
+  const ids = items.map((item) => item.id);
+
+  const questions = await prisma.assessmentQuestion.findMany({
+    where: { assessment_id: { in: ids }, status: "active" },
+    include: { options: { select: { is_correct: true } } },
+  });
+  const usable = questions.filter(
+    (q) => q.options.length >= 2 && q.options.filter((o) => o.is_correct).length === 1
+  );
+
+  let profile = null;
+  if (req.auth.user?.role === "candidate") {
+    profile = await prisma.candidateProfile.findUnique({
+      where: { user_id: req.auth.user.id },
+    });
+  }
+
+  let attempts = [];
+  let ownSkills = new Map();
+  if (profile) {
+    await finalizeExpiredFor(prisma, profile.id);
+    attempts = await prisma.assessmentAttempt.findMany({
+      where: { candidate_profile_id: profile.id, assessment_id: { in: ids } },
+      orderBy: { created_at: "desc" },
+    });
+    const skillRows = await prisma.candidateSkill.findMany({
+      where: { candidate_profile_id: profile.id },
+    });
+    ownSkills = new Map(skillRows.map((row) => [row.skill_id, row]));
+  }
+
+  return items.map((item) => {
+    const pool = usable.filter((q) => q.assessment_id === item.id);
+    const row = {
+      ...item,
+      question_count: testLength(pool),
+      question_pool: pool.length,
+    };
+    if (!profile) return row;
+
+    const mine = attempts.filter((a) => a.assessment_id === item.id);
+    const open = mine.find((a) => a.result_status === "pending");
+    const finished = mine.find((a) => ["passed", "failed"].includes(a.result_status));
+    const best = mine
+      .filter((a) => a.score !== null)
+      .sort((a, b) => Number(b.score) - Number(a.score))[0];
+    return {
+      ...row,
+      skills: item.skills.map((link) => ({
+        ...link,
+        mine: ownSkills.has(link.skill_id)
+          ? {
+              declared_level: ownSkills.get(link.skill_id).declared_level,
+              verification_status: ownSkills.get(link.skill_id).verification_status,
+              verified_level: ownSkills.get(link.skill_id).verified_level,
+            }
+          : null,
+      })),
+      my_status: {
+        open_attempt_id: open?.id ?? null,
+        last_result: finished
+          ? {
+              result_status: finished.result_status,
+              score: finished.score,
+              level: finished.level,
+              submitted_at: finished.submitted_at,
+            }
+          : null,
+        best_score: best ? best.score : null,
+        attempts: mine.length,
+        retry_at: pool.length > 0 ? retryAt(finished)?.toISOString() ?? null : null,
+      },
+    };
+  });
+}
+
 router.get(
   "/",
   authenticate,
@@ -74,7 +170,11 @@ router.get(
       }),
       prisma.assessment.count({ where }),
     ]);
-    return sendSuccess(res, { data: paginatedData(items, total, page, limit) });
+
+    const enriched = await enrichCatalogue(req, items);
+    return sendSuccess(res, {
+      data: paginatedData(enriched, total, page, limit),
+    });
   })
 );
 
@@ -188,6 +288,7 @@ router.get(
   authenticate,
   asyncHandler(async (req, res) => {
     const profile = await getProfileForUser(req.auth.user.id);
+    await finalizeExpiredFor(prisma, profile.id);
     const attempts = await prisma.assessmentAttempt.findMany({
       where: { candidate_profile_id: profile.id },
       include: {
@@ -237,6 +338,9 @@ router.post(
       }
     }
 
+    // Anything past its deadline is graded now, which frees the open slot.
+    await finalizeExpiredFor(prisma, profile.id);
+
     const openAttempt = await prisma.assessmentAttempt.findFirst({
       where: {
         assessment_id: assessment.id,
@@ -247,8 +351,29 @@ router.post(
     if (openAttempt) {
       throw new ApiError(
         409,
-        "You already have an open attempt for this assessment"
+        "You already have an open attempt for this assessment",
+        [{ path: "attempt_id", message: openAttempt.id }]
       );
+    }
+
+    const pool = await activeQuestions(prisma, assessment.id);
+    const engineManaged = pool.length > 0;
+
+    if (engineManaged) {
+      if (testLength(pool) < 3) {
+        throw new ApiError(409, "This assessment does not have enough questions yet");
+      }
+      const wait = retryAt(
+        await lastFinishedAttempt(prisma, assessment.id, profile.id)
+      );
+      if (wait) {
+        const minutes = Math.max(1, Math.ceil((wait.getTime() - Date.now()) / 60000));
+        throw new ApiError(
+          409,
+          `You can retake this assessment in ${minutes} minute${minutes === 1 ? "" : "s"}`,
+          [{ path: "retry_at", message: wait.toISOString() }]
+        );
+      }
     }
 
     const lastAttempt = await prisma.assessmentAttempt.findFirst({
@@ -256,15 +381,17 @@ router.post(
       orderBy: { attempt_number: "desc" },
     });
 
-    const attempt = await prisma.assessmentAttempt.create({
-      data: {
-        assessment_id: assessment.id,
-        candidate_profile_id: profile.id,
-        attempt_number: (lastAttempt?.attempt_number ?? 0) + 1,
-        job_application_id: job_application_id ?? null,
-        placement_drive_candidate_id: placement_drive_candidate_id ?? null,
-      },
-    });
+    const data = {
+      assessment_id: assessment.id,
+      candidate_profile_id: profile.id,
+      attempt_number: (lastAttempt?.attempt_number ?? 0) + 1,
+      job_application_id: job_application_id ?? null,
+      placement_drive_candidate_id: placement_drive_candidate_id ?? null,
+    };
+    const attempt = engineManaged
+      ? await createQuestionAttempt(prisma, data, assessment, pool)
+      : await prisma.assessmentAttempt.create({ data });
+
     return sendSuccess(res, {
       statusCode: 201,
       message: "Attempt started",
@@ -299,7 +426,36 @@ router.get(
       return sendSuccess(res, { data: { attempt } });
     }
     const attempt = await loadAttemptForCandidate(req);
+    await finalizeIfExpired(prisma, attempt);
+    if (attempt.expires_at) {
+      return sendSuccess(res, { data: await attemptView(prisma, attempt.id) });
+    }
     return sendSuccess(res, { data: { attempt } });
+  })
+);
+
+router.put(
+  "/attempts/:attemptId/answer",
+  authenticate,
+  validate({
+    params: idParam("attemptId"),
+    body: z.object({ question_id: z.string().uuid(), option_id: z.string().uuid() }),
+  }),
+  asyncHandler(async (req, res) => {
+    const attempt = await loadAttemptForCandidate(req);
+    await recordAnswer(prisma, attempt, req.body.question_id, req.body.option_id);
+    return sendSuccess(res, { message: "Answer saved", data: { saved: true } });
+  })
+);
+
+router.post(
+  "/attempts/:attemptId/focus-loss",
+  authenticate,
+  validate({ params: idParam("attemptId") }),
+  asyncHandler(async (req, res) => {
+    const attempt = await loadAttemptForCandidate(req);
+    const focusLosses = await recordFocusLoss(prisma, attempt);
+    return sendSuccess(res, { data: { focus_losses: focusLosses } });
   })
 );
 
@@ -314,6 +470,14 @@ router.post(
     }
     if (attempt.submitted_at) {
       throw new ApiError(409, "Attempt has already been submitted");
+    }
+    if (attempt.expires_at) {
+      // Engine-managed attempt: grade it now and return the reviewed result.
+      await gradeAttempt(prisma, attempt.id);
+      return sendSuccess(res, {
+        message: "Attempt submitted",
+        data: await attemptView(prisma, attempt.id),
+      });
     }
     const updated = await prisma.assessmentAttempt.update({
       where: { id: attempt.id },

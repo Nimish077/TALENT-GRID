@@ -21,7 +21,8 @@
     "db:reconcile": "node scripts/reconcile-legacy-db.js",
     "db:create": "node scripts/create-db.js",
     "db:seed": "node scripts/seed-skills.js",
-    "admin:create": "node scripts/create-admin.js"
+    "admin:create": "node scripts/create-admin.js",
+    "db:seed-demo": "node scripts/seed-demo.js"
   },
   "dependencies": {
     "@prisma/adapter-pg": "7.10.1",

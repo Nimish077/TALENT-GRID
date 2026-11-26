@@ -1,0 +1,257 @@
+{
+  "skill": "React",
+  "questions": [
+    {
+      "difficulty": "beginner",
+      "prompt": "What does JSX compile to?",
+      "options": [
+        "HTML strings inserted with innerHTML",
+        "Native Web Components",
+        "ES template literals",
+        "Function calls that create React elements"
+      ],
+      "correct_index": 3,
+      "explanation": "JSX is syntax sugar; a compiler turns each tag into a call that creates a React element object."
+    },
+    {
+      "difficulty": "beginner",
+      "prompt": "Which hook adds local state to a function component?",
+      "options": [
+        "useRef",
+        "useState",
+        "useMemo",
+        "useContext"
+      ],
+      "correct_index": 1,
+      "explanation": "useState returns the current state value and a setter function."
+    },
+    {
+      "difficulty": "beginner",
+      "prompt": "How does a parent component pass data to a child component?",
+      "options": [
+        "Through props",
+        "Through the child's internal state",
+        "Through DOM events only",
+        "By calling the child's lifecycle methods"
+      ],
+      "correct_index": 0,
+      "explanation": "Props are the inputs a parent supplies to a child as attributes in JSX."
+    },
+    {
+      "difficulty": "beginner",
+      "prompt": "Why must each item of a rendered list (e.g. from map) have a key?",
+      "options": [
+        "Keys are used as CSS class names",
+        "Keys make the items clickable",
+        "Keys prevent the list from being re-rendered at all",
+        "Keys help React identify which items were added, removed or reordered between renders"
+      ],
+      "correct_index": 3,
+      "explanation": "Stable keys let React match old and new elements correctly during reconciliation."
+    },
+    {
+      "difficulty": "beginner",
+      "prompt": "Why must a React component name start with a capital letter?",
+      "options": [
+        "Lowercase names are reserved for hooks",
+        "JSX treats lowercase tags as built-in DOM elements and capitalised ones as components",
+        "Capital letters make the component render faster",
+        "Babel refuses to compile lowercase function names"
+      ],
+      "correct_index": 1,
+      "explanation": "<div /> refers to a DOM element, while <Div /> refers to a component in scope."
+    },
+    {
+      "difficulty": "beginner",
+      "prompt": "Which JSX correctly attaches a click handler named handleClick?",
+      "options": [
+        "<button onclick=\"handleClick()\">",
+        "<button click={handleClick}>",
+        "<button onClick={handleClick}>",
+        "<button @click={handleClick}>"
+      ],
+      "correct_index": 2,
+      "explanation": "React uses camelCase event props and expects a function reference inside curly braces."
+    },
+    {
+      "difficulty": "beginner",
+      "prompt": "What does calling a state setter such as setCount(5) do?",
+      "options": [
+        "Reloads the whole page",
+        "Immediately changes the local count variable in the running function",
+        "Schedules a re-render of the component with the new state value",
+        "Replaces the component's props"
+      ],
+      "correct_index": 2,
+      "explanation": "State updates are queued; the component re-renders and the next render sees the new value."
+    },
+    {
+      "difficulty": "intermediate",
+      "prompt": "What does useEffect(fn, []) do?",
+      "options": [
+        "Runs fn after every render",
+        "Runs fn before the first render",
+        "Runs fn after the first render, and runs the returned cleanup on unmount",
+        "Runs fn only when props change"
+      ],
+      "correct_index": 2,
+      "explanation": "An empty dependency array means the effect has no reactive dependencies, so it runs on mount only (twice in dev under Strict Mode)."
+    },
+    {
+      "difficulty": "intermediate",
+      "prompt": "count is 0. A click handler runs setCount(count + 1) three times in a row. What is count after the re-render?",
+      "options": [
+        "3",
+        "1",
+        "0",
+        "It throws an error"
+      ],
+      "correct_index": 1,
+      "explanation": "Each call reads the same stale count of 0 from that render; use setCount(c => c + 1) to accumulate updates."
+    },
+    {
+      "difficulty": "intermediate",
+      "prompt": "Why does calling items.push(x) and then setItems(items) usually fail to update the UI?",
+      "options": [
+        "push is not allowed on arrays held in state variables",
+        "setItems only accepts functions",
+        "React clones the array so push has no effect",
+        "React sees the same array reference and treats the state as unchanged"
+      ],
+      "correct_index": 3,
+      "explanation": "State updates are compared by reference with Object.is, so state should be replaced with a new array."
+    },
+    {
+      "difficulty": "intermediate",
+      "prompt": "What should an effect that starts a setInterval return?",
+      "options": [
+        "A cleanup function that calls clearInterval",
+        "The interval id as a number",
+        "Nothing; React clears intervals itself",
+        "A promise that resolves when the interval ends"
+      ],
+      "correct_index": 0,
+      "explanation": "The returned function runs before the effect re-runs and on unmount, preventing leaked timers."
+    },
+    {
+      "difficulty": "intermediate",
+      "prompt": "Two sibling components need to read and change the same piece of state. Where should the state live?",
+      "options": [
+        "In a module-level variable that each sibling mutates",
+        "In each sibling, synchronised with useEffect",
+        "In their nearest common parent, passed down as props",
+        "In a ref inside one of the siblings"
+      ],
+      "correct_index": 2,
+      "explanation": "Lifting state up to the closest shared ancestor keeps a single source of truth."
+    },
+    {
+      "difficulty": "intermediate",
+      "prompt": "What makes an input a controlled component?",
+      "options": [
+        "It is wrapped in a form element",
+        "It has a ref attached to it",
+        "It uses defaultValue instead of value",
+        "Its value is driven by React state and an onChange handler updates that state"
+      ],
+      "correct_index": 3,
+      "explanation": "In a controlled input, the displayed value always comes from state."
+    },
+    {
+      "difficulty": "intermediate",
+      "prompt": "What happens when you assign to ref.current of a useRef ref?",
+      "options": [
+        "The value changes but the component does not re-render",
+        "The component re-renders immediately",
+        "The change is lost on the next render",
+        "React throws because refs are read-only"
+      ],
+      "correct_index": 0,
+      "explanation": "Refs are mutable containers that persist across renders without triggering updates."
+    },
+    {
+      "difficulty": "advanced",
+      "prompt": "A child wrapped in React.memo still re-renders every time. The parent passes style={{ color: \"red\" }}. Why?",
+      "options": [
+        "React.memo ignores props that are objects",
+        "A new object is created on each parent render, so the shallow prop comparison fails",
+        "style props always bypass memoisation",
+        "memo only works on class components"
+      ],
+      "correct_index": 1,
+      "explanation": "Inline object literals have a new identity each render; memoise the object or define it outside the component."
+    },
+    {
+      "difficulty": "advanced",
+      "prompt": "How does useLayoutEffect differ from useEffect?",
+      "options": [
+        "It runs on the server during rendering",
+        "It runs only once, before the first render",
+        "It runs after the browser has painted",
+        "It runs synchronously after DOM mutations but before the browser paints"
+      ],
+      "correct_index": 3,
+      "explanation": "useLayoutEffect blocks painting, which is useful for measuring layout, while useEffect usually runs after paint."
+    },
+    {
+      "difficulty": "advanced",
+      "prompt": "A reorderable list of inputs uses the array index as each item's key. What problem can occur after reordering?",
+      "options": [
+        "State and DOM of each input stay with the position rather than the item",
+        "React throws a duplicate-key error",
+        "The list stops re-rendering",
+        "Every item is unmounted and remounted"
+      ],
+      "correct_index": 0,
+      "explanation": "With index keys, React reuses the component at each position, so internal state sticks to the wrong item."
+    },
+    {
+      "difficulty": "advanced",
+      "prompt": "Why must hooks be called in the same order on every render?",
+      "options": [
+        "Hooks are stored by variable name",
+        "Hooks must run in alphabetical order",
+        "React matches hook state to calls by their position in the call order",
+        "Calling them out of order is a syntax error"
+      ],
+      "correct_index": 2,
+      "explanation": "Hook state is kept in an ordered list per component, so conditional calls would shift the mapping."
+    },
+    {
+      "difficulty": "advanced",
+      "prompt": "Why does React call component functions twice in development under Strict Mode?",
+      "options": [
+        "To warm up the JIT compiler",
+        "To help surface impure rendering and effects that lack proper cleanup",
+        "To render each component on the server and on the client",
+        "Because production also renders twice"
+      ],
+      "correct_index": 1,
+      "explanation": "Double-invoking render and mounting effects exposes side effects that violate React's purity expectations; it is dev-only."
+    },
+    {
+      "difficulty": "advanced",
+      "prompt": "What does wrapping a state update in startTransition tell React?",
+      "options": [
+        "The update must run before any other update",
+        "The update should run on a background thread",
+        "The update should be skipped if it is slow",
+        "The update is non-urgent and can be interrupted by more urgent updates such as typing"
+      ],
+      "correct_index": 3,
+      "explanation": "Transitions let React keep the UI responsive by prioritising urgent updates and rendering the non-urgent update in an interruptible way."
+    },
+    {
+      "difficulty": "advanced",
+      "prompt": "A Context Provider is given value={{ user, theme }} written inline. What is the effect?",
+      "options": [
+        "Every parent render creates a new object, re-rendering all consumers even if user and theme are unchanged",
+        "Consumers never re-render",
+        "Only consumers that read theme re-render",
+        "React automatically memoises the value"
+      ],
+      "correct_index": 0,
+      "explanation": "Context compares the value by reference, so a new object identity triggers consumer updates; memoise it with useMemo."
+    }
+  ]
+}

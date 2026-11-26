@@ -27,6 +27,58 @@ const listQuerySchema = z.object({
 });
 
 // ---------------------------------------------------------------------------
+// Overview
+// ---------------------------------------------------------------------------
+
+router.get(
+  "/stats",
+  asyncHandler(async (req, res) => {
+    const [
+      users,
+      candidates,
+      employers,
+      institutes,
+      pendingOrganizations,
+      pendingInstitutions,
+      activeOrganizations,
+      activeInstitutions,
+      verifiedSkills,
+      attempts,
+      passedAttempts,
+      publishedJobs,
+      applications,
+    ] = await Promise.all([
+      prisma.user.count(),
+      prisma.user.count({ where: { role: "candidate" } }),
+      prisma.user.count({ where: { role: "employer" } }),
+      prisma.user.count({ where: { role: "institute" } }),
+      prisma.organization.count({ where: { status: "pending" } }),
+      prisma.institution.count({ where: { status: "pending" } }),
+      prisma.organization.count({ where: { status: "active" } }),
+      prisma.institution.count({ where: { status: "active" } }),
+      prisma.candidateSkill.count({ where: { verification_status: "verified" } }),
+      prisma.assessmentAttempt.count({
+        where: { result_status: { in: ["passed", "failed"] } },
+      }),
+      prisma.assessmentAttempt.count({ where: { result_status: "passed" } }),
+      prisma.job.count({ where: { status: "published" } }),
+      prisma.jobApplication.count(),
+    ]);
+    return sendSuccess(res, {
+      data: {
+        users: { total: users, candidates, employers, institutes },
+        organizations: { pending: pendingOrganizations, active: activeOrganizations },
+        institutions: { pending: pendingInstitutions, active: activeInstitutions },
+        verified_skills: verifiedSkills,
+        assessments: { completed: attempts, passed: passedAttempts },
+        published_jobs: publishedJobs,
+        applications,
+      },
+    });
+  })
+);
+
+// ---------------------------------------------------------------------------
 // Users
 // ---------------------------------------------------------------------------
 

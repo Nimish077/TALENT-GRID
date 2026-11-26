@@ -1,0 +1,257 @@
+{
+  "skill": "Machine Learning",
+  "questions": [
+    {
+      "difficulty": "beginner",
+      "prompt": "What is overfitting?",
+      "options": [
+        "The model fits noise in the training data and performs poorly on unseen data",
+        "The model is too simple to capture the pattern in the data",
+        "The model trains too slowly to finish",
+        "The model is trained on too few features"
+      ],
+      "correct_index": 0,
+      "explanation": "An overfit model memorises training specifics instead of learning patterns that generalise."
+    },
+    {
+      "difficulty": "beginner",
+      "prompt": "Which of these is an example of supervised learning?",
+      "options": [
+        "Grouping customers by behaviour with no labels",
+        "Predicting house prices from past sales with known sale prices",
+        "Reducing images to two dimensions with PCA",
+        "Discovering topics in unlabelled documents"
+      ],
+      "correct_index": 1,
+      "explanation": "Supervised learning uses labelled examples (here, known prices) to learn a mapping from inputs to outputs."
+    },
+    {
+      "difficulty": "beginner",
+      "prompt": "Why do we hold out a test set that is not used during training?",
+      "options": [
+        "To make training run faster",
+        "To increase the amount of training data",
+        "To tune the learning rate automatically",
+        "To estimate how well the model generalises to unseen data"
+      ],
+      "correct_index": 3,
+      "explanation": "Performance on training data is optimistic; held-out data gives an unbiased estimate."
+    },
+    {
+      "difficulty": "beginner",
+      "prompt": "Which is a standard metric for evaluating a regression model?",
+      "options": [
+        "Precision",
+        "F1 score",
+        "Mean squared error",
+        "Confusion matrix"
+      ],
+      "correct_index": 2,
+      "explanation": "MSE measures the average squared difference between predictions and true numeric targets."
+    },
+    {
+      "difficulty": "beginner",
+      "prompt": "In gradient descent, what does the learning rate control?",
+      "options": [
+        "The size of each parameter update step",
+        "The number of features used",
+        "The number of training examples per epoch",
+        "The number of layers in the model"
+      ],
+      "correct_index": 0,
+      "explanation": "Too large a rate can overshoot the minimum; too small makes learning slow."
+    },
+    {
+      "difficulty": "beginner",
+      "prompt": "In machine learning, what is a feature?",
+      "options": [
+        "The value the model is trying to predict",
+        "An input variable used by the model to make predictions",
+        "A hyperparameter set before training",
+        "A metric for model quality"
+      ],
+      "correct_index": 1,
+      "explanation": "Features are the measurable inputs; the thing being predicted is the label or target."
+    },
+    {
+      "difficulty": "beginner",
+      "prompt": "Logistic regression is mainly used for what kind of task?",
+      "options": [
+        "Predicting unbounded continuous values",
+        "Clustering unlabelled data",
+        "Classification, by predicting class probabilities",
+        "Dimensionality reduction"
+      ],
+      "correct_index": 2,
+      "explanation": "Despite its name, logistic regression models the probability of class membership."
+    },
+    {
+      "difficulty": "intermediate",
+      "prompt": "A dataset is 99% negative and 1% positive. Why is accuracy a poor metric here?",
+      "options": [
+        "Accuracy cannot be computed for imbalanced data",
+        "Accuracy only works for regression",
+        "A model that always predicts negative scores 99% accuracy while finding no positives",
+        "Accuracy ignores the negative class"
+      ],
+      "correct_index": 2,
+      "explanation": "Accuracy is dominated by the majority class, so metrics such as recall, precision or PR-AUC are more informative."
+    },
+    {
+      "difficulty": "intermediate",
+      "prompt": "Which practice causes data leakage?",
+      "options": [
+        "Fitting a feature scaler on the full dataset before splitting into train and test",
+        "Fitting the scaler on the training data only",
+        "Splitting data before any preprocessing",
+        "Using a pipeline that fits transforms on training folds only"
+      ],
+      "correct_index": 0,
+      "explanation": "Test-set statistics leak into training, producing over-optimistic evaluation results."
+    },
+    {
+      "difficulty": "intermediate",
+      "prompt": "Compared with L2 regularisation, what is a typical effect of L1 regularisation?",
+      "options": [
+        "It never changes the weights",
+        "It only increases weights",
+        "It removes the need for a validation set",
+        "It tends to drive some weights exactly to zero, giving sparse models"
+      ],
+      "correct_index": 3,
+      "explanation": "The L1 penalty has a sharp corner at zero that encourages sparsity, whereas L2 shrinks weights smoothly."
+    },
+    {
+      "difficulty": "intermediate",
+      "prompt": "Training accuracy is 99% and validation accuracy is 70%. Which next step is most appropriate?",
+      "options": [
+        "Add more layers to the model",
+        "Add regularisation or collect more training data",
+        "Train for many more epochs",
+        "Remove the validation set"
+      ],
+      "correct_index": 1,
+      "explanation": "A large train-validation gap indicates overfitting, which regularisation or more data helps to reduce."
+    },
+    {
+      "difficulty": "intermediate",
+      "prompt": "What is the main purpose of k-fold cross-validation?",
+      "options": [
+        "To get a more reliable performance estimate by averaging over several train-validation splits",
+        "To make the model train in parallel",
+        "To increase the amount of labelled data",
+        "To remove the need for a final test set"
+      ],
+      "correct_index": 0,
+      "explanation": "Each example is used for validation exactly once, reducing the variance of the estimate."
+    },
+    {
+      "difficulty": "intermediate",
+      "prompt": "How is precision defined?",
+      "options": [
+        "True positives divided by all actual positives",
+        "True negatives divided by all predicted negatives",
+        "Correct predictions divided by all predictions",
+        "True positives divided by all predicted positives"
+      ],
+      "correct_index": 3,
+      "explanation": "Precision = TP / (TP + FP); the version dividing by actual positives is recall."
+    },
+    {
+      "difficulty": "intermediate",
+      "prompt": "Which algorithm is most sensitive to features being on very different scales?",
+      "options": [
+        "Decision tree",
+        "k-nearest neighbours",
+        "Random forest",
+        "Gradient-boosted trees"
+      ],
+      "correct_index": 1,
+      "explanation": "k-NN relies on distances, so large-scale features dominate; tree methods split on single-feature thresholds."
+    },
+    {
+      "difficulty": "advanced",
+      "prompt": "How does increasing k in k-nearest neighbours typically change the bias-variance trade-off?",
+      "options": [
+        "Bias decreases and variance increases",
+        "Bias increases and variance decreases",
+        "Both bias and variance decrease",
+        "Both bias and variance increase"
+      ],
+      "correct_index": 1,
+      "explanation": "Larger k smooths the decision boundary, which is less flexible but less sensitive to individual points."
+    },
+    {
+      "difficulty": "advanced",
+      "prompt": "Why do deep networks with sigmoid activations tend to suffer from vanishing gradients?",
+      "options": [
+        "The sigmoid output is always negative",
+        "Sigmoid makes the loss function non-differentiable",
+        "The sigmoid derivative is at most 0.25 and saturates, so repeated multiplication shrinks gradients",
+        "Sigmoid doubles the weights at every layer"
+      ],
+      "correct_index": 2,
+      "explanation": "Backpropagation multiplies many small derivative terms, so gradients in early layers become tiny."
+    },
+    {
+      "difficulty": "advanced",
+      "prompt": "Why is PR-AUC often more informative than ROC-AUC under heavy class imbalance?",
+      "options": [
+        "ROC's false positive rate is dominated by the huge negative class, hiding many false positives",
+        "ROC-AUC cannot be computed with imbalanced classes",
+        "PR-AUC ignores the positive class",
+        "PR curves do not depend on the threshold"
+      ],
+      "correct_index": 0,
+      "explanation": "Precision directly reflects false positives relative to predicted positives, so it exposes poor performance on the rare class."
+    },
+    {
+      "difficulty": "advanced",
+      "prompt": "Beyond bootstrap sampling, what reduces correlation between trees in a random forest?",
+      "options": [
+        "Each tree is trained on a different loss function",
+        "Trees are pruned to depth one",
+        "Each tree uses the previous tree's residuals",
+        "Each split considers only a random subset of features"
+      ],
+      "correct_index": 3,
+      "explanation": "Random feature subsets prevent all trees from choosing the same dominant splits, so averaging reduces variance more."
+    },
+    {
+      "difficulty": "advanced",
+      "prompt": "During inference, which statistics does batch normalisation use?",
+      "options": [
+        "Running mean and variance accumulated during training",
+        "The mean and variance of the current test batch",
+        "Zero mean and unit variance fixed at initialisation",
+        "The statistics of the validation loss"
+      ],
+      "correct_index": 0,
+      "explanation": "Using stored running estimates makes predictions deterministic and independent of the batch composition."
+    },
+    {
+      "difficulty": "advanced",
+      "prompt": "In gradient boosting, what does each new tree fit?",
+      "options": [
+        "A fresh bootstrap sample of the labels",
+        "The average of all previous trees' predictions",
+        "The negative gradient of the loss with respect to the current ensemble's predictions",
+        "Only the examples that were misclassified, with the other examples removed"
+      ],
+      "correct_index": 2,
+      "explanation": "For squared error this is simply the residuals; each tree takes a gradient-descent step in function space."
+    },
+    {
+      "difficulty": "advanced",
+      "prompt": "Why is randomly shuffled k-fold cross-validation usually inappropriate for time-series forecasting?",
+      "options": [
+        "Time series cannot be split into folds",
+        "It uses too little data for validation",
+        "It makes the model underfit",
+        "Training folds can contain observations later than the validation points, leaking future information"
+      ],
+      "correct_index": 3,
+      "explanation": "Forecast evaluation must respect time order, for example with expanding-window or rolling-origin splits."
+    }
+  ]
+}
