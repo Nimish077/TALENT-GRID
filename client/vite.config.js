@@ -15,6 +15,8 @@ export default defineConfig({
     },
   },
   test: {
+    // Keep tests independent of a developer's .env.local (the demo panel is opt-in).
+    env: { VITE_DEMO_LOGIN: "false" },
     environment: "jsdom",
     setupFiles: "./src/test/setup.js",
   },

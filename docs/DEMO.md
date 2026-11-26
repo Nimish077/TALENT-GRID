@@ -38,6 +38,15 @@ Every other demo candidate (Priya, Vikram, Sneha, Kavya, Rohan, Anjali, Deepika)
 > - Seed with your own values: `DEMO_ADMIN_PASSWORD='...' DEMO_PASSWORD='...' npm run db:seed-demo` (the second one replaces the candidate, employer and institute passwords).
 > - Or reset just the admin: `npm run admin:create -- admin@talentgrid.demo "NewPassword" "Platform Admin"`.
 
+## One-click demo sign-in (behind a flag)
+
+The login page can show the demo accounts as buttons, so you sign in with one click instead of typing. It is **off by default**; turn it on with the build-time flag `VITE_DEMO_LOGIN=true`:
+
+- **Live site (Vercel):** Settings > Environment Variables > add `VITE_DEMO_LOGIN` = `true` (Production), then redeploy. Remove it and redeploy to hide the panel again.
+- **Local:** put `VITE_DEMO_LOGIN=true` in `client/.env.local` and restart `npm run dev`.
+
+With the flag on, `/login` lists the candidate, employer and institute demo accounts (plus the two awaiting approval), and `/admin/login` shows the admin account. If a click says the account "does not exist on this server yet", run the demo seed (step 1 above). The credentials are public, so keep the flag off outside the demo.
+
 ## The story
 
 1. **The problem (30s).** Resumes claim skills; nobody can check them. TalentGrid makes the skill the proof.
