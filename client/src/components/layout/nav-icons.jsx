@@ -5,6 +5,7 @@ const paths = {
   assessments: <path d="m5 12 5 5 9-10M4 4h16v16H4z" />,
   post: <path d="M12 5v14M5 12h14" />,
   students: <path d="M9 11a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7Zm-6.5 9c0-3.6 3-6 6.5-6s6.5 2.4 6.5 6M16 4.6a3.5 3.5 0 0 1 0 6.8M18 14.4c2.2.7 3.5 2.6 3.5 5.6" />,
+  drives: <path d="M5 21V4m0 0h12l-2 4 2 4H5" />,
   skills: <path d="m12 3 2.6 5.6 6.1.7-4.5 4.2 1.2 6L12 16.5 6.6 19.5l1.2-6L3.3 9.3l6.1-.7z" />,
   talent: (
     <>

@@ -65,6 +65,12 @@ export const institutionsApi = {
   mine: () => apiRequest("/institutions/mine"),
   memberships: (id, params) => apiRequest(`/institutions/${id}/memberships${qs(params)}`),
   drives: (id) => apiRequest(`/institutions/${id}/drives`),
+  skillsSummary: (id) => apiRequest(`/institutions/${id}/skills-summary`),
+};
+
+export const drivesApi = {
+  open: (driveId) => apiRequest(`/drives/${driveId}/open`, { method: "POST", body: {} }),
+  close: (driveId) => apiRequest(`/drives/${driveId}/close`, { method: "POST", body: {} }),
 };
 
 export const adminApi = {

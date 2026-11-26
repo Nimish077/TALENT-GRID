@@ -15,6 +15,7 @@ import ApplicantsPage from "./pages/employer/applicants-page.jsx";
 import ManageJobsPage from "./pages/employer/manage-jobs-page.jsx";
 import PostJobPage from "./pages/employer/post-job-page.jsx";
 import StudentsPage from "./pages/institute/students-page.jsx";
+import DrivesPage from "./pages/institute/drives-page.jsx";
 import SkillsPage from "./pages/candidate/skills-page.jsx";
 import TakeAssessmentPage from "./pages/candidate/take-assessment-page.jsx";
 import TalentPage from "./pages/employer/talent-page.jsx";
@@ -60,6 +61,7 @@ function App() {
           </Route>
           <Route element={<RoleRoute roles={["institute"]} />}>
             <Route path="/institute/students" element={<StudentsPage />} />
+            <Route path="/institute/drives" element={<DrivesPage />} />
           </Route>
           </Route>
         </Route>
