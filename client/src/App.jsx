@@ -6,6 +6,7 @@ import RoleRoute from "./components/layout/role-route.jsx";
 import Landing from "./components/landing/landing-page.jsx";
 import AuthProvider from "./context/auth-provider.jsx";
 import Dashboard from "./pages/dashboard.jsx";
+import AdminLogin from "./pages/admin-login.jsx";
 import Login from "./pages/login.jsx";
 import Register from "./pages/register.jsx";
 import ApplicationsPage from "./pages/candidate/applications-page.jsx";
@@ -36,6 +37,7 @@ function App() {
           }
         />
         <Route path="/login" element={<Login />} />
+        <Route path="/admin/login" element={<AdminLogin />} />
         <Route path="/register" element={<Register />} />
         <Route element={<ProtectedRoute />}>
           <Route element={<PortalLayout />}>
