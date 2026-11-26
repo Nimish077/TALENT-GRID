@@ -173,6 +173,18 @@ if (isProduction && mailer === "console") {
 const otpTtlMinutes = intVar("OTP_TTL_MINUTES", 10);
 const otpMaxAttempts = intVar("OTP_MAX_ATTEMPTS", 5);
 
+// Assessment engine (multiple-choice tests graded on the server).
+const assessmentQuestionsPerTier = intVar("ASSESSMENT_QUESTIONS_PER_TIER", 4);
+const assessmentRetakeCooldownMinutes = intVar(
+  "ASSESSMENT_RETAKE_COOLDOWN_MINUTES",
+  15
+);
+const assessmentSubmitGraceSeconds = intVar(
+  "ASSESSMENT_SUBMIT_GRACE_SECONDS",
+  30
+);
+const assessmentPassMark = intVar("ASSESSMENT_PASS_MARK", 40);
+
 // ---------------------------------------------------------------------------
 // Misc
 // ---------------------------------------------------------------------------
@@ -208,6 +220,10 @@ export const env = Object.freeze({
   jwtSecret,
   csrfSecret,
   accessTokenTtlSeconds,
+  assessmentQuestionsPerTier,
+  assessmentRetakeCooldownMinutes,
+  assessmentSubmitGraceSeconds,
+  assessmentPassMark,
   sessionTtlSeconds: sessionTtlDays * 24 * 60 * 60,
   refreshReuseGraceSeconds,
   cookieSecure,

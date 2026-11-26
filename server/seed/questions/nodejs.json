@@ -1,0 +1,257 @@
+{
+  "skill": "Node.js",
+  "questions": [
+    {
+      "difficulty": "beginner",
+      "prompt": "Which built-in function is the classic CommonJS way to load a module in Node.js?",
+      "options": [
+        "include()",
+        "require()",
+        "load()",
+        "fetchModule()"
+      ],
+      "correct_index": 1,
+      "explanation": "CommonJS modules are loaded synchronously with require()."
+    },
+    {
+      "difficulty": "beginner",
+      "prompt": "Which file describes a Node.js project's dependencies and npm scripts?",
+      "options": [
+        "package.json",
+        "node_modules.json",
+        "npm.config",
+        "index.json"
+      ],
+      "correct_index": 0,
+      "explanation": "package.json holds metadata, dependencies and scripts."
+    },
+    {
+      "difficulty": "beginner",
+      "prompt": "When you run \"node app.js hello\", what does process.argv[2] contain?",
+      "options": [
+        "The path of the node executable",
+        "The path of app.js",
+        "\"hello\", the first user-supplied argument",
+        "The value of NODE_ENV"
+      ],
+      "correct_index": 2,
+      "explanation": "argv[0] is the node binary, argv[1] is the script, and user arguments start at index 2."
+    },
+    {
+      "difficulty": "beginner",
+      "prompt": "Which core module provides functions for reading and writing files?",
+      "options": [
+        "path",
+        "os",
+        "http",
+        "fs"
+      ],
+      "correct_index": 3,
+      "explanation": "The fs module is Node's file system API."
+    },
+    {
+      "difficulty": "beginner",
+      "prompt": "In the conventional Node.js callback style, what are the arguments of the callback passed to fs.readFile?",
+      "options": [
+        "(data, err)",
+        "(err, data)",
+        "(data)",
+        "(result, done)"
+      ],
+      "correct_index": 1,
+      "explanation": "Node uses error-first callbacks, with the error as the first argument."
+    },
+    {
+      "difficulty": "beginner",
+      "prompt": "Which call creates a basic HTTP server?",
+      "options": [
+        "http.createServer()",
+        "http.listen()",
+        "net.createWebServer()",
+        "server.create()"
+      ],
+      "correct_index": 0,
+      "explanation": "http.createServer(handler) returns a server on which you call listen()."
+    },
+    {
+      "difficulty": "beginner",
+      "prompt": "Which package.json section lists packages needed only during development and testing?",
+      "options": [
+        "dependencies",
+        "optionalDependencies",
+        "devDependencies",
+        "peerDependencies"
+      ],
+      "correct_index": 2,
+      "explanation": "devDependencies are not needed to run the application in production."
+    },
+    {
+      "difficulty": "intermediate",
+      "prompt": "In a CommonJS script, what is the output order?\nprocess.nextTick(() => console.log(\"N\"));\nPromise.resolve().then(() => console.log(\"P\"));\nconsole.log(\"S\");",
+      "options": [
+        "S P N",
+        "S N P",
+        "N P S",
+        "P N S"
+      ],
+      "correct_index": 1,
+      "explanation": "After the synchronous code, the nextTick queue is processed before the promise microtask queue."
+    },
+    {
+      "difficulty": "intermediate",
+      "prompt": "Inside an fs.readFile callback, setTimeout(cb, 0) and setImmediate(cb) are both scheduled. Which runs first?",
+      "options": [
+        "setTimeout, always",
+        "The order is random",
+        "They run at the same time",
+        "setImmediate, always"
+      ],
+      "correct_index": 3,
+      "explanation": "After the I/O callback, the event loop reaches the check phase (setImmediate) before timers come around again."
+    },
+    {
+      "difficulty": "intermediate",
+      "prompt": "In Express 4, an async route handler throws an error and does not catch it. What happens?",
+      "options": [
+        "The rejection is not forwarded to error middleware unless it is caught and passed to next(err)",
+        "Express automatically sends a 500 response",
+        "The process always exits immediately",
+        "The error is passed to the next middleware as a normal request"
+      ],
+      "correct_index": 0,
+      "explanation": "Express 4 does not handle rejected promises from handlers; Express 5 does."
+    },
+    {
+      "difficulty": "intermediate",
+      "prompt": "Why use streams to process a very large file?",
+      "options": [
+        "Streams read files faster than any other API",
+        "Streams automatically compress the data",
+        "Data is handled in chunks, so memory use stays small",
+        "Streams run the work on multiple CPU cores"
+      ],
+      "correct_index": 2,
+      "explanation": "Streaming avoids loading the whole file into memory at once."
+    },
+    {
+      "difficulty": "intermediate",
+      "prompt": "In a CommonJS module the line exports = { a: 1 } is executed. What does require of that module return?",
+      "options": [
+        "{ a: 1 }",
+        "{} (an empty object)",
+        "undefined",
+        "null"
+      ],
+      "correct_index": 1,
+      "explanation": "exports is only a reference to module.exports; reassigning it does not change what is exported."
+    },
+    {
+      "difficulty": "intermediate",
+      "prompt": "Which versions does the npm range ^1.2.3 allow?",
+      "options": [
+        ">=1.2.3 and <2.0.0",
+        "Only exactly 1.2.3",
+        ">=1.2.3 and <1.3.0",
+        "Any version >=1.2.3"
+      ],
+      "correct_index": 0,
+      "explanation": "The caret allows changes that do not modify the left-most non-zero version number."
+    },
+    {
+      "difficulty": "intermediate",
+      "prompt": "PORT=3000 is set in the shell. What is the type of process.env.PORT?",
+      "options": [
+        "number",
+        "undefined until dotenv is loaded",
+        "string",
+        "Depends on whether the value looks numeric"
+      ],
+      "correct_index": 2,
+      "explanation": "All process.env values are strings (or undefined), so convert explicitly with Number()."
+    },
+    {
+      "difficulty": "advanced",
+      "prompt": "What is the default size of libuv's thread pool, used for fs operations, dns.lookup and crypto.pbkdf2?",
+      "options": [
+        "1",
+        "4",
+        "8",
+        "Equal to the number of CPU cores"
+      ],
+      "correct_index": 1,
+      "explanation": "UV_THREADPOOL_SIZE defaults to 4 and can be increased up to 1024."
+    },
+    {
+      "difficulty": "advanced",
+      "prompt": "Which is the best fit for CPU-heavy JavaScript computation that must not block the main event loop?",
+      "options": [
+        "A larger libuv thread pool",
+        "setImmediate in a loop",
+        "worker_threads",
+        "Wrapping the code in an async function"
+      ],
+      "correct_index": 2,
+      "explanation": "Worker threads run JavaScript on separate threads; async functions and setImmediate still run on the main thread."
+    },
+    {
+      "difficulty": "advanced",
+      "prompt": "A writable stream's write() method returns false. What should the producer do?",
+      "options": [
+        "Pause writing until the stream emits \"drain\"",
+        "Retry the same write immediately",
+        "Call end() on the stream",
+        "Ignore it; the data was discarded"
+      ],
+      "correct_index": 0,
+      "explanation": "false signals backpressure: the internal buffer passed highWaterMark, so the producer should wait for drain."
+    },
+    {
+      "difficulty": "advanced",
+      "prompt": "A module is required from two different files using the same resolved path. What do both receive?",
+      "options": [
+        "Two independent copies of the exports",
+        "A fresh copy, but executed once",
+        "An error stating the module is already loaded",
+        "The same cached exports object"
+      ],
+      "correct_index": 3,
+      "explanation": "The module cache is keyed by resolved filename, so the module code runs once and its exports are shared."
+    },
+    {
+      "difficulty": "advanced",
+      "prompt": "In current Node.js versions (15 and later), what is the default behaviour for an unhandled promise rejection?",
+      "options": [
+        "A warning is printed and the process continues",
+        "The rejection is silently ignored",
+        "The process throws and exits with a non-zero code",
+        "The promise is retried once automatically"
+      ],
+      "correct_index": 2,
+      "explanation": "The default unhandled-rejections mode is throw, which raises an uncaught exception."
+    },
+    {
+      "difficulty": "advanced",
+      "prompt": "Why is stream.pipeline() generally preferred over chaining .pipe() calls?",
+      "options": [
+        "It makes streams run in parallel",
+        "It propagates errors and destroys all streams properly on failure",
+        "It converts streams to promises automatically",
+        "It removes the need for backpressure handling"
+      ],
+      "correct_index": 1,
+      "explanation": "pipe() does not forward errors or clean up the other streams, which can leak resources."
+    },
+    {
+      "difficulty": "advanced",
+      "prompt": "What is a risk of Buffer.allocUnsafe(n)?",
+      "options": [
+        "It can only allocate up to 1 KB",
+        "It returns a read-only buffer",
+        "It blocks the event loop while allocating",
+        "The returned memory may contain old data and is not zero-filled"
+      ],
+      "correct_index": 3,
+      "explanation": "allocUnsafe skips zero-filling for speed, so the buffer must be fully overwritten before use or it may leak stale data."
+    }
+  ]
+}

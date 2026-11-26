@@ -4,15 +4,17 @@ export const PORTALS = {
     label: "Candidate Portal",
     items: [
       { label: "Dashboard", to: "/dashboard", icon: "dashboard" },
+      { label: "My Skills", to: "/skills", icon: "skills" },
+      { label: "Skill Assessments", to: "/assessments", icon: "assessments" },
       { label: "Jobs", to: "/jobs", icon: "jobs" },
       { label: "Applications", to: "/applications", icon: "applications" },
-      { label: "Skill Assessments", to: "/assessments", icon: "assessments" },
     ],
   },
   employer: {
     label: "Employer Portal",
     items: [
       { label: "Dashboard", to: "/dashboard", icon: "dashboard" },
+      { label: "Talent Search", to: "/employer/talent", icon: "talent" },
       { label: "Jobs", to: "/employer/jobs", icon: "jobs" },
       { label: "Post a Job", to: "/employer/jobs/new", icon: "post" },
     ],
@@ -25,8 +27,12 @@ export const PORTALS = {
     ],
   },
   admin: {
-    label: "Admin",
-    items: [{ label: "Dashboard", to: "/dashboard", icon: "dashboard" }],
+    label: "Admin Portal",
+    items: [
+      { label: "Dashboard", to: "/dashboard", icon: "dashboard" },
+      { label: "Approvals", to: "/admin/approvals", icon: "shield" },
+      { label: "Users", to: "/admin/users", icon: "students" },
+    ],
   },
 };
 

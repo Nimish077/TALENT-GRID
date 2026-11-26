@@ -1,9 +1,11 @@
 import { useAuth } from "../context/auth-context.js";
+import AdminDashboard from "./dashboards/admin-dashboard.jsx";
 import CandidateDashboard from "./dashboards/candidate-dashboard.jsx";
 import EmployerDashboard from "./dashboards/employer-dashboard.jsx";
 import InstituteDashboard from "./dashboards/institute-dashboard.jsx";
 
 const dashboards = {
+  admin: AdminDashboard,
   candidate: CandidateDashboard,
   employer: EmployerDashboard,
   institute: InstituteDashboard,

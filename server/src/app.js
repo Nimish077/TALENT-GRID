@@ -19,6 +19,7 @@ import claimsRoutes from "./modules/institutions/claims.routes.js";
 import drivesRoutes from "./modules/drives/drives.routes.js";
 import institutionDrivesRoutes from "./modules/drives/institution-drives.routes.js";
 import adminRoutes from "./modules/admin/admin.routes.js";
+import talentRoutes from "./modules/talent/talent.routes.js";
 
 export function createApp() {
   const app = express();
@@ -58,6 +59,7 @@ export function createApp() {
   app.use("/api/v1/membership-claims", claimsRoutes);
   app.use("/api/v1/drives", drivesRoutes);
   app.use("/api/v1/admin", adminRoutes);
+  app.use("/api/v1/talent", talentRoutes);
 
   app.use(notFoundHandler);
   app.use(errorHandler);

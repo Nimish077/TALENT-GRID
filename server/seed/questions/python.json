@@ -1,0 +1,257 @@
+{
+  "skill": "Python",
+  "questions": [
+    {
+      "difficulty": "beginner",
+      "prompt": "What is the result of 7 // 2 in Python 3?",
+      "options": [
+        "3.5",
+        "3",
+        "4",
+        "3.0"
+      ],
+      "correct_index": 1,
+      "explanation": "The // operator performs floor division, and with two ints it returns an int."
+    },
+    {
+      "difficulty": "beginner",
+      "prompt": "Which of these built-in types is immutable?",
+      "options": [
+        "list",
+        "dict",
+        "set",
+        "tuple"
+      ],
+      "correct_index": 3,
+      "explanation": "Tuples cannot be modified after creation; lists, dicts and sets can."
+    },
+    {
+      "difficulty": "beginner",
+      "prompt": "Which expression builds a list of the squares of 0, 1, 2 and 3?",
+      "options": [
+        "[x**2 for x in range(4)]",
+        "(x**2 for x in range(4))",
+        "{x**2 for x in range(4)}",
+        "[x^2 for x in range(4)]"
+      ],
+      "correct_index": 0,
+      "explanation": "Square brackets make a list comprehension; parentheses give a generator, braces a set, and ^ is bitwise XOR."
+    },
+    {
+      "difficulty": "beginner",
+      "prompt": "How do you read key 'k' from dict d, getting None instead of an error if it is missing?",
+      "options": [
+        "d['k'] or None",
+        "d.find('k')",
+        "d.get('k')",
+        "d.fetch('k')"
+      ],
+      "correct_index": 2,
+      "explanation": "dict.get returns None (or a supplied default) for missing keys, whereas d['k'] raises KeyError."
+    },
+    {
+      "difficulty": "beginner",
+      "prompt": "What does 'abc'[::-1] evaluate to?",
+      "options": [
+        "'bca'",
+        "'abc'",
+        "'a'",
+        "'cba'"
+      ],
+      "correct_index": 3,
+      "explanation": "A slice with step -1 walks the string backwards."
+    },
+    {
+      "difficulty": "beginner",
+      "prompt": "What does bool([]) evaluate to?",
+      "options": [
+        "True",
+        "None",
+        "False",
+        "It raises ValueError"
+      ],
+      "correct_index": 2,
+      "explanation": "Empty containers are falsy in Python."
+    },
+    {
+      "difficulty": "beginner",
+      "prompt": "What is list(range(3))?",
+      "options": [
+        "[0, 1, 2, 3]",
+        "[1, 2, 3]",
+        "[0, 3]",
+        "[0, 1, 2]"
+      ],
+      "correct_index": 3,
+      "explanation": "range(3) yields 0 up to but excluding 3."
+    },
+    {
+      "difficulty": "intermediate",
+      "prompt": "def f(x, acc=[]):\n    acc.append(x)\n    return acc\n\nf(1)\nprint(f(2))",
+      "options": [
+        "[2]",
+        "[1, 2]",
+        "[1]",
+        "An error is raised"
+      ],
+      "correct_index": 1,
+      "explanation": "The default list is created once at function definition and shared across calls."
+    },
+    {
+      "difficulty": "intermediate",
+      "prompt": "a = [[1], [2]]\nb = a.copy()\nb[0].append(9)\nprint(a)",
+      "options": [
+        "[[1], [2]]",
+        "[[1], [2, 9]]",
+        "[[1, 9], [2]]",
+        "[[9], [2]]"
+      ],
+      "correct_index": 2,
+      "explanation": "copy() is shallow, so the inner lists are shared between a and b."
+    },
+    {
+      "difficulty": "intermediate",
+      "prompt": "What is the main benefit of using \"with open(path) as f:\" to read a file?",
+      "options": [
+        "The file is closed automatically, even if an exception occurs",
+        "The file is loaded entirely into memory",
+        "The file is opened in binary mode",
+        "Reads become faster because of extra buffering"
+      ],
+      "correct_index": 0,
+      "explanation": "The with statement uses the file object as a context manager, which closes it on exit."
+    },
+    {
+      "difficulty": "intermediate",
+      "prompt": "a = [1]\nb = [1]\nprint(a == b, a is b)",
+      "options": [
+        "True True",
+        "False False",
+        "False True",
+        "True False"
+      ],
+      "correct_index": 3,
+      "explanation": "== compares values (equal), while is compares object identity (two distinct lists)."
+    },
+    {
+      "difficulty": "intermediate",
+      "prompt": "Which is the idiomatic standard-library way to count how many times each item occurs in an iterable?",
+      "options": [
+        "Calling items.count() with no arguments",
+        "len(set(items))",
+        "collections.Counter(items)",
+        "dict.fromkeys(items, 1)"
+      ],
+      "correct_index": 2,
+      "explanation": "Counter builds a mapping from each element to its frequency."
+    },
+    {
+      "difficulty": "intermediate",
+      "prompt": "Which statement about a generator function (one that uses yield) is correct?",
+      "options": [
+        "It computes all yielded values on the first call and caches them in a list",
+        "It produces values lazily, one per next() call, preserving its local state between calls",
+        "It can be iterated over any number of times from the start",
+        "It must return a list when it finishes"
+      ],
+      "correct_index": 1,
+      "explanation": "Generators suspend at each yield and resume later; once exhausted they cannot be restarted."
+    },
+    {
+      "difficulty": "intermediate",
+      "prompt": "What does *args do in the definition def f(*args)?",
+      "options": [
+        "Collects extra keyword arguments into a dict",
+        "Unpacks a list at definition time",
+        "Makes every parameter keyword-only",
+        "Collects extra positional arguments into a tuple"
+      ],
+      "correct_index": 3,
+      "explanation": "*args gathers surplus positional arguments as a tuple; **kwargs does the same for keyword arguments."
+    },
+    {
+      "difficulty": "advanced",
+      "prompt": "In default (GIL-enabled) CPython, which approach gives real parallel speedup for CPU-bound pure-Python code?",
+      "options": [
+        "threading with several threads",
+        "asyncio with several tasks",
+        "multiprocessing with several worker processes",
+        "ThreadPoolExecutor with several workers"
+      ],
+      "correct_index": 2,
+      "explanation": "Separate processes each have their own interpreter and GIL; threads and asyncio tasks share one GIL."
+    },
+    {
+      "difficulty": "advanced",
+      "prompt": "fs = [lambda: i for i in range(3)]\nprint([f() for f in fs])",
+      "options": [
+        "[0, 1, 2]",
+        "[2, 2, 2]",
+        "[3, 3, 3]",
+        "[0, 0, 0]"
+      ],
+      "correct_index": 1,
+      "explanation": "Closures capture the variable i, not its value, and i is 2 after the loop finishes."
+    },
+    {
+      "difficulty": "advanced",
+      "prompt": "What is the primary purpose of defining __slots__ in a class?",
+      "options": [
+        "To make attributes immutable after assignment",
+        "To speed up method calls by caching them",
+        "To enforce attribute type checking",
+        "To reduce per-instance memory by avoiding a per-instance __dict__"
+      ],
+      "correct_index": 3,
+      "explanation": "__slots__ stores attributes in fixed slots instead of a dict, saving memory and restricting new attributes."
+    },
+    {
+      "difficulty": "advanced",
+      "prompt": "class A: pass\nclass B(A): pass\nclass C(A): pass\nclass D(B, C): pass\nWhat is D.__mro__?",
+      "options": [
+        "D, B, A, C, object",
+        "D, B, C, A, object",
+        "D, C, B, A, object",
+        "D, A, B, C, object"
+      ],
+      "correct_index": 1,
+      "explanation": "C3 linearisation keeps D, then B, then C, and only afterwards their shared base A."
+    },
+    {
+      "difficulty": "advanced",
+      "prompt": "t = (1, [2])\ntry:\n    t[1] += [3]\nexcept TypeError:\n    pass\nprint(t)",
+      "options": [
+        "(1, [2])",
+        "(1, [5])",
+        "(1, [2, 3])",
+        "(1, 2, 3)"
+      ],
+      "correct_index": 2,
+      "explanation": "The in-place list extension succeeds, then assigning back into the tuple fails with TypeError; the list stays mutated."
+    },
+    {
+      "difficulty": "advanced",
+      "prompt": "Which operation is O(n) on a list but O(1) on collections.deque?",
+      "options": [
+        "Removing the first element",
+        "Appending to the right end",
+        "Reading len()",
+        "Iterating over all elements"
+      ],
+      "correct_index": 0,
+      "explanation": "list.pop(0) shifts all remaining elements, whereas deque.popleft() is constant time."
+    },
+    {
+      "difficulty": "advanced",
+      "prompt": "What happens to instances of a class that defines __eq__ but not __hash__?",
+      "options": [
+        "Hashing falls back to id() as before",
+        "The hash is computed from all attributes",
+        "A SyntaxError is raised at class creation",
+        "They become unhashable, because __hash__ is set to None"
+      ],
+      "correct_index": 3,
+      "explanation": "Python sets __hash__ to None when __eq__ is defined without __hash__, so instances cannot be dict keys or set members."
+    }
+  ]
+}

@@ -112,8 +112,8 @@ describe("assessment attempt lifecycle", () => {
       },
     });
     expect(candidateSkill.verification_status).toBe("verified");
-    // verified_level is the assessment's target level (the bar that was met).
-    expect(candidateSkill.verified_level).toBe("intermediate");
+    // verified_level is the level actually achieved (85 -> advanced), never below the target.
+    expect(candidateSkill.verified_level).toBe("advanced");
     expect(candidateSkill.verified_at).not.toBeNull();
 
     const duplicate = await evaluate(attemptId, 90, ENGINE_TOKEN, 409);
@@ -149,8 +149,8 @@ describe("assessment attempt lifecycle", () => {
         },
       },
     });
-    // The earlier pass stands; the failed attempt did not downgrade it.
-    expect(candidateSkill.verified_level).toBe("intermediate");
+    // The earlier pass (advanced) stands; the failed attempt did not downgrade it.
+    expect(candidateSkill.verified_level).toBe("advanced");
   });
 
   it("abandon frees the open slot for a fresh attempt", async () => {

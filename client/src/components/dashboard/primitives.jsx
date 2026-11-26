@@ -53,7 +53,7 @@ export function EmptyState({ children }) {
 }
 
 export function PageState({ loading, error, onRetry, children }) {
-  if (loading) return <p role="status" className="py-24 text-center text-text-secondary">Loading your dashboard…</p>;
+  if (loading) return <p role="status" className="py-24 text-center text-text-secondary">Loading…</p>;
   if (error) {
     return (
       <div role="alert" className="mx-auto max-w-[480px] py-24 text-center">

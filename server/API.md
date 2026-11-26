@@ -171,3 +171,44 @@ Base URL: `/api/v1` (server default `http://localhost:8000`).
 
 `apiLimiter` applies to all API routes; `/auth` and the OTP send/verify
 endpoints have stricter limits. Limiters are disabled under `NODE_ENV=test`.
+
+## Assessment engine (multiple choice)
+
+Assessments that have questions are run by the built-in engine. (Assessments
+without questions keep the older external-engine flow: `submit`, then
+`evaluate`.) Answer keys never leave the server until an attempt is submitted.
+
+| Method | Path                                   | Access            | Notes                                                                                                                                                                                              |
+| ------ | -------------------------------------- | ----------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| GET    | `/assessments`                         | authenticated     | Each item adds `question_count` (questions in a test) and, for candidates, `my_status` (`open_attempt_id`, `last_result`, `best_score`, `retry_at`) and `skills[].mine` (own verification state). |
+| POST   | `/assessments/:id/attempts`            | candidate         | Draws `ASSESSMENT_QUESTIONS_PER_TIER` random questions per difficulty, shuffles options, sets `expires_at` (server clock). `409` with `error[0].path = retry_at` during the retake cooldown.       |
+| GET    | `/assessments/attempts/:id`            | owner / admin     | `{ attempt, questions }`. Questions carry only `id, position, prompt, options[{id,text}], selected_option_id` until submitted; then also `correct_option_id, is_correct, difficulty, explanation`. |
+| PUT    | `/assessments/attempts/:id/answer`     | owner             | `{ question_id, option_id }`: autosave. `409` once submitted or expired.                                                                                                                           |
+| POST   | `/assessments/attempts/:id/focus-loss` | owner             | Records that the candidate left the tab/window (integrity signal shown to employers).                                                                                                              |
+| POST   | `/assessments/attempts/:id/submit`     | owner             | Grades on the server (difficulty-weighted score), verifies skills on a pass, returns the reviewed `{ attempt, questions }`. Attempts past their deadline are graded automatically.                |
+
+Scoring: beginner/intermediate/advanced questions weigh 1/2/3. Level:
+`< 50` beginner, `50-79` intermediate, `>= 80` advanced. An attempt passes when
+the score reaches `ASSESSMENT_PASS_MARK` (default 40) and the level reaches
+every skill's `target_level`; the skill is verified at the level achieved.
+
+## Talent discovery — `/api/v1/talent`
+
+| Method | Path                      | Access                       | Notes                                                                                                                                                                                                                |
+| ------ | ------------------------- | ---------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| GET    | `/talent`                 | employer (verified org), admin | Query: `skills=skillId:level,...`, `location`, `search`, `min_match`, `page`, `limit`. Ranks candidates by the share of requested skills they have **verified** at or above the level (`match_percent`, `gaps`). |
+| GET    | `/talent/:candidateProfileId` | employer (verified org), admin | Profile plus `assessment_evidence` (graded attempts: score, level, correct/total, focus losses). Private profiles return `404`.                                                                                  |
+
+## Admin — additions
+
+| Method | Path           | Access | Notes                                                                                   |
+| ------ | -------------- | ------ | --------------------------------------------------------------------------------------- |
+| GET    | `/admin/stats` | admin  | Platform overview: users by role, pending/active organizations and institutions, etc.   |
+
+## Demo data
+
+`DEMO_PASSWORD=... npm run db:seed-demo` (from `server/`) is idempotent and
+creates accounts for every role, the skill catalogue, six MCQ assessments
+(126 questions in `seed/questions/`), verified candidates, an employer with
+jobs and applicants, an institute with students and a drive, and pending
+organizations/institutions for the admin approval queue.

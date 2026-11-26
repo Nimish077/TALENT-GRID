@@ -1,0 +1,257 @@
+{
+  "skill": "JavaScript",
+  "questions": [
+    {
+      "difficulty": "beginner",
+      "prompt": "What does typeof null return in JavaScript?",
+      "options": [
+        "\"null\"",
+        "\"undefined\"",
+        "\"object\"",
+        "\"number\""
+      ],
+      "correct_index": 2,
+      "explanation": "This is a long-standing quirk of the language: typeof null evaluates to \"object\"."
+    },
+    {
+      "difficulty": "beginner",
+      "prompt": "What is logged by the following code?\nconsole.log('5' + 3);",
+      "options": [
+        "8",
+        "\"53\"",
+        "NaN",
+        "An error is thrown"
+      ],
+      "correct_index": 1,
+      "explanation": "With a string operand, + performs concatenation, so the number 3 is converted to a string and the result is \"53\"."
+    },
+    {
+      "difficulty": "beginner",
+      "prompt": "Which keyword declares a variable binding that cannot be reassigned after initialisation?",
+      "options": [
+        "const",
+        "let",
+        "var",
+        "static"
+      ],
+      "correct_index": 0,
+      "explanation": "A const binding cannot be reassigned; let and var bindings can."
+    },
+    {
+      "difficulty": "beginner",
+      "prompt": "Which array method adds an element to the end of an array, mutating it, and returns the new length?",
+      "options": [
+        "shift()",
+        "concat()",
+        "slice()",
+        "push()"
+      ],
+      "correct_index": 3,
+      "explanation": "push() mutates the array and returns its new length; concat() and slice() return new arrays."
+    },
+    {
+      "difficulty": "beginner",
+      "prompt": "What does [1, 2, 3].map(n => n * 2) return?",
+      "options": [
+        "[2, 4, 6]",
+        "6",
+        "[1, 2, 3]",
+        "undefined"
+      ],
+      "correct_index": 0,
+      "explanation": "map() returns a new array containing the result of the callback for each element."
+    },
+    {
+      "difficulty": "beginner",
+      "prompt": "Which expression evaluates to true?",
+      "options": [
+        "'2' === 2",
+        "null === undefined",
+        "'2' == 2",
+        "NaN == NaN"
+      ],
+      "correct_index": 2,
+      "explanation": "Loose equality (==) coerces the string to a number; strict equality does not, and NaN is never equal to itself."
+    },
+    {
+      "difficulty": "beginner",
+      "prompt": "Which of these values is falsy?",
+      "options": [
+        "'0'",
+        "[]",
+        "{}",
+        "0"
+      ],
+      "correct_index": 3,
+      "explanation": "The number 0 is falsy; the string '0' and empty array/object are truthy."
+    },
+    {
+      "difficulty": "intermediate",
+      "prompt": "for (var i = 0; i < 3; i++) {\n  setTimeout(() => console.log(i), 0);\n}\nWhat is logged?",
+      "options": [
+        "0 1 2",
+        "3 3 3",
+        "2 2 2",
+        "undefined three times"
+      ],
+      "correct_index": 1,
+      "explanation": "var is function-scoped, so all callbacks share one i, which is 3 when the timers fire."
+    },
+    {
+      "difficulty": "intermediate",
+      "prompt": "const o = {\n  n: 'a',\n  f() { return [1].map(() => this.n)[0]; }\n};\nconsole.log(o.f());",
+      "options": [
+        "'a'",
+        "undefined",
+        "A TypeError is thrown",
+        "The global object"
+      ],
+      "correct_index": 0,
+      "explanation": "The arrow function has no own this and inherits it from f(), which is called as a method of o."
+    },
+    {
+      "difficulty": "intermediate",
+      "prompt": "console.log(1);\nsetTimeout(() => console.log(2), 0);\nPromise.resolve().then(() => console.log(3));\nconsole.log(4);",
+      "options": [
+        "1 2 3 4",
+        "1 4 2 3",
+        "1 4 3 2",
+        "1 3 4 2"
+      ],
+      "correct_index": 2,
+      "explanation": "Synchronous code runs first, then the promise microtask, then the timer macrotask."
+    },
+    {
+      "difficulty": "intermediate",
+      "prompt": "If one promise passed to Promise.all([p1, p2, p3]) rejects, what happens?",
+      "options": [
+        "It waits for the others to settle, then rejects with an array",
+        "It resolves with an array containing the error in that slot",
+        "It ignores the rejection and resolves with the other results",
+        "The returned promise rejects as soon as that promise rejects"
+      ],
+      "correct_index": 3,
+      "explanation": "Promise.all rejects immediately with the first rejection reason; Promise.allSettled is the variant that waits for everything."
+    },
+    {
+      "difficulty": "intermediate",
+      "prompt": "What does [10, 9, 1].sort() return?",
+      "options": [
+        "[1, 9, 10]",
+        "[10, 9, 1]",
+        "[1, 10, 9]",
+        "[9, 10, 1]"
+      ],
+      "correct_index": 2,
+      "explanation": "Without a comparator, sort() converts elements to strings and compares them lexicographically."
+    },
+    {
+      "difficulty": "intermediate",
+      "prompt": "const v = 0 ?? 5;\nconst w = 0 || 5;\nconsole.log(v, w);",
+      "options": [
+        "0 5",
+        "5 5",
+        "0 0",
+        "5 0"
+      ],
+      "correct_index": 0,
+      "explanation": "?? only falls back for null or undefined, while || falls back for any falsy value, including 0."
+    },
+    {
+      "difficulty": "intermediate",
+      "prompt": "const o = Object.freeze({ a: { b: 1 } });\no.a.b = 2;\nconsole.log(o.a.b);",
+      "options": [
+        "1",
+        "2",
+        "undefined",
+        "A TypeError is always thrown"
+      ],
+      "correct_index": 1,
+      "explanation": "Object.freeze is shallow, so nested objects remain mutable."
+    },
+    {
+      "difficulty": "advanced",
+      "prompt": "setTimeout(() => console.log('t'), 0);\nPromise.resolve().then(() => {\n  console.log('p1');\n  Promise.resolve().then(() => console.log('p2'));\n});\nconsole.log('s');",
+      "options": [
+        "s t p1 p2",
+        "s p1 t p2",
+        "s p1 p2 t",
+        "p1 p2 s t"
+      ],
+      "correct_index": 2,
+      "explanation": "The microtask queue is drained completely, including newly queued microtasks, before the next timer macrotask runs."
+    },
+    {
+      "difficulty": "advanced",
+      "prompt": "Why can creating objects with the same properties added in different orders hurt performance in V8?",
+      "options": [
+        "The engine sorts properties alphabetically on every access",
+        "They get different hidden classes (shapes), making property access sites polymorphic",
+        "Property order changes which garbage-collection generation they live in",
+        "The whole script is deoptimised to the interpreter permanently"
+      ],
+      "correct_index": 1,
+      "explanation": "V8 tracks object shapes; differing property order yields different shapes, so inline caches become polymorphic or megamorphic and slower."
+    },
+    {
+      "difficulty": "advanced",
+      "prompt": "What is the main reason to use a WeakMap to associate metadata with objects?",
+      "options": [
+        "It allows primitive values to be used as keys",
+        "It iterates over entries faster than a Map",
+        "It can be serialised directly with JSON.stringify",
+        "Entries do not prevent their key objects from being garbage collected"
+      ],
+      "correct_index": 3,
+      "explanation": "WeakMap holds keys weakly, so metadata disappears when the key object becomes unreachable, avoiding memory leaks."
+    },
+    {
+      "difficulty": "advanced",
+      "prompt": "async function f() { throw new Error('x'); }\ntry { f(); } catch (e) { console.log('caught'); }\nconsole.log('end');\nWhat happens?",
+      "options": [
+        "'end' is logged and the rejection goes unhandled; 'caught' is never logged",
+        "'caught' is logged, then 'end'",
+        "'end' is logged and the error is silently discarded by the engine",
+        "The error is thrown synchronously before 'end' can be logged"
+      ],
+      "correct_index": 0,
+      "explanation": "An async function converts a throw into a rejected promise, so try/catch without await cannot catch it; it becomes an unhandled rejection."
+    },
+    {
+      "difficulty": "advanced",
+      "prompt": "function F() {}\nF.prototype.x = 1;\nconst a = new F();\na.x = 2;\ndelete a.x;\nconsole.log(a.x);",
+      "options": [
+        "undefined",
+        "2",
+        "1",
+        "A TypeError is thrown"
+      ],
+      "correct_index": 2,
+      "explanation": "delete removes only the own property; the lookup then finds x on the prototype again, which is 1."
+    },
+    {
+      "difficulty": "advanced",
+      "prompt": "What does this log?\nconsole.log(Number.MAX_SAFE_INTEGER + 2 === Number.MAX_SAFE_INTEGER + 1);",
+      "options": [
+        "false, because numbers are promoted to BigInt automatically",
+        "false, because integers are exact up to 2^64",
+        "It throws a RangeError",
+        "true, because 2^53 + 1 is not representable and rounds to 2^53"
+      ],
+      "correct_index": 3,
+      "explanation": "Doubles cannot represent 2^53 + 1, so the sum rounds to 2^53, which equals MAX_SAFE_INTEGER + 1."
+    },
+    {
+      "difficulty": "advanced",
+      "prompt": "const g = function () { this.v = 1; }.bind({ v: 9 });\nconst o = new g();\nconsole.log(o.v);",
+      "options": [
+        "9",
+        "1",
+        "undefined",
+        "A TypeError is thrown"
+      ],
+      "correct_index": 1,
+      "explanation": "When a bound function is called with new, the bound this is ignored and the new instance is used."
+    }
+  ]
+}

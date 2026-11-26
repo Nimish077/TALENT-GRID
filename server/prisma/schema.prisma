@@ -332,6 +332,7 @@ model Assessment {
   updated_at       DateTime @updatedAt
 
   skills            AssessmentSkill[]
+  questions         AssessmentQuestion[]
   attempts          AssessmentAttempt[]
   job_assessments   JobAssessment[]
   drive_assessments PlacementDriveAssessment[]
@@ -353,26 +354,89 @@ model AssessmentSkill {
 }
 
 model AssessmentAttempt {
-  id                           String                   @id @default(uuid()) @db.Uuid
-  candidate_profile_id         String                   @db.Uuid
-  placement_drive_candidate_id String?                  @db.Uuid
+  id                           String                      @id @default(uuid()) @db.Uuid
+  candidate_profile_id         String                      @db.Uuid
+  placement_drive_candidate_id String?                     @db.Uuid
   attempt_number               Int
-  score                        Decimal?                 @db.Decimal(5, 2)
+  score                        Decimal?                    @db.Decimal(5, 2)
   level                        String?
-  result_status                String                   @default("pending")
-  started_at                   DateTime                 @default(now())
+  result_status                String                      @default("pending")
+  started_at                   DateTime                    @default(now())
   submitted_at                 DateTime?
   evaluated_at                 DateTime?
-  created_at                   DateTime                 @default(now())
-  job_application_id           String?                  @db.Uuid
-  assessment_id                String                   @db.Uuid
-  candidate_profile            CandidateProfile         @relation(fields: [candidate_profile_id], references: [id], onDelete: Cascade)
-  placement_drive_candidate    PlacementDriveCandidate? @relation(fields: [placement_drive_candidate_id], references: [id], onDelete: SetNull)
-  job_application              JobApplication?          @relation(fields: [job_application_id], references: [id], onDelete: SetNull)
-  assessment                   Assessment               @relation(fields: [assessment_id], references: [id], onDelete: Restrict)
+  created_at                   DateTime                    @default(now())
+  job_application_id           String?                     @db.Uuid
+  assessment_id                String                      @db.Uuid
+  // Engine fields: server-enforced deadline, grading summary and integrity signal.
+  expires_at                   DateTime?
+  question_count               Int                         @default(0)
+  correct_count                Int?
+  focus_losses                 Int                         @default(0)
+  candidate_profile            CandidateProfile            @relation(fields: [candidate_profile_id], references: [id], onDelete: Cascade)
+  placement_drive_candidate    PlacementDriveCandidate?    @relation(fields: [placement_drive_candidate_id], references: [id], onDelete: SetNull)
+  job_application              JobApplication?             @relation(fields: [job_application_id], references: [id], onDelete: SetNull)
+  assessment                   Assessment                  @relation(fields: [assessment_id], references: [id], onDelete: Restrict)
+  questions                    AssessmentAttemptQuestion[]
 
   @@unique([assessment_id, candidate_profile_id, attempt_number])
   @@map("assessment_attempts")
+}
+
+// ---------------------------------------------------------------------------
+// Assessment engine (AUTHORIZED EXTENSION: not in DatabaseSchema.png)
+//   Question bank, plus a per-attempt snapshot of the questions a candidate was
+//   shown (with shuffled option order) and the answer they selected. Answer keys
+//   never leave the server until an attempt is submitted.
+// ---------------------------------------------------------------------------
+
+model AssessmentQuestion {
+  id            String   @id @default(uuid()) @db.Uuid
+  assessment_id String   @db.Uuid
+  difficulty    String
+  prompt        String   @db.Text
+  explanation   String?  @db.Text
+  status        String   @default("active")
+  created_at    DateTime @default(now())
+
+  assessment        Assessment                  @relation(fields: [assessment_id], references: [id], onDelete: Cascade)
+  options           AssessmentQuestionOption[]
+  attempt_questions AssessmentAttemptQuestion[]
+
+  @@index([assessment_id, difficulty, status])
+  @@map("assessment_questions")
+}
+
+model AssessmentQuestionOption {
+  id          String  @id @default(uuid()) @db.Uuid
+  question_id String  @db.Uuid
+  text        String
+  is_correct  Boolean @default(false)
+  position    Int     @default(0)
+
+  question    AssessmentQuestion          @relation(fields: [question_id], references: [id], onDelete: Cascade)
+  selected_in AssessmentAttemptQuestion[] @relation("SelectedOption")
+
+  @@index([question_id])
+  @@map("assessment_question_options")
+}
+
+model AssessmentAttemptQuestion {
+  id                 String    @id @default(uuid()) @db.Uuid
+  attempt_id         String    @db.Uuid
+  question_id        String    @db.Uuid
+  position           Int
+  option_order       Json
+  selected_option_id String?   @db.Uuid
+  answered_at        DateTime?
+  is_correct         Boolean?
+
+  attempt         AssessmentAttempt         @relation(fields: [attempt_id], references: [id], onDelete: Cascade)
+  question        AssessmentQuestion        @relation(fields: [question_id], references: [id], onDelete: Restrict)
+  selected_option AssessmentQuestionOption? @relation("SelectedOption", fields: [selected_option_id], references: [id], onDelete: SetNull)
+
+  @@unique([attempt_id, question_id])
+  @@index([attempt_id, position])
+  @@map("assessment_attempt_questions")
 }
 
 // ---------------------------------------------------------------------------
