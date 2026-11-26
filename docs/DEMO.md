@@ -4,11 +4,11 @@ A 7-minute story: **a skill becomes verified, and an employer hires on it.**
 
 ## Before you present (do this 15 minutes earlier)
 
-1. **Seed the live database** (once; safe to repeat). From `server/`, with the production `DATABASE_URI`:
-   ```bash
-   npm run db:seed-demo
-   ```
-   It creates the demo data and sets the fixed demo passwords below. Running it again restores them.
+1. **Put the demo accounts and data on the live site.** Either way is safe to repeat:
+   - **Easiest, no database access needed:** in the Render dashboard, add the environment variable `SEED_DEMO` = `true` to the API service and redeploy (or restart) it. The server seeds itself on start-up, right after the database migrations. When the demo is over, remove the variable.
+   - **Or by hand:** from `server/`, with the production `DATABASE_URI`, run `npm run db:seed-demo`.
+
+   Either way it creates the demo data and sets the fixed demo passwords below. The first start after turning it on takes a few seconds longer.
 2. **Warm up the backend.** Render's free tier sleeps. Open the live site and sign in once, so the first request during the demo is not a 30-60 second wait.
 3. **Reset to a clean demo state** (after any rehearsal), from `server/` with the production `DATABASE_URI`:
    ```bash

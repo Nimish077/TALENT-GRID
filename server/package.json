@@ -8,7 +8,7 @@
   "main": "index.js",
   "scripts": {
     "dev": "node --watch index.js",
-    "prestart": "prisma migrate deploy",
+    "prestart": "prisma migrate deploy && node scripts/seed-on-start.js",
     "start": "node index.js",
     "test": "vitest run",
     "test:watch": "vitest",
