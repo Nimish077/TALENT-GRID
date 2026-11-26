@@ -1,9 +1,11 @@
 import { useState } from "react";
 import { Link, Navigate, useNavigate } from "react-router-dom";
+import DemoAccounts from "../components/auth/demo-accounts.jsx";
 import AuthLayout from "../components/layout/auth-layout.jsx";
 import Button from "../components/ui/button.jsx";
 import FormField from "../components/ui/form-field.jsx";
 import { useAuth } from "../context/auth-context.js";
+import { DEMO_ACCOUNTS, UNSEEDED_HINT, isDemoLoginEnabled } from "../lib/demo-accounts.js";
 
 // Same API as the regular sign in, but only administrator accounts get through:
 // anyone else is signed straight back out. (The real protection is the role
@@ -15,18 +17,18 @@ function AdminLogin() {
   const [form, setForm] = useState({ email: "", password: "" });
   const [error, setError] = useState("");
   const [submitting, setSubmitting] = useState(false);
+  const [demoBusy, setDemoBusy] = useState(null);
 
   if (loading) return null;
   if (user?.role === "admin") return <Navigate to="/dashboard" replace />;
 
   const update = (field) => (event) => setForm((prev) => ({ ...prev, [field]: event.target.value }));
 
-  async function handleSubmit(event) {
-    event.preventDefault();
+  // Signs in and keeps only administrators; anyone else is signed back out.
+  async function signInAsAdmin(credentials, { demo = false } = {}) {
     setError("");
-    setSubmitting(true);
     try {
-      const signedIn = await login({ email: form.email.trim(), password: form.password });
+      const signedIn = await login(credentials);
       if (signedIn.role !== "admin") {
         await logout();
         setError("This account is not an administrator. Use the regular sign in instead.");
@@ -34,10 +36,21 @@ function AdminLogin() {
       }
       navigate("/dashboard", { replace: true });
     } catch (err) {
-      setError(err.message);
-    } finally {
-      setSubmitting(false);
+      setError(demo && err.status === 401 ? UNSEEDED_HINT : err.message);
     }
+  }
+
+  async function handleSubmit(event) {
+    event.preventDefault();
+    setSubmitting(true);
+    await signInAsAdmin({ email: form.email.trim(), password: form.password });
+    setSubmitting(false);
+  }
+
+  async function handleDemo(account) {
+    setDemoBusy(account.id);
+    await signInAsAdmin({ email: account.email, password: account.password }, { demo: true });
+    setDemoBusy(null);
   }
 
   return (
@@ -64,6 +77,10 @@ function AdminLogin() {
             {submitting ? "Signing in…" : "Sign in as admin"}
           </Button>
         </form>
+
+        {isDemoLoginEnabled() && (
+          <DemoAccounts accounts={DEMO_ACCOUNTS.filter((account) => account.role === "admin")} onSelect={handleDemo} busyId={demoBusy} />
+        )}
 
         <p className="mt-5 text-sm text-text-secondary">
           Not an administrator?{" "}

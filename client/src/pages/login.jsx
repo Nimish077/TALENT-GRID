@@ -1,9 +1,11 @@
 import { useState } from "react";
 import { Link, Navigate, useLocation, useNavigate } from "react-router-dom";
+import DemoAccounts from "../components/auth/demo-accounts.jsx";
 import AuthLayout from "../components/layout/auth-layout.jsx";
 import Button from "../components/ui/button.jsx";
 import FormField from "../components/ui/form-field.jsx";
 import { useAuth } from "../context/auth-context.js";
+import { DEMO_ACCOUNTS, UNSEEDED_HINT, isDemoLoginEnabled } from "../lib/demo-accounts.js";
 
 function Login() {
   const { user, loading, login } = useAuth();
@@ -14,6 +16,7 @@ function Login() {
   const [form, setForm] = useState({ email: "", password: "" });
   const [error, setError] = useState("");
   const [submitting, setSubmitting] = useState(false);
+  const [demoBusy, setDemoBusy] = useState(null);
 
   if (loading) return null;
   if (user) return <Navigate to={destination} replace />;
@@ -31,6 +34,18 @@ function Login() {
       setError(err.message);
     } finally {
       setSubmitting(false);
+    }
+  }
+
+  async function handleDemo(account) {
+    setError("");
+    setDemoBusy(account.id);
+    try {
+      await login({ email: account.email, password: account.password });
+      navigate(destination, { replace: true });
+    } catch (err) {
+      setError(err.status === 401 ? UNSEEDED_HINT : err.message);
+      setDemoBusy(null);
     }
   }
 
@@ -52,6 +67,10 @@ function Login() {
             {submitting ? "Signing in…" : "Sign in"}
           </Button>
         </form>
+
+        {isDemoLoginEnabled() && (
+          <DemoAccounts accounts={DEMO_ACCOUNTS.filter((account) => account.role !== "admin")} onSelect={handleDemo} busyId={demoBusy} />
+        )}
 
         <p className="mt-5 text-sm text-text-secondary">
           Don&apos;t have an account?{" "}
