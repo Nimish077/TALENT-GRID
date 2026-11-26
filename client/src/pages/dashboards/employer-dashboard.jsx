@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import { Badge, Card, CardHeader, CardLink, EmptyState, PageState, PendingNotice, ProgressBar, StatCard } from "../../components/dashboard/primitives.jsx";
 import Button from "../../components/ui/button.jsx";
 import { jobsApi, organizationsApi } from "../../lib/endpoints.js";
@@ -107,14 +108,16 @@ function EmployerContent({ data }) {
                 {activeJobs.map((job) => (
                   <li key={job.id} className="flex items-center justify-between gap-4 py-4">
                     <div className="min-w-0">
-                      <p className="truncate font-medium">{job.title}</p>
+                      <Link to={`/employer/jobs/${job.id}/applicants`} className="block truncate font-medium hover:text-brand">{job.title}</Link>
                       <p className="text-sm text-text-muted">
                         {[job.location && (job.work_mode ? `${job.location} (${capitalize(job.work_mode)})` : job.location), capitalize(job.employment_type)].filter(Boolean).join(" · ")}
                       </p>
                     </div>
                     <div className="text-right">
-                      <p className="text-lg font-semibold">{job._count.applications}</p>
-                      <p className="text-xs text-text-muted">applicants</p>
+                      <Link to={`/employer/jobs/${job.id}/applicants`} className="block hover:text-brand" aria-label={`${job._count.applications} applicants for ${job.title}`}>
+                        <span className="block text-lg font-semibold">{job._count.applications}</span>
+                        <span className="block text-xs text-text-muted">applicants</span>
+                      </Link>
                     </div>
                   </li>
                 ))}
@@ -135,7 +138,7 @@ function EmployerContent({ data }) {
                   <li key={app.id} className="flex items-start gap-3">
                     <span aria-hidden="true" className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-brand-light text-xs font-semibold text-brand">{initials(name)}</span>
                     <div className="min-w-0 flex-1">
-                      <p className="text-sm font-semibold">{name}</p>
+                      <Link to={`/employer/talent/${app.candidate_profile_id ?? app.candidate_profile.id}`} className="text-sm font-semibold hover:text-brand">{name}</Link>
                       <p className="truncate text-xs text-text-muted">{app.candidate_profile.headline || app.job.title}</p>
                     </div>
                     <Badge className={applicationStatusStyle[app.status] ?? "bg-surface-muted"}>{capitalize(app.status)}</Badge>
