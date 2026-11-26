@@ -1,4 +1,3 @@
-import { useAuth } from "../../context/auth-context.js";
 import Button from "../ui/button.jsx";
 import logo from "../../assets/TalentGrid-Logo.svg";
 
@@ -38,8 +37,6 @@ function TalentGridLogo() {
 }
 
 function Navbar() {
-  const { user } = useAuth();
-
   return (
     <header className="sticky top-0 z-20 border-b border-border bg-surface/95 backdrop-blur">
       <nav className="mx-auto flex h-16 max-w-[1280px] items-center px-5 sm:px-8">
@@ -61,21 +58,13 @@ function Navbar() {
 
         {/* Actions */}
         <div className="ml-auto flex items-center gap-2 sm:gap-4">
-          {user ? (
-            <Button to="/dashboard" variant="primary" size="sm">
-              Dashboard
-            </Button>
-          ) : (
-            <>
-              <Button to="/login" variant="ghost" size="sm">
-                Log In
-              </Button>
+          <Button to="/login" variant="ghost" size="sm">
+            Log In
+          </Button>
 
-              <Button to="/register" variant="primary" size="sm">
-                Get Started
-              </Button>
-            </>
-          )}
+          <Button to="/register" variant="primary" size="sm">
+            Get Started
+          </Button>
         </div>
       </nav>
     </header>
