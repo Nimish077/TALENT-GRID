@@ -52,7 +52,7 @@ describe("portal layout", () => {
   it.each([
     ["candidate", "Candidate Portal", ["Dashboard", "My Skills", "Skill Assessments", "Jobs", "Applications"]],
     ["employer", "Employer Portal", ["Dashboard", "Talent Search", "Jobs", "Post a Job"]],
-    ["institute", "Institute Portal", ["Dashboard", "Students"]],
+    ["institute", "Institute Portal", ["Dashboard", "Students", "Placement Drives"]],
   ])("shows the %s navigation", (role, label, items) => {
     renderAt("/dashboard", people[role]);
 

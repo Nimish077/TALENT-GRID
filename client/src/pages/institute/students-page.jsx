@@ -1,9 +1,11 @@
 import { useState } from "react";
 import { Badge, Card, EmptyState, PageState, PendingNotice } from "../../components/dashboard/primitives.jsx";
 import AppShell from "../../components/layout/app-shell.jsx";
+import { ReadinessBadge, VerifiedSkills } from "../../components/institute/skills.jsx";
 import Button from "../../components/ui/button.jsx";
 import { institutionsApi } from "../../lib/endpoints.js";
 import { capitalize } from "../../lib/format.js";
+import { READINESS, readinessOf } from "../../lib/readiness.js";
 import { loadInstituteInstitution } from "../../lib/organization.js";
 import { useResource } from "../../lib/use-resource.js";
 
@@ -18,6 +20,7 @@ const PAGE_SIZE = 25;
 
 function StudentsPage() {
   const [filters, setFilters] = useState({ search: "", status: "", page: 1 });
+  const [readiness, setReadiness] = useState("");
   const [draft, setDraft] = useState({ search: "", status: "" });
 
   const { data, error, loading, reload } = useResource(async () => {
@@ -39,6 +42,7 @@ function StudentsPage() {
 
   const total = data?.pagination?.total ?? 0;
   const pages = Math.max(1, Math.ceil(total / PAGE_SIZE));
+  const visible = (data?.students ?? []).filter((s) => !readiness || readinessOf(s) === readiness);
 
   return (
     <AppShell title="Students" subtitle={data?.institution ? `${data.institution.name} · ${total} students` : undefined}>
@@ -55,23 +59,34 @@ function StudentsPage() {
                 <option value="">All statuses</option>
                 {["verified", "pending", "unverified", "rejected"].map((s) => <option key={s} value={s}>{capitalize(s)}</option>)}
               </select>
+              <select aria-label="Readiness" value={readiness} onChange={(e) => setReadiness(e.target.value)} className="h-10 rounded-[var(--radius)] border border-border bg-surface px-3 text-sm">
+                <option value="">All readiness</option>
+                {Object.entries(READINESS).map(([key, r]) => <option key={key} value={key}>{r.label}</option>)}
+              </select>
               <Button type="submit">Search</Button>
             </form>
 
             <Card className="mt-6 px-5">
-              {data.students.length === 0 ? (
-                <EmptyState>No students found.</EmptyState>
+              {visible.length === 0 ? (
+                <EmptyState>{data.students.length === 0 ? "No students found." : "No students on this page match the readiness filter."}</EmptyState>
               ) : (
                 <ul className="divide-y divide-border">
-                  {data.students.map((student) => (
-                    <li key={student.id} className="flex items-center justify-between gap-4 py-4">
-                      <div className="min-w-0">
+                  {visible.map((student) => (
+                    <li key={student.id} className="flex flex-wrap items-start justify-between gap-x-4 gap-y-2 py-4">
+                      <div className="min-w-0 flex-1">
                         <p className="truncate font-medium">{student.full_name}</p>
                         <p className="truncate text-xs text-text-muted">
                           {[student.enrollment_id, student.program, student.department, student.batch].filter(Boolean).join(" · ")}
                         </p>
+                        <VerifiedSkills skills={student.skills} />
                       </div>
-                      <Badge className={verificationStyle[student.verification_status] ?? verificationStyle.unverified}>{capitalize(student.verification_status)}</Badge>
+                      <div className="flex flex-wrap items-center gap-2">
+                        {student.skills?.profile_id && (
+                          <Badge className="bg-surface-muted text-text-secondary">{student.skills.verified_count} verified</Badge>
+                        )}
+                        <ReadinessBadge student={student} />
+                        <Badge className={verificationStyle[student.verification_status] ?? verificationStyle.unverified}>{capitalize(student.verification_status)}</Badge>
+                      </div>
                     </li>
                   ))}
                 </ul>

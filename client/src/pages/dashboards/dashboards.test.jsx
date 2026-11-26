@@ -15,7 +15,7 @@ vi.mock("../../lib/endpoints.js", () => ({
   applicationsApi: { mine: vi.fn() },
   assessmentsApi: { list: vi.fn() },
   organizationsApi: { mine: vi.fn(), jobs: vi.fn() },
-  institutionsApi: { mine: vi.fn(), memberships: vi.fn(), drives: vi.fn() },
+  institutionsApi: { mine: vi.fn(), memberships: vi.fn(), drives: vi.fn(), skillsSummary: vi.fn() },
 }));
 
 afterEach(() => {
@@ -185,6 +185,47 @@ describe("institute dashboard", () => {
     expect(screen.getByText("B.Tech · IT")).toBeInTheDocument();
     expect(screen.getByText("6/10")).toBeInTheDocument();
     expect(screen.getByText("3/10")).toBeInTheDocument(); // unverified = 10 - 6 - 1 - 0
+  });
+
+  function mockActiveRoster() {
+    institutionsApi.mine.mockResolvedValue({ memberships: [{ status: "active", role: "owner", institution: { id: "i1", name: "BITS", status: "active" } }] });
+    institutionsApi.memberships.mockResolvedValue({ items: [], pagination: { total: 10 } });
+    institutionsApi.drives.mockResolvedValue({ drives: [] });
+  }
+
+  it("shows student skill readiness", async () => {
+    mockActiveRoster();
+    institutionsApi.skillsSummary.mockResolvedValue({
+      students: 10, linked: 7, with_verified: 4, job_ready: 2,
+      top_skills: [{ name: "React", verified_students: 4 }, { name: "SQL", verified_students: 2 }],
+    });
+    renderDashboard(user);
+
+    expect(await screen.findByText("Student skill readiness")).toBeInTheDocument();
+    expect(screen.getByText("Linked students")).toBeInTheDocument();
+    expect(screen.getByText("With a verified skill")).toBeInTheDocument();
+    expect(screen.getByText("Job-ready")).toBeInTheDocument();
+    expect(institutionsApi.skillsSummary).toHaveBeenCalledWith("i1");
+    expect(screen.getByRole("progressbar", { name: "React verified students" })).toHaveAttribute("aria-valuenow", "100");
+    expect(screen.getByRole("progressbar", { name: "SQL verified students" })).toHaveAttribute("aria-valuenow", "50");
+    expect(screen.getByText(/at least 2 skills verified through TalentGrid assessments/i)).toBeInTheDocument();
+  });
+
+  it("keeps the dashboard working when skills summary fails", async () => {
+    mockActiveRoster();
+    institutionsApi.skillsSummary.mockRejectedValue(new Error("boom"));
+    renderDashboard(user);
+
+    expect(await screen.findByText(/skill readiness is unavailable/i)).toBeInTheDocument();
+    expect(screen.getByText("Verification Status")).toBeInTheDocument();
+  });
+
+  it("does not request skills summary for pending institutions", async () => {
+    institutionsApi.mine.mockResolvedValue({ memberships: [{ status: "pending", institution: { id: "i1", name: "BITS", status: "pending" } }] });
+    renderDashboard(user);
+    await screen.findByText("Institute Dashboard");
+    expect(institutionsApi.skillsSummary).not.toHaveBeenCalled();
+    expect(screen.queryByText("Student skill readiness")).not.toBeInTheDocument();
   });
 });
 

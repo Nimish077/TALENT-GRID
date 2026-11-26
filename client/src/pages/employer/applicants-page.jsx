@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { Badge, Card, EmptyState, PageState } from "../../components/dashboard/primitives.jsx";
 import AppShell from "../../components/layout/app-shell.jsx";
 import Button from "../../components/ui/button.jsx";
@@ -50,11 +50,15 @@ function ApplicantsPage() {
                     <div className="flex min-w-0 items-center gap-3">
                       <span aria-hidden="true" className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-brand-light text-xs font-semibold text-brand">{initials(name)}</span>
                       <div className="min-w-0">
-                        <p className="truncate font-medium">{name}</p>
+                        <p className="flex items-center gap-2">
+                          <Link to={`/employer/talent/${app.candidate_profile_id}`} className="truncate font-medium hover:text-brand">{name}</Link>
+                          {app.source === "invited" && <Badge className="bg-brand-light font-normal text-brand">Invited</Badge>}
+                        </p>
                         <p className="truncate text-xs text-text-muted">
                           {[app.candidate_profile?.headline, app.applied_at && `Applied ${new Date(app.applied_at).toLocaleDateString()}`].filter(Boolean).join(" · ")}
                         </p>
                         {app.cover_note && <p className="mt-1 line-clamp-2 text-xs text-text-secondary">{app.cover_note}</p>}
+                        <Link to={`/employer/talent/${app.candidate_profile_id}`} className="mt-1 inline-block text-xs font-medium text-brand hover:text-brand-dark">View profile &amp; assessment evidence →</Link>
                       </div>
                     </div>
                     <div className="flex items-center gap-2">

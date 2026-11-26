@@ -40,7 +40,10 @@ function ApplicationsPage() {
               {applications.map((app) => (
                 <li key={app.id} className="flex flex-wrap items-center justify-between gap-4 py-4">
                   <div className="min-w-0">
-                    <p className="font-medium">{app.job?.title}</p>
+                    <p className="flex flex-wrap items-center gap-2 font-medium">
+                      {app.job?.title}
+                      {app.source === "invited" && <Badge className="bg-brand-light font-normal text-brand">Invited by employer</Badge>}
+                    </p>
                     <p className="text-xs text-text-muted">
                       {[app.job?.organization?.name, app.applied_at && `Applied ${new Date(app.applied_at).toLocaleDateString()}`].filter(Boolean).join(" · ")}
                     </p>

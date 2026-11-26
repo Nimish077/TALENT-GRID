@@ -24,6 +24,7 @@ export const PORTALS = {
     items: [
       { label: "Dashboard", to: "/dashboard", icon: "dashboard" },
       { label: "Students", to: "/institute/students", icon: "students" },
+      { label: "Placement Drives", to: "/institute/drives", icon: "drives" },
     ],
   },
   admin: {

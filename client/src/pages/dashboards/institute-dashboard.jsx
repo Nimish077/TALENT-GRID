@@ -21,13 +21,15 @@ async function loadInstituteDashboard() {
 
   const id = institution.id;
   const total = (params) => institutionsApi.memberships(id, { limit: 1, ...params }).then((r) => r.pagination.total);
-  const [students, verified, pendingVerification, rejected, recent, drives] = await Promise.all([
+  const [students, verified, pendingVerification, rejected, recent, drives, skills] = await Promise.all([
     total(),
     total({ verification_status: "verified" }),
     total({ verification_status: "pending" }),
     total({ verification_status: "rejected" }),
     institutionsApi.memberships(id, { limit: 5 }),
     institutionsApi.drives(id),
+    // A skills-summary failure must not take the whole dashboard down.
+    Promise.resolve().then(() => institutionsApi.skillsSummary(id)).catch(() => null),
   ]);
   return {
     institution,
@@ -39,6 +41,7 @@ async function loadInstituteDashboard() {
     unverified: Math.max(0, students - verified - pendingVerification - rejected),
     recent: recent.items,
     drives: drives.drives,
+    skills,
   };
 }
 
@@ -63,6 +66,48 @@ const verificationStyle = {
   rejected: "bg-error-light text-error",
   unverified: "bg-surface-muted text-text-secondary",
 };
+
+function SkillReadiness({ skills }) {
+  const top = skills?.top_skills ?? [];
+  const max = Math.max(...top.map((s) => s.verified_students), 1);
+  return (
+    <section className="mt-6" aria-labelledby="skill-readiness-title">
+      <h2 id="skill-readiness-title" className="text-[15px] font-semibold tracking-tight">Student skill readiness</h2>
+      {!skills ? (
+        <p role="status" className="mt-3 rounded-xl border border-border bg-surface p-4 text-[13px] text-text-secondary">
+          Skill readiness is unavailable right now. The rest of your dashboard is up to date.
+        </p>
+      ) : (
+        <>
+          <div className="mt-3 grid gap-4 sm:grid-cols-3">
+            <StatCard label="Linked students" value={skills.linked} hint={`of ${skills.students} students`} tone="text-brand" />
+            <StatCard label="With a verified skill" value={skills.with_verified} tone="text-accent-dark" />
+            <StatCard label="Job-ready" value={skills.job_ready} tone="text-accent-dark" />
+          </div>
+          <Card className="mt-4 p-5">
+            <CardHeader title="Most verified skills" />
+            {top.length === 0 ? (
+              <EmptyState>No verified skills yet.</EmptyState>
+            ) : (
+              <ul className="mt-4 space-y-4">
+                {top.map((skill) => (
+                  <li key={skill.name}>
+                    <div className="mb-1.5 flex justify-between text-sm">
+                      <span className="text-text-secondary">{skill.name}</span>
+                      <span className="font-medium text-accent-dark">{skill.verified_students}</span>
+                    </div>
+                    <ProgressBar percent={Math.round((skill.verified_students / max) * 100)} color="bg-accent" label={`${skill.name} verified students`} />
+                  </li>
+                ))}
+              </ul>
+            )}
+            <p className="mt-4 text-xs text-text-secondary">Job-ready = at least 2 skills verified through TalentGrid assessments</p>
+          </Card>
+        </>
+      )}
+    </section>
+  );
+}
 
 function InstituteContent({ data }) {
   const { institution, pending, suspended, restricted } = data;
@@ -102,6 +147,8 @@ function InstituteContent({ data }) {
         <StatCard icon={<Icon name="flag" />} iconTone="bg-warning-light text-warning" label="Placement Drives" value={drives.length} tone="text-warning" />
         <StatCard icon={<Icon name="briefcase" />} label="Open Drives" value={openDrives.length} tone="text-brand" />
       </div>
+
+      {!pending && !restricted && <SkillReadiness skills={data.skills} />}
 
       <Card className="mt-6 p-5">
         <CardHeader title="Skill Development Pipeline" />

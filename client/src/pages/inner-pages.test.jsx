@@ -20,7 +20,7 @@ vi.mock("../lib/endpoints.js", () => ({
   applicationsApi: { mine: vi.fn(), withdraw: vi.fn(), setStatus: vi.fn() },
   assessmentsApi: { list: vi.fn(), attemptsMine: vi.fn(), startAttempt: vi.fn(), abandonAttempt: vi.fn() },
   organizationsApi: { mine: vi.fn(), jobs: vi.fn(), createJob: vi.fn() },
-  institutionsApi: { mine: vi.fn(), memberships: vi.fn(), drives: vi.fn() },
+  institutionsApi: { mine: vi.fn(), memberships: vi.fn(), drives: vi.fn(), skillsSummary: vi.fn() },
 }));
 
 afterEach(() => {
@@ -199,6 +199,34 @@ describe("institute students page", () => {
     await waitFor(() =>
       expect(institutionsApi.memberships).toHaveBeenLastCalledWith("i1", expect.objectContaining({ verification_status: "pending", page: 1 })),
     );
+  });
+
+  it("shows verified skills, readiness and filters by readiness", async () => {
+    institutionsApi.mine.mockResolvedValue(institution);
+    institutionsApi.memberships.mockResolvedValue({
+      items: [
+        { id: "m1", full_name: "Anjali Singh", verification_status: "verified", skills: { profile_id: "p1", verified_count: 4, verified: [
+          { name: "React", level: "advanced" }, { name: "SQL", level: "beginner" }, { name: "Node", level: "intermediate" }, { name: "Go", level: "beginner" },
+        ] } },
+        { id: "m2", full_name: "Ravi Kumar", verification_status: "pending", skills: { profile_id: "p2", verified_count: 1, verified: [{ name: "Java", level: "beginner" }] } },
+        { id: "m3", full_name: "Neha Rao", verification_status: "unverified", skills: { profile_id: null, verified_count: 0, verified: [] } },
+      ],
+      pagination: { total: 3 },
+    });
+    const user = userEvent.setup();
+    renderAt("/institute/students", <StudentsPage />, "institute");
+
+    expect(await screen.findByText("React · Advanced")).toBeInTheDocument();
+    expect(screen.getByText("+1 more")).toBeInTheDocument();
+    expect(screen.queryByText("Go · Beginner")).not.toBeInTheDocument();
+    expect(screen.getByText("Not linked to a candidate account")).toBeInTheDocument();
+    expect(screen.getAllByText("Job-ready")).toHaveLength(2); // option + badge
+    expect(screen.getAllByText("Developing")).toHaveLength(2);
+
+    await user.selectOptions(screen.getByLabelText("Readiness"), "not_started");
+    expect(screen.getByText("Neha Rao")).toBeInTheDocument();
+    expect(screen.queryByText("Anjali Singh")).not.toBeInTheDocument();
+    expect(institutionsApi.memberships).toHaveBeenCalledTimes(1);
   });
 
   it("explains pending institutions", async () => {
