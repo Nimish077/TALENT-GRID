@@ -5,7 +5,7 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 import { AuthContext } from "../context/auth-context.js";
 import { applicationsApi, assessmentsApi, institutionsApi, jobsApi, organizationsApi, skillsApi } from "../lib/endpoints.js";
 import RoleRoute from "../components/layout/role-route.jsx";
-import AppHeader from "../components/layout/app-header.jsx";
+import NotificationsMenu from "../components/layout/notifications-menu.jsx";
 import ApplicationsPage from "./candidate/applications-page.jsx";
 import AssessmentsPage from "./candidate/assessments-page.jsx";
 import JobsPage from "./candidate/jobs-page.jsx";
@@ -64,7 +64,7 @@ describe("role guard", () => {
 describe("notifications menu", () => {
   it("opens and closes instead of being a dead button", async () => {
     const user = userEvent.setup();
-    renderAt("/x", <AppHeader />);
+    renderAt("/x", <NotificationsMenu />);
     await user.click(screen.getByRole("button", { name: /notifications/i }));
     expect(screen.getByText(/all caught up/i)).toBeInTheDocument();
     await user.keyboard("{Escape}");
@@ -178,7 +178,7 @@ describe("employer pages", () => {
     expect(jobsApi.publish).toHaveBeenCalledWith("d1");
     await user.click(await screen.findByRole("button", { name: "Close" }));
     expect(jobsApi.close).toHaveBeenCalledWith("p1");
-    expect(screen.getByRole("link", { name: "3 applicants" })).toHaveAttribute("href", "/employer/jobs/p1/applicants");
+    expect(await screen.findByRole("link", { name: "3 applicants" })).toHaveAttribute("href", "/employer/jobs/p1/applicants");
   });
 
   it("only offers valid status transitions for applicants", async () => {
