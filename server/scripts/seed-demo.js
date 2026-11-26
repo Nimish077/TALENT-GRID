@@ -6,12 +6,23 @@
 //
 // Idempotent: safe to run repeatedly. It never deletes existing data.
 //
-// Usage (from server/):
-//   DEMO_PASSWORD='Choose-A-Password' npm run db:seed-demo
-// If DEMO_PASSWORD is not set, a random one is generated and printed once.
+// The demo accounts (all @talentgrid.demo) have FIXED credentials, one password
+// per role, so the demo never depends on remembering a generated password.
+// Running the seed again restores these passwords for the demo accounts.
+//
+//   admin@talentgrid.demo       Admin@Demo2026
+//   candidate@talentgrid.demo   Candidate@Demo2026   (every demo candidate)
+//   employer@talentgrid.demo    Employer@Demo2026    (every demo employer)
+//   institute@talentgrid.demo   Institute@Demo2026   (every demo institute)
+//
+// These are public demo values (they are in the repository): rotate them after
+// the demo, or override them without editing code:
+//   DEMO_ADMIN_PASSWORD='...'  replaces the admin password
+//   DEMO_PASSWORD='...'        replaces the candidate/employer/institute passwords
+//
+// Usage (from server/):  npm run db:seed-demo
 
 import "dotenv/config";
-import crypto from "node:crypto";
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
@@ -28,12 +39,18 @@ const here = path.dirname(fileURLToPath(import.meta.url));
 const QUESTION_DIR = path.join(here, "..", "seed", "questions");
 const DOMAIN = "talentgrid.demo";
 
-const password =
-  process.env.DEMO_PASSWORD ||
-  `Td-${crypto.randomBytes(8).toString("base64url")}`;
-if (password.length < 8) {
-  console.error("DEMO_PASSWORD must be at least 8 characters long.");
-  process.exit(1);
+// Fixed demo credentials, one password per platform role (see the header).
+const PASSWORDS = {
+  admin: process.env.DEMO_ADMIN_PASSWORD || "Admin@Demo2026",
+  candidate: process.env.DEMO_PASSWORD || "Candidate@Demo2026",
+  employer: process.env.DEMO_PASSWORD || "Employer@Demo2026",
+  institute: process.env.DEMO_PASSWORD || "Institute@Demo2026",
+};
+for (const [role, value] of Object.entries(PASSWORDS)) {
+  if (value.length < 8) {
+    console.error(`The ${role} demo password must be at least 8 characters long.`);
+    process.exit(1);
+  }
 }
 
 const prisma = new PrismaClient({
@@ -94,14 +111,19 @@ const STUDENTS = [
   ["E2210", "Kavya Reddy", "Data Science", "M.Tech", "2026", 9.0, 0, "kavya@talentgrid.demo"],
 ];
 
-const hash = await bcrypt.hash(password, 10);
+const hashes = Object.fromEntries(
+  await Promise.all(
+    Object.entries(PASSWORDS).map(async ([role, value]) => [role, await bcrypt.hash(value, 10)])
+  )
+);
 const emailFor = (name) => `${name.toLowerCase().split(" ")[0]}@${DOMAIN}`;
 
 async function ensureUser({ email, full_name, role }) {
   return prisma.user.upsert({
     where: { email },
-    update: { full_name, status: "active" },
-    create: { email, full_name, role, password_hash: hash, email_verified_at: new Date() },
+    // Demo accounts always get the documented password back when the seed runs.
+    update: { full_name, status: "active", password_hash: hashes[role] },
+    create: { email, full_name, role, password_hash: hashes[role], email_verified_at: new Date() },
   });
 }
 
@@ -382,22 +404,20 @@ async function main() {
   // --- summary -------------------------------------------------------------
   console.log(`\nSkills: ${SKILLS.length}, assessments: ${Object.keys(assessment).length}, questions: ${questionCount}`);
   console.log(`Candidates: ${CANDIDATES.length + 1}, jobs: ${JOBS.length}, students: ${STUDENTS.length}`);
-  console.log("\nDemo accounts (same password for all):");
+  console.log("\nDemo accounts (fixed credentials, one password per role):");
   const rows = [
-    ["Admin", `admin@${DOMAIN}`],
-    ["Candidate (nothing verified yet)", `candidate@${DOMAIN}`],
-    ["Candidate (verified skills)", emailFor("Arjun Sharma")],
-    ["Employer (active)", `employer@${DOMAIN}`],
-    ["Institute (active)", `institute@${DOMAIN}`],
-    ["Employer awaiting approval", `pending-employer@${DOMAIN}`],
-    ["Institute awaiting approval", `pending-institute@${DOMAIN}`],
+    ["Admin", `admin@${DOMAIN}`, "admin"],
+    ["Candidate (nothing verified yet)", `candidate@${DOMAIN}`, "candidate"],
+    ["Candidate (verified skills)", emailFor("Arjun Sharma"), "candidate"],
+    ["Employer (active)", `employer@${DOMAIN}`, "employer"],
+    ["Institute (active)", `institute@${DOMAIN}`, "institute"],
+    ["Employer awaiting approval", `pending-employer@${DOMAIN}`, "employer"],
+    ["Institute awaiting approval", `pending-institute@${DOMAIN}`, "institute"],
   ];
-  for (const [label, email] of rows) console.log(`  ${label.padEnd(34)} ${email}`);
-  console.log(`\nPassword: ${password}`);
-  if (!process.env.DEMO_PASSWORD) {
-    console.log("(generated just now: note it down, it is not stored anywhere)");
+  for (const [label, email, role] of rows) {
+    console.log(`  ${label.padEnd(34)} ${email.padEnd(34)} ${PASSWORDS[role]}`);
   }
-  console.log("\nExisting accounts keep their current password; only new accounts get the one above.");
+  console.log("\nPasswords for all @talentgrid.demo accounts were set to the values above.");
 }
 
 main()

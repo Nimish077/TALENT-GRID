@@ -4,11 +4,11 @@ A 7-minute story: **a skill becomes verified, and an employer hires on it.**
 
 ## Before you present (do this 15 minutes earlier)
 
-1. **Seed the live database** (once). From `server/`, with the production `DATABASE_URI`:
+1. **Seed the live database** (once; safe to repeat). From `server/`, with the production `DATABASE_URI`:
    ```bash
-   DEMO_PASSWORD='choose-a-password' npm run db:seed-demo
+   npm run db:seed-demo
    ```
-   It is safe to run again. It prints the demo accounts. Use the same password for all of them.
+   It creates the demo data and sets the fixed demo passwords below. Running it again restores them.
 2. **Warm up the backend.** Render's free tier sleeps. Open the live site and sign in once, so the first request during the demo is not a 30-60 second wait.
 3. **Reset to a clean demo state** (after any rehearsal), from `server/` with the production `DATABASE_URI`:
    ```bash
@@ -18,17 +18,25 @@ A 7-minute story: **a skill becomes verified, and an employer hires on it.**
 4. Keep a second browser window signed in as the **employer** and a third as the **admin**.
 5. Have the assessments in mind: JavaScript, Python, React, Node.js, SQL, Machine Learning (12 questions, 15 minutes each).
 
-## Demo accounts
+## Demo accounts (fixed credentials)
 
-| Role | Email | What it shows |
-| --- | --- | --- |
-| Candidate (fresh) | `candidate@talentgrid.demo` | Nothing verified yet: take a test live |
-| Candidate (verified) | `arjun@talentgrid.demo` | A finished profile with verified skills |
-| Employer | `employer@talentgrid.demo` | Active organization, jobs, applicants, talent search |
-| Institute | `institute@talentgrid.demo` | Students, verification status, a placement drive |
-| Admin | `admin@talentgrid.demo` | Approval queue and platform statistics |
-| Employer awaiting approval | `pending-employer@talentgrid.demo` | Locked out until the admin approves |
-| Institute awaiting approval | `pending-institute@talentgrid.demo` | Same, for institutes |
+One password per role, the same on every environment where `npm run db:seed-demo` has been run.
+
+| Role | Email | Password | What it shows |
+| --- | --- | --- | --- |
+| Admin | `admin@talentgrid.demo` | `Admin@Demo2026` | Approval queue and platform statistics (sign in at `/admin/login`) |
+| Candidate (fresh) | `candidate@talentgrid.demo` | `Candidate@Demo2026` | Nothing verified yet: take a test live |
+| Candidate (verified) | `arjun@talentgrid.demo` | `Candidate@Demo2026` | A finished profile with verified skills |
+| Employer | `employer@talentgrid.demo` | `Employer@Demo2026` | Active organization, jobs, applicants, talent search |
+| Institute | `institute@talentgrid.demo` | `Institute@Demo2026` | Students, verified skills, a placement drive |
+| Employer awaiting approval | `pending-employer@talentgrid.demo` | `Employer@Demo2026` | Locked out until the admin approves |
+| Institute awaiting approval | `pending-institute@talentgrid.demo` | `Institute@Demo2026` | Same, for institutes |
+
+Every other demo candidate (Priya, Vikram, Sneha, Kavya, Rohan, Anjali, Deepika) uses the candidate password.
+
+> **These are public demo credentials.** They are in the repository, so anyone who can read it could sign in to a site seeded with them, including as admin. That is fine for a demo with demo data. Afterwards, either change them or lock the admin down:
+> - Seed with your own values: `DEMO_ADMIN_PASSWORD='...' DEMO_PASSWORD='...' npm run db:seed-demo` (the second one replaces the candidate, employer and institute passwords).
+> - Or reset just the admin: `npm run admin:create -- admin@talentgrid.demo "NewPassword" "Platform Admin"`.
 
 ## The story
 

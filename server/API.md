@@ -207,11 +207,11 @@ every skill's `target_level`; the skill is verified at the level achieved.
 
 ## Demo data
 
-`DEMO_PASSWORD=... npm run db:seed-demo` (from `server/`) is idempotent and
+`npm run db:seed-demo` (from `server/`) is idempotent and
 creates accounts for every role, the skill catalogue, six MCQ assessments
 (126 questions in `seed/questions/`), verified candidates, an employer with
 jobs and applicants, an institute with students and a drive, and pending
-organizations/institutions for the admin approval queue.
+organizations/institutions for the admin approval queue. The demo accounts (`*@talentgrid.demo`) get fixed passwords, one per role, listed in `docs/DEMO.md`; override them with `DEMO_ADMIN_PASSWORD` and `DEMO_PASSWORD`.
 
 ## Institute readiness — additions
 
