@@ -57,6 +57,10 @@ function Login() {
           Don&apos;t have an account?{" "}
           <Link to="/register" className="font-medium text-brand hover:text-brand-dark">Create one</Link>
         </p>
+        <p className="mt-2 text-sm text-text-secondary">
+          Administrator?{" "}
+          <Link to="/admin/login" className="font-medium text-brand hover:text-brand-dark">Sign in as admin</Link>
+        </p>
       </div>
     </AuthLayout>
   );
