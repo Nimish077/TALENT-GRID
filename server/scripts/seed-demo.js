@@ -90,6 +90,8 @@ const STUDENTS = [
   ["E2206", "Ishita Rao", "Data Science", "M.Tech", "2026", 9.4, 0, null],
   ["E2207", "Nikhil Bansal", "Information Technology", "B.Tech", "2027", 7.2, 0, null],
   ["E2208", "Tara Menon", "Computer Science", "B.Tech", "2027", 8.7, 0, null],
+  ["E2209", "Sneha Iyer", "Computer Science", "B.Tech", "2027", 8.2, 0, "sneha@talentgrid.demo"],
+  ["E2210", "Kavya Reddy", "Data Science", "M.Tech", "2026", 9.0, 0, "kavya@talentgrid.demo"],
 ];
 
 const hash = await bcrypt.hash(password, 10);

@@ -10,6 +10,11 @@ import { requireInstitutionAccess } from "../../middleware/tenant.js";
 import { parsePagination, paginatedData } from "../../utils/pagination.js";
 import { idParam } from "../candidates/candidates.schemas.js";
 import {
+  cohortSummary,
+  skillsView,
+  verifiedSkillsByUser,
+} from "../../services/student-skills.js";
+import {
   institutionCreateSchema,
   institutionUpdateSchema,
   membershipCreateSchema,
@@ -263,7 +268,29 @@ router.get(
       }),
       prisma.institutionMembership.count({ where }),
     ]);
-    return sendSuccess(res, { data: paginatedData(items, total, page, limit) });
+
+    // Show each student's verified skills when they have a candidate account.
+    const byUser = await verifiedSkillsByUser(
+      prisma,
+      items.map((item) => item.user_id)
+    );
+    const withSkills = items.map((item) => ({
+      ...item,
+      skills: skillsView(item.user_id ? byUser.get(item.user_id) : null),
+    }));
+    return sendSuccess(res, {
+      data: paginatedData(withSkills, total, page, limit),
+    });
+  })
+);
+
+router.get(
+  "/:institutionId/skills-summary",
+  requireInstitutionAccess({ roles: ["owner", "admin"] }),
+  asyncHandler(async (req, res) => {
+    return sendSuccess(res, {
+      data: await cohortSummary(prisma, req.institution.id),
+    });
   })
 );
 

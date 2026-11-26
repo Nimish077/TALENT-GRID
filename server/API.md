@@ -212,3 +212,10 @@ creates accounts for every role, the skill catalogue, six MCQ assessments
 (126 questions in `seed/questions/`), verified candidates, an employer with
 jobs and applicants, an institute with students and a drive, and pending
 organizations/institutions for the admin approval queue.
+
+## Institute readiness — additions
+
+| Method | Path                                    | Access      | Notes                                                                                                                                                                                  |
+| ------ | --------------------------------------- | ----------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| GET    | `/institutions/:id/memberships`         | owner/admin | Each item now includes `skills: { profile_id, verified_count, verified: [{ name, level }] }`. `profile_id` is `null` for students without a linked candidate account.                |
+| GET    | `/institutions/:id/skills-summary`      | owner/admin | `{ students, linked, with_verified, job_ready, top_skills: [{ name, verified_students }] }` over active students. Job-ready = at least 2 skills verified through graded assessments. |
