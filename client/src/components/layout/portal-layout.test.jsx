@@ -44,14 +44,14 @@ describe("navigation helpers", () => {
 
   it("derives a page title and falls back for unknown roles", () => {
     expect(pageTitle("candidate", "/applications")).toBe("Applications · TalentGrid");
-    expect(portalFor("something-else").label).toBe("Admin");
+    expect(portalFor("something-else").label).toBe("Admin Portal");
   });
 });
 
 describe("portal layout", () => {
   it.each([
-    ["candidate", "Candidate Portal", ["Dashboard", "Jobs", "Applications", "Skill Assessments"]],
-    ["employer", "Employer Portal", ["Dashboard", "Jobs", "Post a Job"]],
+    ["candidate", "Candidate Portal", ["Dashboard", "My Skills", "Skill Assessments", "Jobs", "Applications"]],
+    ["employer", "Employer Portal", ["Dashboard", "Talent Search", "Jobs", "Post a Job"]],
     ["institute", "Institute Portal", ["Dashboard", "Students"]],
   ])("shows the %s navigation", (role, label, items) => {
     renderAt("/dashboard", people[role]);
