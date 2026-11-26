@@ -35,7 +35,7 @@ function ApplicantsPage() {
   const applications = data?.applications ?? [];
 
   return (
-    <AppShell title="Applicants" subtitle="Review candidates and move them through your pipeline.">
+    <AppShell back={{ to: "/employer/jobs", label: "Your jobs" }} title="Applicants" subtitle="Review candidates and move them through your pipeline.">
       {actionError && <p role="alert" className="mb-4 text-sm text-error">{actionError}</p>}
       <PageState loading={loading} error={error} onRetry={reload}>
         <Card className="px-5">

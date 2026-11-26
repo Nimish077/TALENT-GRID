@@ -74,7 +74,7 @@ function PostJobPage() {
   }
 
   return (
-    <AppShell title="Post a Job" subtitle={data?.organization?.name} width="max-w-3xl">
+    <AppShell back={{ to: "/employer/jobs", label: "Your jobs" }} title="Post a Job" subtitle={data?.organization?.name} width="max-w-3xl">
       <PageState loading={loading} error={error} onRetry={reload}>
         {data?.pending && <PendingNotice kind="organization" suspended={data.suspended} />}
         {data?.canManage && (

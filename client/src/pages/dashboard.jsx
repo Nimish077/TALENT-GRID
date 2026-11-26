@@ -1,4 +1,3 @@
-import AppHeader from "../components/layout/app-header.jsx";
 import { useAuth } from "../context/auth-context.js";
 import CandidateDashboard from "./dashboards/candidate-dashboard.jsx";
 import EmployerDashboard from "./dashboards/employer-dashboard.jsx";
@@ -22,13 +21,7 @@ function AdminPlaceholder({ user }) {
 function Dashboard() {
   const { user } = useAuth();
   const RoleDashboard = dashboards[user.role];
-
-  return (
-    <div className="min-h-screen bg-bg">
-      <AppHeader />
-      {RoleDashboard ? <RoleDashboard /> : <AdminPlaceholder user={user} />}
-    </div>
-  );
+  return RoleDashboard ? <RoleDashboard /> : <AdminPlaceholder user={user} />;
 }
 
 export default Dashboard;

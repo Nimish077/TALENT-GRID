@@ -1,6 +1,7 @@
 import { Navigate, Route, Routes } from "react-router-dom";
 import Navbar from "./components/layout/navbar.jsx";
 import ProtectedRoute from "./components/layout/protected-route.jsx";
+import PortalLayout from "./components/layout/portal-layout.jsx";
 import RoleRoute from "./components/layout/role-route.jsx";
 import Landing from "./components/landing/landing-page.jsx";
 import AuthProvider from "./context/auth-provider.jsx";
@@ -31,6 +32,7 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route element={<ProtectedRoute />}>
+          <Route element={<PortalLayout />}>
           <Route path="/dashboard" element={<Dashboard />} />
           <Route element={<RoleRoute roles={["candidate"]} />}>
             <Route path="/jobs" element={<JobsPage />} />
@@ -44,6 +46,7 @@ function App() {
           </Route>
           <Route element={<RoleRoute roles={["institute"]} />}>
             <Route path="/institute/students" element={<StudentsPage />} />
+          </Route>
           </Route>
         </Route>
         <Route path="*" element={<Navigate to="/" replace />} />
