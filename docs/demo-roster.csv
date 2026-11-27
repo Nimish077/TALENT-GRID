@@ -1,0 +1,13 @@
+enrollment_id,full_name,institutional_email,personal_email,phone,department,program,batch,graduation_year,current_semester,cgpa,backlog_count
+E3001,Aarav Mehta,aarav.mehta@lakeview.example.com,aarav.mehta@gmail.com,9876500001,Computer Science,B.Tech,2027,2027,6,8.6,0
+E3002,Diya Sharma,diya.sharma@lakeview.example.com,diya.sharma@gmail.com,9876500002,Information Technology,B.Tech,2027,2027,6,9.0,0
+E3003,Kabir Singh,kabir.singh@lakeview.example.com,,9876500003,Computer Science,B.Tech,2027,2027,6,7.4,1
+E3004,Ananya Iyer,ananya.iyer@lakeview.example.com,ananya.iyer@gmail.com,9876500004,Electronics,B.Tech,2027,2027,6,8.1,0
+E3005,Vihaan Gupta,vihaan.gupta@lakeview.example.com,,9876500005,Data Science,M.Tech,2026,2026,3,8.9,0
+E3006,Saanvi Reddy,saanvi.reddy@lakeview.example.com,saanvi.reddy@gmail.com,9876500006,Computer Science,B.Tech,2026,2026,8,9.2,0
+E3007,Arjun Nair,arjun.nair@lakeview.example.com,,9876500007,Information Technology,B.Tech,2027,2027,6,6.8,2
+E3008,Myra Kapoor,myra.kapoor@lakeview.example.com,myra.kapoor@gmail.com,9876500008,Computer Science,B.Tech,2028,2028,4,8.3,0
+E3009,Reyansh Joshi,reyansh.joshi@lakeview.example.com,,9876500009,Mechanical,B.Tech,2027,2027,6,7.7,0
+E3010,Ira Bansal,ira.bansal@lakeview.example.com,ira.bansal@gmail.com,9876500010,Data Science,M.Tech,2026,2026,3,9.4,0
+E3011,Candidate Demo,candidate@talentgrid.demo,,9876500011,Computer Science,B.Tech,2027,2027,6,8.0,0
+E3012,Priya Nair,priya.nair@talentgrid.demo,,9876500012,Computer Science,B.Tech,2027,2027,6,8.8,0
