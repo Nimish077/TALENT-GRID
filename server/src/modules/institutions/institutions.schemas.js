@@ -61,6 +61,11 @@ export const claimCreateSchema = z.object({
   requested_email: email,
 });
 
+export const claimByLoginSchema = z.object({
+  membership_id: z.string().uuid(),
+  enrollment_id: z.string().trim().min(1).max(80),
+});
+
 export const claimVerifySchema = z.object({
   otp: z.string().regex(/^\d{6}$/, "OTP must be a 6-digit code"),
 });

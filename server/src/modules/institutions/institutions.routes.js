@@ -411,23 +411,28 @@ router.post(
       },
     });
 
+    // Imported students are "shadow" profiles: they exist on the roster but no
+    // account owns them. They become verified when the real student claims them.
     let successful = 0;
-    for (const row of rows) {
+    const errors = [];
+    for (const [index, row] of rows.entries()) {
       try {
         await prisma.institutionMembership.create({
           data: {
             institution_id: req.institution.id,
             import_id: importRecord.id,
             ...row,
-            verification_status: "verified",
+            verification_status: "unverified",
             verification_source: "institution_import",
-            verified_at: new Date(),
           },
         });
         successful += 1;
-      } catch {
-        // Duplicate (institution_id, enrollment_id) or invalid row — counted
-        // as failed; partial imports are expected.
+      } catch (error) {
+        errors.push({
+          row: index + 1,
+          enrollment_id: row.enrollment_id,
+          reason: error?.code === "P2002" ? "Enrollment id already exists" : "Could not be saved",
+        });
       }
     }
 
@@ -447,7 +452,7 @@ router.post(
     return sendSuccess(res, {
       statusCode: 201,
       message: "Import processed",
-      data: { import: updated },
+      data: { import: updated, errors },
     });
   })
 );

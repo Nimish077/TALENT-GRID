@@ -80,3 +80,14 @@ Be honest about the limits if asked: an unsupervised online test cannot stop som
 ## Known gaps (not built yet)
 
 Candidate profile sections (experience, education, projects), notifications, placement-drive management and bulk student import in the UI, password reset, a question-management screen for admins (questions are seeded from `server/seed/questions`), proctoring.
+
+## Student profiles from a CSV (shadow profiles)
+
+Institute → Students → **Import students from CSV** (template download included). Each valid row creates a profile that no account owns yet ("Awaiting claim"). A student claims theirs by registering with the **same email** the institute listed and confirming their **enrollment id** on the candidate dashboard; the profile then becomes verified. Try it: upload a row with `priya.nair@talentgrid.demo`, register that email as a candidate, claim.
+
+## Skills, tests and applying
+
+- A skill can be verified only if a platform test exists (HTML, CSS, JavaScript, TypeScript, React, Node.js, Python, SQL, Java, Git, Docker, Machine Learning). Other skills show "No test available yet".
+- Score decides the tag: under 50 Beginner, 50-79 Intermediate, 80+ Advanced.
+- A job's required skills must be on the candidate's profile before they can apply; the jobs page shows which ones are missing.
+- The server demo switch: `GET /api/v1/config` returns `demo_login`, driven by `DEMO_LOGIN` (or `SEED_DEMO` when unset). No Vercel rebuild needed.

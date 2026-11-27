@@ -16,6 +16,7 @@ import {
   applicationCreateSchema,
   invitationCreateSchema,
 } from "./jobs.schemas.js";
+import { testableSkills } from "../../services/skill-tests.js";
 import { getProfileForUser } from "../candidates/candidates.service.js";
 
 const router = Router();
@@ -69,7 +70,20 @@ router.get(
       }),
       prisma.job.count({ where }),
     ]);
-    return sendSuccess(res, { data: paginatedData(items, total, page, limit) });
+    // Tell the client which required skills can be verified by a platform test.
+    const testable = await testableSkills(
+      items.flatMap((job) => job.skills.map((link) => link.skill_id))
+    );
+    const enriched = items.map((job) => ({
+      ...job,
+      skills: job.skills.map((link) => ({
+        ...link,
+        assessment_id: testable.get(link.skill_id) ?? null,
+      })),
+    }));
+    return sendSuccess(res, {
+      data: paginatedData(enriched, total, page, limit),
+    });
   })
 );
 
@@ -356,7 +370,10 @@ router.post(
 
     const job = await prisma.job.findUnique({
       where: { id: req.params.jobId },
-      include: { organization: { select: { status: true } } },
+      include: {
+        organization: { select: { status: true } },
+        skills: { include: { skill: { select: { name: true } } } },
+      },
     });
     if (
       !job ||
@@ -367,6 +384,29 @@ router.post(
     }
     if (job.application_deadline && job.application_deadline < new Date()) {
       throw new ApiError(409, "The application deadline has passed");
+    }
+
+    // A candidate must hold every skill the employer marked as required (declared
+    // or verified); verification just makes the match trustworthy for the employer.
+    const required = job.skills.filter((link) => link.is_required);
+    if (required.length > 0) {
+      const own = await prisma.candidateSkill.findMany({
+        where: {
+          candidate_profile_id: profile.id,
+          skill_id: { in: required.map((link) => link.skill_id) },
+        },
+        select: { skill_id: true },
+      });
+      const have = new Set(own.map((row) => row.skill_id));
+      const missing = required.filter((link) => !have.has(link.skill_id));
+      if (missing.length > 0) {
+        const names = missing.map((link) => link.skill.name);
+        throw new ApiError(
+          422,
+          `Add the required skill${names.length > 1 ? "s" : ""} to your profile before applying: ${names.join(", ")}`,
+          [{ missing_skills: names }]
+        );
+      }
     }
 
     const existing = await prisma.jobApplication.findUnique({

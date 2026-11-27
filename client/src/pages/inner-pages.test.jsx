@@ -14,7 +14,7 @@ import PostJobPage from "./employer/post-job-page.jsx";
 import StudentsPage from "./institute/students-page.jsx";
 
 vi.mock("../lib/endpoints.js", () => ({
-  candidateApi: {},
+  candidateApi: { skills: vi.fn().mockResolvedValue({ items: [] }) },
   jobsApi: { list: vi.fn(), apply: vi.fn(), applications: vi.fn(), setSkills: vi.fn(), publish: vi.fn(), close: vi.fn() },
   skillsApi: { list: vi.fn() },
   applicationsApi: { mine: vi.fn(), withdraw: vi.fn(), setStatus: vi.fn() },

@@ -9,6 +9,7 @@ export default defineConfig({
       MAILER: "test",
       BCRYPT_ROUNDS: "4",
       ASSESSMENT_ENGINE_TOKEN: "test-engine-token",
+      DEMO_LOGIN: "false",
     },
     fileParallelism: false,
     setupFiles: ["tests/setup.js"],

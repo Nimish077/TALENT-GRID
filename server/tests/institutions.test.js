@@ -112,9 +112,13 @@ describe("membership management & imports", () => {
         },
       },
     });
-    expect(imported.verification_status).toBe("verified");
+    // Imported students are shadow profiles until the real student claims them.
+    expect(imported.verification_status).toBe("unverified");
     expect(imported.verification_source).toBe("institution_import");
-    expect(imported.verified_at).not.toBeNull();
+    expect(imported.user_id).toBeNull();
+    expect(res.body.data.errors).toEqual([
+      { row: 3, enrollment_id: "IMP-1", reason: "Enrollment id already exists" },
+    ]);
   });
 
   it("institute-attested verification endpoint works and is idempotent-guarded", async () => {

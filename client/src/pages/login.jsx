@@ -5,10 +5,11 @@ import AuthLayout from "../components/layout/auth-layout.jsx";
 import Button from "../components/ui/button.jsx";
 import FormField from "../components/ui/form-field.jsx";
 import { useAuth } from "../context/auth-context.js";
-import { DEMO_ACCOUNTS, UNSEEDED_HINT, isDemoLoginEnabled } from "../lib/demo-accounts.js";
+import { DEMO_ACCOUNTS, UNSEEDED_HINT } from "../lib/demo-accounts.js";
+import { useDemoLogin } from "../lib/use-demo-login.js";
 
 function Login() {
-  const { user, loading, login } = useAuth();
+  const { user, login } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
   const destination = location.state?.from?.pathname ?? "/dashboard";
@@ -17,8 +18,8 @@ function Login() {
   const [error, setError] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [demoBusy, setDemoBusy] = useState(null);
+  const demoEnabled = useDemoLogin();
 
-  if (loading) return null;
   if (user) return <Navigate to={destination} replace />;
 
   const update = (field) => (event) => setForm((prev) => ({ ...prev, [field]: event.target.value }));
@@ -68,7 +69,7 @@ function Login() {
           </Button>
         </form>
 
-        {isDemoLoginEnabled() && (
+        {demoEnabled && (
           <DemoAccounts accounts={DEMO_ACCOUNTS.filter((account) => account.role !== "admin")} onSelect={handleDemo} busyId={demoBusy} />
         )}
 

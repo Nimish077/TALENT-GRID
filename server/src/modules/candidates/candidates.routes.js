@@ -7,6 +7,7 @@ import { sendSuccess } from "../../utils/response.js";
 import { validate } from "../../middleware/validate.js";
 import { authenticate, optionalAuth } from "../../middleware/authenticate.js";
 import { requireRole } from "../../middleware/authorize.js";
+import { withAssessment } from "../../services/skill-tests.js";
 import { getProfileForUser, getPublicProfile } from "./candidates.service.js";
 import {
   profileUpdateSchema,
@@ -226,7 +227,9 @@ router.get(
       include: { skill: true },
       orderBy: { created_at: "desc" },
     });
-    return sendSuccess(res, { data: { items } });
+    return sendSuccess(res, {
+      data: { items: await withAssessment(items, (row) => row.skill_id) },
+    });
   })
 );
 

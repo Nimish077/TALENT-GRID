@@ -35,7 +35,7 @@ export default function RequirementBuilder({ skills, requirements, onChange }) {
           <label htmlFor={`${id}-s`} className="mb-1.5 block text-[13px] font-medium">Skill</label>
           <select id={`${id}-s`} value={skillId} onChange={(e) => setSkillId(e.target.value)} className={`${selectCls} w-full`}>
             <option value="">Select a skill…</option>
-            {options.map((s) => <option key={s.id} value={s.id}>{s.name}</option>)}
+            {options.map((s) => <option key={s.id} value={s.id}>{s.name}{s.assessment_id === null ? " (no platform test yet)" : ""}</option>)}
           </select>
         </div>
         <div>

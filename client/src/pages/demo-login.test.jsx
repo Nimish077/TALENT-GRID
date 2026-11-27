@@ -1,4 +1,4 @@
-import { cleanup, render, screen, within } from "@testing-library/react";
+import { cleanup, render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import fs from "node:fs";
 import path from "node:path";
@@ -132,5 +132,50 @@ describe("demo account list stays in sync with the seed script", () => {
       expect(seed, `${account.email} password`).toContain(account.password);
       expect(lower, account.email).toContain(account.email.split("@")[0].toLowerCase());
     }
+  });
+});
+
+describe("demo accounts switched on by the server (GET /config)", () => {
+  const serverSays = (demo_login) =>
+    vi.stubGlobal(
+      "fetch",
+      vi.fn().mockResolvedValue({ ok: true, status: 200, json: async () => ({ success: true, data: { demo_login } }) }),
+    );
+
+  it("shows the panel on /login when the server says demo_login is on", async () => {
+    serverSays(true);
+    renderAt("/login");
+    const panel = await screen.findByRole("region", { name: "Demo accounts" });
+    expect(within(panel).getByText("candidate@talentgrid.demo")).toBeInTheDocument();
+    expect(String(fetch.mock.calls[0][0])).toMatch(/\/config$/);
+  });
+
+  it("shows the admin account on /admin/login when the server says it is on", async () => {
+    serverSays(true);
+    renderAt("/admin/login");
+    const panel = await screen.findByRole("region", { name: "Demo accounts" });
+    expect(within(panel).getByText("admin@talentgrid.demo")).toBeInTheDocument();
+  });
+
+  it("keeps the panel hidden when the server says it is off", async () => {
+    serverSays(false);
+    renderAt("/login");
+    expect(await screen.findByLabelText(/email address/i)).toBeInTheDocument();
+    await waitFor(() => expect(fetch).toHaveBeenCalled());
+    expect(screen.queryByRole("region", { name: "Demo accounts" })).not.toBeInTheDocument();
+  });
+
+  it("keeps the panel hidden when the server cannot be reached", async () => {
+    renderAt("/login"); // default test fetch rejects, like an offline server
+    expect(await screen.findByLabelText(/email address/i)).toBeInTheDocument();
+    await waitFor(() => expect(fetch).toHaveBeenCalled());
+    expect(screen.queryByRole("region", { name: "Demo accounts" })).not.toBeInTheDocument();
+  });
+
+  it("does not ask the server when the build flag is already on", async () => {
+    vi.stubEnv("VITE_DEMO_LOGIN", "true");
+    renderAt("/login");
+    expect(await screen.findByRole("region", { name: "Demo accounts" })).toBeInTheDocument();
+    expect(fetch).not.toHaveBeenCalled();
   });
 });

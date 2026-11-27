@@ -1,12 +1,13 @@
 import { useState } from "react";
+import { Link } from "react-router-dom";
 import { Badge, Card, EmptyState, PageState } from "../../components/dashboard/primitives.jsx";
 import AppShell from "../../components/layout/app-shell.jsx";
 import Button from "../../components/ui/button.jsx";
-import { applicationsApi, jobsApi } from "../../lib/endpoints.js";
+import { applicationsApi, candidateApi, jobsApi } from "../../lib/endpoints.js";
 import { capitalize, formatSalaryLpa } from "../../lib/format.js";
 import { useResource } from "../../lib/use-resource.js";
 
-function JobRow({ job, applied, onApply, error }) {
+function JobRow({ job, applied, onApply, error, mySkills }) {
   const [pending, setPending] = useState(false);
   const salary = formatSalaryLpa(job.salary_min, job.salary_max);
   const meta = [
@@ -39,17 +40,27 @@ function JobRow({ job, applied, onApply, error }) {
       {job.description && <p className="mt-3 line-clamp-2 text-sm text-text-secondary">{job.description}</p>}
       <div className="mt-4 flex items-end justify-between gap-4">
         <div className="flex flex-wrap gap-2">
-          {(job.skills ?? []).map((req) => (
-            <Badge key={req.id} className="border border-border bg-surface font-normal text-text-primary">
-              {req.skill.name} <span className="ml-1 text-text-muted">· {capitalize(req.required_level)}</span>
-            </Badge>
-          ))}
+          {(job.skills ?? []).map((req) => {
+            const mine = mySkills.get(req.skill_id);
+            const status = !mine ? "missing" : mine.verification_status === "verified" ? "verified" : "declared";
+            const tone = { verified: "border-accent/40 bg-accent-muted text-accent-dark", declared: "border-border bg-surface text-text-primary", missing: "border-warning/40 bg-warning-light text-warning" }[status];
+            return (
+              <Badge key={req.id} className={`border font-normal ${tone}`} title={status === "missing" ? "Add this skill to your profile to apply" : undefined}>
+                {status === "verified" && "✓ "}{req.skill.name} <span className="ml-1 opacity-70">· {capitalize(req.required_level)}</span>
+                {status === "missing" && <span className="ml-1">· not on your profile</span>}
+              </Badge>
+            );
+          })}
         </div>
         <Button size="sm" variant="secondary" className="shrink-0 !bg-brand-light !text-brand hover:!bg-brand/10" disabled={applied || pending} onClick={handleApply}>
           {applied ? "Applied" : pending ? "Applying…" : "Apply"}
         </Button>
       </div>
-      {error && <p role="alert" className="mt-3 text-xs text-error">{error}</p>}
+      {error && (
+        <p role="alert" className="mt-3 text-xs text-error">
+          {error} <Link to="/skills" className="font-medium underline">Go to My Skills</Link>
+        </p>
+      )}
     </Card>
   );
 }
@@ -62,8 +73,8 @@ function JobsPage() {
 
   const { data, error, loading, reload } = useResource(async () => {
     const params = { limit: 50, search: filters.search.trim() || undefined, location: filters.location.trim() || undefined };
-    const [jobs, mine] = await Promise.all([jobsApi.list(params), applicationsApi.mine()]);
-    return { jobs: jobs.items, applications: mine.applications };
+    const [jobs, mine, skills] = await Promise.all([jobsApi.list(params), applicationsApi.mine(), candidateApi.skills()]);
+    return { jobs: jobs.items, applications: mine.applications, skills: skills.items ?? [] };
   });
 
   function submit(event) {
@@ -84,6 +95,7 @@ function JobsPage() {
     }
   }
 
+  const mySkills = new Map((data?.skills ?? []).map((item) => [item.skill_id ?? item.skill?.id, item]));
   const appliedIds = new Set([...(data?.applications ?? []).filter((a) => a.status !== "withdrawn").map((a) => a.job_id), ...applied]);
 
   return (
@@ -99,7 +111,7 @@ function JobsPage() {
           {data?.jobs.length === 0 ? (
             <Card className="p-5"><EmptyState>No jobs match your search.</EmptyState></Card>
           ) : (
-            data?.jobs.map((job) => <JobRow key={job.id} job={job} applied={appliedIds.has(job.id)} onApply={handleApply} error={errors[job.id]} />)
+            data?.jobs.map((job) => <JobRow key={job.id} job={job} applied={appliedIds.has(job.id)} onApply={handleApply} error={errors[job.id]} mySkills={mySkills} />)
           )}
         </PageState>
       </div>

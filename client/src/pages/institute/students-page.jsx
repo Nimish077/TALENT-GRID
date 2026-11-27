@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Badge, Card, EmptyState, PageState, PendingNotice } from "../../components/dashboard/primitives.jsx";
 import AppShell from "../../components/layout/app-shell.jsx";
 import { ReadinessBadge, VerifiedSkills } from "../../components/institute/skills.jsx";
+import RosterImport from "../../components/institute/roster-import.jsx";
 import Button from "../../components/ui/button.jsx";
 import { institutionsApi } from "../../lib/endpoints.js";
 import { capitalize } from "../../lib/format.js";
@@ -15,6 +16,9 @@ const verificationStyle = {
   rejected: "bg-error-light text-error",
   unverified: "bg-surface-muted text-text-secondary",
 };
+// Imported but not yet claimed by the student.
+const verificationLabel = (student) =>
+  student.verification_status === "unverified" && !student.user_id ? "Awaiting claim" : capitalize(student.verification_status);
 
 const PAGE_SIZE = 25;
 
@@ -53,6 +57,7 @@ function StudentsPage() {
         )}
         {data?.canManage && (
           <>
+            <div className="mb-6"><RosterImport institutionId={data.institution.id} onImported={reload} /></div>
             <form role="search" className="flex flex-wrap gap-3" onSubmit={(e) => { e.preventDefault(); apply({ ...draft, page: 1 }); }}>
               <input aria-label="Search students" placeholder="Search name, enrollment ID or email" value={draft.search} onChange={(e) => setDraft({ ...draft, search: e.target.value })} className="h-10 min-w-[240px] flex-1 rounded-[var(--radius)] border border-border bg-surface px-3.5 text-sm focus:border-brand focus:outline-none" />
               <select aria-label="Verification status" value={draft.status} onChange={(e) => setDraft({ ...draft, status: e.target.value })} className="h-10 rounded-[var(--radius)] border border-border bg-surface px-3 text-sm">
@@ -85,7 +90,7 @@ function StudentsPage() {
                           <Badge className="bg-surface-muted text-text-secondary">{student.skills.verified_count} verified</Badge>
                         )}
                         <ReadinessBadge student={student} />
-                        <Badge className={verificationStyle[student.verification_status] ?? verificationStyle.unverified}>{capitalize(student.verification_status)}</Badge>
+                        <Badge className={verificationStyle[student.verification_status] ?? verificationStyle.unverified}>{verificationLabel(student)}</Badge>
                       </div>
                     </li>
                   ))}

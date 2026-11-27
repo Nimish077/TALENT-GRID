@@ -1,0 +1,257 @@
+{
+  "skill": "CSS",
+  "questions": [
+    {
+      "difficulty": "beginner",
+      "prompt": "Which property changes the text color of an element?",
+      "options": [
+        "font-color",
+        "color",
+        "text-color",
+        "foreground"
+      ],
+      "correct_index": 1,
+      "explanation": "The color property sets the foreground (text) color."
+    },
+    {
+      "difficulty": "beginner",
+      "prompt": "Which selector targets the element with id=\"main\"?",
+      "options": [
+        ".main",
+        "main",
+        "#main",
+        "*main"
+      ],
+      "correct_index": 2,
+      "explanation": "# selects by id, . by class, and a bare name by element type."
+    },
+    {
+      "difficulty": "beginner",
+      "prompt": "Which lists the CSS box model layers from the inside out?",
+      "options": [
+        "content, border, padding, margin",
+        "margin, border, padding, content",
+        "padding, content, margin, border",
+        "content, padding, border, margin"
+      ],
+      "correct_index": 3,
+      "explanation": "Content is surrounded by padding, then border, then margin."
+    },
+    {
+      "difficulty": "beginner",
+      "prompt": "Which property controls the space between an element's content and its border?",
+      "options": [
+        "padding",
+        "margin",
+        "spacing",
+        "gap"
+      ],
+      "correct_index": 0,
+      "explanation": "Padding is inside the border; margin is outside."
+    },
+    {
+      "difficulty": "beginner",
+      "prompt": "How do you select all elements that have the class \"card\"?",
+      "options": [
+        "#card",
+        "card",
+        "class:card",
+        ".card"
+      ],
+      "correct_index": 3,
+      "explanation": "A leading dot selects by class name."
+    },
+    {
+      "difficulty": "beginner",
+      "prompt": "Which declaration makes text italic?",
+      "options": [
+        "text-style: italic;",
+        "font-style: italic;",
+        "font-weight: italic;",
+        "text-decoration: italic;"
+      ],
+      "correct_index": 1,
+      "explanation": "font-style controls italic or oblique rendering."
+    },
+    {
+      "difficulty": "beginner",
+      "prompt": "What does position: relative do on its own?",
+      "options": [
+        "Removes it from the flow",
+        "Fixes it to the viewport",
+        "Offsets the element from its normal position while keeping its space in the flow",
+        "Centers it in its parent"
+      ],
+      "correct_index": 2,
+      "explanation": "Relative positioning shifts the box visually but the original space remains reserved."
+    },
+    {
+      "difficulty": "intermediate",
+      "prompt": "Which rule wins for a <p class=\"a b c\" id=\"x\">: #x { color: red } or .a.b.c { color: blue }?",
+      "options": [
+        "#x, because one ID selector outranks any number of class selectors",
+        ".a.b.c, because three classes beat one id",
+        "Whichever is declared later, always",
+        "Neither; they conflict and are ignored"
+      ],
+      "correct_index": 0,
+      "explanation": "Specificity compares IDs first, then classes, then types, so the ID wins regardless of source order."
+    },
+    {
+      "difficulty": "intermediate",
+      "prompt": "In a flex container with flex-direction: row, which property aligns items along the main axis?",
+      "options": [
+        "align-items",
+        "align-content",
+        "justify-content",
+        "place-axis"
+      ],
+      "correct_index": 2,
+      "explanation": "justify-content works on the main axis (horizontal for row); align-items works on the cross axis."
+    },
+    {
+      "difficulty": "intermediate",
+      "prompt": "Two adjacent block siblings have margin-bottom: 20px and margin-top: 30px. What gap results by default?",
+      "options": [
+        "50px",
+        "20px",
+        "10px",
+        "30px, because adjacent vertical margins collapse to the larger one"
+      ],
+      "correct_index": 3,
+      "explanation": "Vertical margin collapsing between sibling blocks uses the larger margin."
+    },
+    {
+      "difficulty": "intermediate",
+      "prompt": "What does box-sizing: border-box change?",
+      "options": [
+        "Margin is included in the width",
+        "The declared width and height include padding and border",
+        "The border is removed",
+        "Padding is ignored"
+      ],
+      "correct_index": 1,
+      "explanation": "With border-box, content shrinks to make room for padding and border within the declared size."
+    },
+    {
+      "difficulty": "intermediate",
+      "prompt": "On the font-size property, what is 1.5em relative to?",
+      "options": [
+        "The parent element's computed font size",
+        "The root element's font size",
+        "The viewport width",
+        "The element's own font size"
+      ],
+      "correct_index": 0,
+      "explanation": "For font-size, em refers to the inherited font size; for other properties it refers to the element's own."
+    },
+    {
+      "difficulty": "intermediate",
+      "prompt": "Which element does z-index reliably affect (without flex or grid parents)?",
+      "options": [
+        "One with position: static",
+        "One with position: relative",
+        "A static inline element",
+        "A static block with float: none"
+      ],
+      "correct_index": 1,
+      "explanation": "z-index applies to positioned elements, and to flex and grid items."
+    },
+    {
+      "difficulty": "intermediate",
+      "prompt": "Which elements does li:nth-child(2n+1) select?",
+      "options": [
+        "The even-numbered children",
+        "Only the first child",
+        "Every child except the first",
+        "The odd-numbered children: 1st, 3rd, 5th and so on"
+      ],
+      "correct_index": 3,
+      "explanation": "2n+1 yields 1, 3, 5 and so on."
+    },
+    {
+      "difficulty": "advanced",
+      "prompt": "Which declaration creates a new stacking context?",
+      "options": [
+        "opacity: 0.99",
+        "color: red",
+        "margin: auto",
+        "position: static"
+      ],
+      "correct_index": 0,
+      "explanation": "An opacity below 1 (as well as transform, filter and some others) creates a stacking context."
+    },
+    {
+      "difficulty": "advanced",
+      "prompt": "With grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)), how does auto-fit differ from auto-fill?",
+      "options": [
+        "auto-fit never wraps items",
+        "auto-fit fixes columns at 200px",
+        "auto-fit collapses empty tracks so the existing items stretch to fill the row",
+        "auto-fit creates extra empty tracks"
+      ],
+      "correct_index": 2,
+      "explanation": "auto-fill keeps empty tracks; auto-fit collapses them so 1fr tracks grow."
+    },
+    {
+      "difficulty": "advanced",
+      "prompt": "A normal (non-important) declaration in an unlayered style rule conflicts with one inside a @layer. Which wins?",
+      "options": [
+        "The unlayered declaration, regardless of specificity",
+        "The layered one if its specificity is higher",
+        "The one declared first",
+        "The layered one, always"
+      ],
+      "correct_index": 0,
+      "explanation": "Unlayered normal styles take precedence over layered ones; layer order and specificity matter only among comparable origins."
+    },
+    {
+      "difficulty": "advanced",
+      "prompt": "How does :where() differ from :is() in specificity?",
+      "options": [
+        "They are identical",
+        "The specificity of :where() is always zero, while :is() takes its most specific argument",
+        "The specificity of :is() is always zero",
+        "Both add the specificity of their first argument only"
+      ],
+      "correct_index": 1,
+      "explanation": "Use :where() for easily overridable defaults."
+    },
+    {
+      "difficulty": "advanced",
+      "prompt": "A long unbroken string overflows its flex item. Which change typically fixes it?",
+      "options": [
+        "flex-shrink: 10",
+        "display: inline",
+        "min-width: 0 on the flex item",
+        "overflow: scroll on the container"
+      ],
+      "correct_index": 2,
+      "explanation": "Flex items default to min-width: auto, so they won't shrink below their content size; min-width: 0 allows shrinking."
+    },
+    {
+      "difficulty": "advanced",
+      "prompt": "Which statement about CSS custom properties is true?",
+      "options": [
+        "They cannot be overridden on child elements",
+        "They are resolved only at parse time",
+        "They are global and cannot be scoped",
+        "They inherit by default and are resolved per element at computed-value time"
+      ],
+      "correct_index": 3,
+      "explanation": "Custom properties follow the cascade and inheritance, so scoped overrides work."
+    },
+    {
+      "difficulty": "advanced",
+      "prompt": "What do container queries (@container) respond to?",
+      "options": [
+        "The viewport width",
+        "The device pixel ratio only",
+        "The size of the nearest ancestor container that has a container-type set",
+        "The element's own content size"
+      ],
+      "correct_index": 2,
+      "explanation": "Container queries let components adapt to their container instead of the viewport."
+    }
+  ]
+}

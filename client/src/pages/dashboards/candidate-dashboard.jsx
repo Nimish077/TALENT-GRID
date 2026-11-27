@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Card, CardHeader, CardLink, Badge, EmptyState, PageState, ProgressBar, StatCard } from "../../components/dashboard/primitives.jsx";
+import ClaimProfile from "../../components/candidate/claim-profile.jsx";
 import Button from "../../components/ui/button.jsx";
 import { useAuth } from "../../context/auth-context.js";
 import { applicationsApi, assessmentsApi, candidateApi, jobsApi } from "../../lib/endpoints.js";
@@ -192,6 +193,7 @@ function Content({ data, user, applied, applyErrors, onApply }) {
         {greeting()}, {firstName(user.full_name)} <span aria-hidden="true">👋</span>
       </h1>
       <p className="mt-1 text-sm text-text-secondary">Here&apos;s what&apos;s happening with your profile today.</p>
+      <ClaimProfile />
 
       <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <Card className="p-5">

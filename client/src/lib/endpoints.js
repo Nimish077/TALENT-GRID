@@ -50,6 +50,10 @@ export const assessmentsApi = {
   submit: (attemptId) => apiRequest(`/assessments/attempts/${attemptId}/submit`, { method: "POST", body: {} }),
 };
 
+export const configApi = {
+  get: () => apiRequest("/config"),
+};
+
 export const talentApi = {
   search: (params) => apiRequest(`/talent${qs(params)}`),
   detail: (candidateProfileId) => apiRequest(`/talent/${candidateProfileId}`),
@@ -66,6 +70,7 @@ export const institutionsApi = {
   memberships: (id, params) => apiRequest(`/institutions/${id}/memberships${qs(params)}`),
   drives: (id) => apiRequest(`/institutions/${id}/drives`),
   skillsSummary: (id) => apiRequest(`/institutions/${id}/skills-summary`),
+  importStudents: (id, body) => apiRequest(`/institutions/${id}/imports`, { method: "POST", body }),
 };
 
 export const drivesApi = {
@@ -83,4 +88,10 @@ export const adminApi = {
   suspendInstitution: (id) => apiRequest(`/admin/institutions/${id}/suspend`, { method: "POST", body: {} }),
   users: (params) => apiRequest(`/admin/users${qs(params)}`),
   setUserStatus: (id, status) => apiRequest(`/admin/users/${id}/status`, { method: "PATCH", body: { status } }),
+};
+
+export const claimsApi = {
+  matches: () => apiRequest("/membership-claims/matches"),
+  claim: (membership_id, enrollment_id) =>
+    apiRequest("/membership-claims/claim", { method: "POST", body: { membership_id, enrollment_id } }),
 };

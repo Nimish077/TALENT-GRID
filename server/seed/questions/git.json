@@ -1,0 +1,257 @@
+{
+  "skill": "Git",
+  "questions": [
+    {
+      "difficulty": "beginner",
+      "prompt": "Which command creates a new, empty Git repository in the current directory?",
+      "options": [
+        "git init",
+        "git new",
+        "git create",
+        "git start"
+      ],
+      "correct_index": 0,
+      "explanation": "git init creates the .git directory that stores repository data."
+    },
+    {
+      "difficulty": "beginner",
+      "prompt": "Which command stages changes for the next commit?",
+      "options": [
+        "git stage-all",
+        "git push",
+        "git add",
+        "git save"
+      ],
+      "correct_index": 2,
+      "explanation": "git add copies changes into the index (staging area)."
+    },
+    {
+      "difficulty": "beginner",
+      "prompt": "Which command records the staged changes as a new commit?",
+      "options": [
+        "git save",
+        "git commit",
+        "git record",
+        "git write"
+      ],
+      "correct_index": 1,
+      "explanation": "git commit creates a commit from the contents of the index."
+    },
+    {
+      "difficulty": "beginner",
+      "prompt": "Which command shows which files are modified, staged or untracked?",
+      "options": [
+        "git log",
+        "git show",
+        "git diff --names",
+        "git status"
+      ],
+      "correct_index": 3,
+      "explanation": "git status summarizes the state of the working tree and index."
+    },
+    {
+      "difficulty": "beginner",
+      "prompt": "Which command copies an existing remote repository to your machine?",
+      "options": [
+        "git clone",
+        "git copy",
+        "git fetch --all",
+        "git download"
+      ],
+      "correct_index": 0,
+      "explanation": "git clone creates a local copy including history and sets up the origin remote."
+    },
+    {
+      "difficulty": "beginner",
+      "prompt": "Which file tells Git which files or patterns to leave untracked?",
+      "options": [
+        ".gitkeep",
+        ".gitconfig",
+        ".gitignore",
+        ".gitattributes"
+      ],
+      "correct_index": 2,
+      "explanation": ".gitignore lists patterns of files that Git should not track."
+    },
+    {
+      "difficulty": "beginner",
+      "prompt": "Which command creates a new branch called feature and switches to it?",
+      "options": [
+        "git branch -d feature",
+        "git checkout -b feature",
+        "git merge feature",
+        "git switch feature --delete"
+      ],
+      "correct_index": 1,
+      "explanation": "checkout -b (or git switch -c) creates and checks out the branch in one step."
+    },
+    {
+      "difficulty": "intermediate",
+      "prompt": "What does git pull do by default?",
+      "options": [
+        "Fetches from the remote and merges into the current branch",
+        "Only downloads remote changes without touching your branch",
+        "Pushes local commits and then fetches",
+        "Deletes local commits that are not on the remote"
+      ],
+      "correct_index": 0,
+      "explanation": "git pull is git fetch followed by git merge (or rebase if configured)."
+    },
+    {
+      "difficulty": "intermediate",
+      "prompt": "What is the purpose of git stash?",
+      "options": [
+        "Temporarily shelve uncommitted changes so you can work on a clean tree",
+        "Permanently delete uncommitted changes",
+        "Squash recent commits into one",
+        "Create a tag for the current commit"
+      ],
+      "correct_index": 0,
+      "explanation": "git stash saves modified tracked files and staged changes so they can be re-applied later with git stash pop."
+    },
+    {
+      "difficulty": "intermediate",
+      "prompt": "How does git revert differ from git reset?",
+      "options": [
+        "Revert deletes the commit from history entirely",
+        "Revert adds a new commit that undoes an earlier one, leaving history intact",
+        "Revert only works on uncommitted changes",
+        "Revert moves the branch pointer backwards"
+      ],
+      "correct_index": 1,
+      "explanation": "Revert is safe for shared branches because it does not rewrite history; reset moves the branch pointer."
+    },
+    {
+      "difficulty": "intermediate",
+      "prompt": "What does git merge --no-ff do?",
+      "options": [
+        "Aborts the merge if there are conflicts",
+        "Skips merge commits and rebases instead",
+        "Always creates a merge commit, even when a fast-forward is possible",
+        "Merges only files that have no conflicts"
+      ],
+      "correct_index": 2,
+      "explanation": "--no-ff preserves the fact that a feature branch existed by recording an explicit merge commit."
+    },
+    {
+      "difficulty": "intermediate",
+      "prompt": "What does git cherry-pick <commit> do?",
+      "options": [
+        "Moves the commit to the remote repository",
+        "Deletes the commit from its original branch",
+        "Merges the entire branch containing the commit",
+        "Applies the changes introduced by that commit as a new commit on the current branch"
+      ],
+      "correct_index": 3,
+      "explanation": "Cherry-pick replays a single commit's changes onto HEAD, producing a new commit with a different hash."
+    },
+    {
+      "difficulty": "intermediate",
+      "prompt": "What does git reset --soft HEAD~1 do?",
+      "options": [
+        "Moves the branch back one commit but keeps the changes staged",
+        "Moves the branch back one commit and discards all changes",
+        "Creates a new commit that reverses the last one",
+        "Unstages files without moving the branch"
+      ],
+      "correct_index": 0,
+      "explanation": "--soft only moves HEAD/branch; the index and working tree stay as they were, so the changes remain staged."
+    },
+    {
+      "difficulty": "intermediate",
+      "prompt": "What does git diff --staged show?",
+      "options": [
+        "The differences between the working tree and the index",
+        "The differences between two branches",
+        "The differences between the index and the last commit",
+        "The list of untracked files"
+      ],
+      "correct_index": 2,
+      "explanation": "--staged (or --cached) compares the staging area against HEAD, i.e. what would be committed."
+    },
+    {
+      "difficulty": "advanced",
+      "prompt": "You ran git reset --hard and lost commits. Which command helps you find and recover them?",
+      "options": [
+        "git log --all --merges",
+        "git reflog",
+        "git stash list",
+        "git fsck --lost-found"
+      ],
+      "correct_index": 1,
+      "explanation": "The reflog records where HEAD and branch tips have pointed, so you can find the old commit hash and reset or branch to it."
+    },
+    {
+      "difficulty": "advanced",
+      "prompt": "Why should you avoid rebasing commits that have already been pushed to a shared branch?",
+      "options": [
+        "Rebase refuses to work on pushed commits",
+        "Rebase permanently deletes the remote branch",
+        "Rebase converts the commits into merge commits",
+        "Rebase rewrites those commits with new hashes, forcing collaborators to reconcile diverged history"
+      ],
+      "correct_index": 3,
+      "explanation": "Rebased commits are new objects; anyone who based work on the old ones ends up with duplicated or conflicting history."
+    },
+    {
+      "difficulty": "advanced",
+      "prompt": "In an interactive rebase, what does the \"fixup\" command do?",
+      "options": [
+        "Melds the commit into the previous one and discards its message",
+        "Splits the commit into several smaller commits",
+        "Rewords the commit message only",
+        "Drops the commit and its changes"
+      ],
+      "correct_index": 0,
+      "explanation": "fixup is like squash but keeps only the earlier commit's message."
+    },
+    {
+      "difficulty": "advanced",
+      "prompt": "When can git merge perform a fast-forward?",
+      "options": [
+        "When both branches changed different files",
+        "When the branches have no common ancestor",
+        "When the current branch tip is an ancestor of the branch being merged",
+        "When the other branch contains only one commit"
+      ],
+      "correct_index": 2,
+      "explanation": "If there is no divergence, Git just moves the branch pointer forward and creates no merge commit."
+    },
+    {
+      "difficulty": "advanced",
+      "prompt": "What is the advantage of git push --force-with-lease over --force?",
+      "options": [
+        "It pushes faster by skipping object checks",
+        "It refuses to overwrite the remote branch if it changed since you last fetched",
+        "It also rewrites remote tags",
+        "It merges remote changes automatically before pushing"
+      ],
+      "correct_index": 1,
+      "explanation": "The lease check prevents you from clobbering commits that someone else pushed in the meantime."
+    },
+    {
+      "difficulty": "advanced",
+      "prompt": "After git merge --squash feature followed by git commit, what is true of the resulting commit?",
+      "options": [
+        "It has two parents like a regular merge commit",
+        "It is created automatically without a commit command",
+        "It has a single parent and does not record the feature branch commits as ancestors",
+        "It rewrites the feature branch commits with new hashes"
+      ],
+      "correct_index": 2,
+      "explanation": "--squash stages the combined changes but does not create a merge relationship, so Git does not know the branch was merged."
+    },
+    {
+      "difficulty": "advanced",
+      "prompt": "You make commits while in a detached HEAD state, then check out a branch. What happens to those commits?",
+      "options": [
+        "They become unreachable and may eventually be garbage collected unless you create a branch or tag for them",
+        "They are automatically merged into the branch you check out",
+        "They are pushed to the remote as a new branch",
+        "They are permanently deleted immediately"
+      ],
+      "correct_index": 0,
+      "explanation": "Commits only reachable from a detached HEAD are not on any branch; the reflog keeps them for a while, then gc may prune them."
+    }
+  ]
+}

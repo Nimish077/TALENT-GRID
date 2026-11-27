@@ -73,7 +73,12 @@ VITE_API_BASE_URL=https://api.example.com/api/v1
 
 ### Demo accounts panel
 
-`VITE_DEMO_LOGIN=true` shows the public demo accounts as one-click buttons on the login pages (`/login`, `/admin/login`). It is off by default and read at build time; see `docs/DEMO.md`. Keep it off for a real deployment.
+The login pages (`/login`, `/admin/login`) can show the public demo accounts as one-click buttons. Two switches turn it on, either is enough:
+
+- **Server (recommended, no rebuild):** the API reports `demo_login` from `GET /api/v1/config`. It follows `SEED_DEMO=true` on the server, or set `DEMO_LOGIN=true|false` to override. Change it on Render and restart.
+- **Build time:** `VITE_DEMO_LOGIN=true` (needs a new Vercel deployment).
+
+Off by default; keep it off for a real deployment. See `docs/DEMO.md`.
 
 `VITE_API_URL` is also accepted for backwards compatibility. When using a
 cross-origin API, the server's `CORS_ORIGINS` must include this frontend origin,

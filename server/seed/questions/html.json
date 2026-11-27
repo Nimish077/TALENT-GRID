@@ -1,0 +1,257 @@
+{
+  "skill": "HTML",
+  "questions": [
+    {
+      "difficulty": "beginner",
+      "prompt": "Which element creates a hyperlink to another page?",
+      "options": [
+        "<a>",
+        "<link>",
+        "<href>",
+        "<url>"
+      ],
+      "correct_index": 0,
+      "explanation": "The anchor element <a> with an href attribute creates hyperlinks; <link> is for external resources such as stylesheets."
+    },
+    {
+      "difficulty": "beginner",
+      "prompt": "Which attribute provides alternative text for an <img> element?",
+      "options": [
+        "title",
+        "alt",
+        "src",
+        "caption"
+      ],
+      "correct_index": 1,
+      "explanation": "The alt attribute gives text used by screen readers and shown if the image fails to load."
+    },
+    {
+      "difficulty": "beginner",
+      "prompt": "Which element defines an unordered (bulleted) list?",
+      "options": [
+        "<ol>",
+        "<li>",
+        "<ul>",
+        "<list>"
+      ],
+      "correct_index": 2,
+      "explanation": "<ul> is an unordered list; <ol> is ordered and <li> is a list item."
+    },
+    {
+      "difficulty": "beginner",
+      "prompt": "Which element wraps all the visible content of an HTML document?",
+      "options": [
+        "<head>",
+        "<meta>",
+        "<title>",
+        "<body>"
+      ],
+      "correct_index": 3,
+      "explanation": "<body> holds the visible content; <head> holds metadata such as the title and links."
+    },
+    {
+      "difficulty": "beginner",
+      "prompt": "What does the <!DOCTYPE html> declaration do?",
+      "options": [
+        "Imports the HTML5 JavaScript library",
+        "Defines the page title",
+        "Tells the browser to render the page in standards mode as HTML5",
+        "Links the page to a stylesheet"
+      ],
+      "correct_index": 2,
+      "explanation": "The doctype prevents quirks mode so the browser uses standards-compliant rendering."
+    },
+    {
+      "difficulty": "beginner",
+      "prompt": "Which input type hides the characters the user types?",
+      "options": [
+        "password",
+        "hidden",
+        "secret",
+        "mask"
+      ],
+      "correct_index": 0,
+      "explanation": "type=\"password\" obscures the typed characters; type=\"hidden\" is simply not displayed at all."
+    },
+    {
+      "difficulty": "beginner",
+      "prompt": "Which element inserts a single line break?",
+      "options": [
+        "<break>",
+        "<br>",
+        "<lb>",
+        "<newline>"
+      ],
+      "correct_index": 1,
+      "explanation": "<br> is a void element that produces a line break."
+    },
+    {
+      "difficulty": "intermediate",
+      "prompt": "What is the purpose of <label for=\"email\">?",
+      "options": [
+        "It sets the name submitted for the input",
+        "It validates the email format",
+        "It links the input to a stylesheet",
+        "It associates the label with the control whose id is \"email\", so clicking the label focuses the control"
+      ],
+      "correct_index": 3,
+      "explanation": "The for attribute references the control's id, improving usability and accessibility."
+    },
+    {
+      "difficulty": "intermediate",
+      "prompt": "Which attribute prevents a form from submitting when a field is left empty?",
+      "options": [
+        "mandatory",
+        "required",
+        "needed",
+        "validate"
+      ],
+      "correct_index": 1,
+      "explanation": "The boolean required attribute triggers built-in constraint validation."
+    },
+    {
+      "difficulty": "intermediate",
+      "prompt": "What is the main difference between <section> and <div>?",
+      "options": [
+        "<div> can only contain text",
+        "<section> cannot contain headings",
+        "<section> has semantic meaning as a thematic grouping, while <div> has none",
+        "<div> is deprecated in HTML5"
+      ],
+      "correct_index": 2,
+      "explanation": "<div> is a generic container; <section> conveys a thematic group of content, usually with a heading."
+    },
+    {
+      "difficulty": "intermediate",
+      "prompt": "Which element best represents self-contained content that could be distributed independently, such as a blog post?",
+      "options": [
+        "<article>",
+        "<aside>",
+        "<section>",
+        "<figure>"
+      ],
+      "correct_index": 0,
+      "explanation": "<article> is for self-contained, independently distributable content."
+    },
+    {
+      "difficulty": "intermediate",
+      "prompt": "What does the defer attribute on an external <script> do?",
+      "options": [
+        "Runs the script only after the page fully loads and images finish",
+        "Prevents the script from ever running",
+        "Runs the script before any HTML is parsed",
+        "Downloads the script in parallel and runs it after the document is parsed, preserving order"
+      ],
+      "correct_index": 3,
+      "explanation": "Deferred scripts execute after parsing, before DOMContentLoaded, in document order."
+    },
+    {
+      "difficulty": "intermediate",
+      "prompt": "Which attribute makes the browser delay loading an off-screen image until it is near the viewport?",
+      "options": [
+        "loading=\"lazy\"",
+        "defer=\"true\"",
+        "async=\"image\"",
+        "preload=\"none\""
+      ],
+      "correct_index": 0,
+      "explanation": "loading=\"lazy\" on <img> enables native lazy loading."
+    },
+    {
+      "difficulty": "intermediate",
+      "prompt": "What does <th scope=\"col\"> communicate?",
+      "options": [
+        "The cell spans every column",
+        "The cell is sorted by column",
+        "The cell is a header for the cells below it in its column",
+        "The cell is hidden from screen readers"
+      ],
+      "correct_index": 2,
+      "explanation": "scope tells assistive technology which cells a header applies to."
+    },
+    {
+      "difficulty": "advanced",
+      "prompt": "Why is <button> preferred over <div role=\"button\" onclick=\"...\">?",
+      "options": [
+        "The div cannot receive click events",
+        "A button is always styled better",
+        "role=\"button\" is invalid on divs",
+        "A native button is focusable and activates with Enter and Space by default; the div needs extra tabindex and key handling"
+      ],
+      "correct_index": 3,
+      "explanation": "Native elements come with built-in semantics, focus and keyboard behavior that ARIA roles alone do not provide."
+    },
+    {
+      "difficulty": "advanced",
+      "prompt": "What problem does aria-hidden=\"true\" cause on a focusable element such as a link?",
+      "options": [
+        "It stops the link from navigating",
+        "The element is removed from the accessibility tree yet still receives keyboard focus, leaving users on something unannounced",
+        "It hides the element visually",
+        "It makes the element unfocusable"
+      ],
+      "correct_index": 1,
+      "explanation": "aria-hidden affects only assistive technology exposure, not focusability or visibility."
+    },
+    {
+      "difficulty": "advanced",
+      "prompt": "What does alt=\"\" on an <img> signal?",
+      "options": [
+        "The image is missing and invalid",
+        "The screen reader should read the file name",
+        "The image should be lazy loaded",
+        "The image is decorative and should be skipped by screen readers"
+      ],
+      "correct_index": 3,
+      "explanation": "An empty alt marks decorative images; omitting alt entirely may cause the file name to be announced."
+    },
+    {
+      "difficulty": "advanced",
+      "prompt": "What is the role of the sizes attribute alongside srcset with width descriptors?",
+      "options": [
+        "It tells the browser the image's rendered layout width so it can choose the best candidate before layout completes",
+        "It sets the image's file size limit",
+        "It forces the browser to download all candidates",
+        "It defines the image's intrinsic resolution"
+      ],
+      "correct_index": 0,
+      "explanation": "Without sizes the browser assumes 100vw; sizes lets it pick an appropriate source from srcset."
+    },
+    {
+      "difficulty": "advanced",
+      "prompt": "Which heading practice is correct for accessibility?",
+      "options": [
+        "Choose levels by desired font size",
+        "Choose heading levels to reflect document structure without skipping levels, and style size with CSS",
+        "Use only <h1> elements throughout",
+        "Use <b> instead of headings for subsections"
+      ],
+      "correct_index": 1,
+      "explanation": "Headings form an outline used for navigation; visual size should come from CSS."
+    },
+    {
+      "difficulty": "advanced",
+      "prompt": "How does <script type=\"module\"> differ in loading behavior from a classic script?",
+      "options": [
+        "It blocks parsing until it runs",
+        "It runs only in the head",
+        "It is deferred by default and executes in strict mode with its own module scope",
+        "It shares variables globally with every script"
+      ],
+      "correct_index": 2,
+      "explanation": "Module scripts are deferred automatically, strict, and scoped to the module."
+    },
+    {
+      "difficulty": "advanced",
+      "prompt": "What happens when a <dialog> is opened with showModal()?",
+      "options": [
+        "It opens non-blocking while the page stays interactive",
+        "It is placed in the top layer, the rest of the page becomes inert, and Escape closes it",
+        "It requires the open attribute to be set manually",
+        "It cannot receive focus"
+      ],
+      "correct_index": 1,
+      "explanation": "showModal() makes a modal dialog; show() opens a non-modal one."
+    }
+  ]
+}

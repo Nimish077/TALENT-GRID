@@ -1,0 +1,257 @@
+{
+  "skill": "Docker",
+  "questions": [
+    {
+      "difficulty": "beginner",
+      "prompt": "Which command lists the containers that are currently running?",
+      "options": [
+        "docker ls",
+        "docker ps",
+        "docker list",
+        "docker containers"
+      ],
+      "correct_index": 1,
+      "explanation": "docker ps lists running containers; add -a to include stopped ones."
+    },
+    {
+      "difficulty": "beginner",
+      "prompt": "Which file describes the steps used to build a Docker image?",
+      "options": [
+        "Dockerfile",
+        "docker-compose.yml",
+        "image.json",
+        "package.json"
+      ],
+      "correct_index": 0,
+      "explanation": "A Dockerfile contains the instructions that docker build executes to produce an image."
+    },
+    {
+      "difficulty": "beginner",
+      "prompt": "Which Dockerfile instruction sets the base image for a build?",
+      "options": [
+        "BASE",
+        "IMAGE",
+        "FROM",
+        "START"
+      ],
+      "correct_index": 2,
+      "explanation": "FROM names the base image (or stage) that subsequent instructions build on."
+    },
+    {
+      "difficulty": "beginner",
+      "prompt": "Which command downloads an image from a registry without starting a container?",
+      "options": [
+        "docker fetch",
+        "docker download",
+        "docker clone",
+        "docker pull"
+      ],
+      "correct_index": 3,
+      "explanation": "docker pull fetches an image and its layers from a registry such as Docker Hub."
+    },
+    {
+      "difficulty": "beginner",
+      "prompt": "What does \"docker run -p 8080:80 nginx\" do?",
+      "options": [
+        "Maps port 8080 on the host to port 80 in the container",
+        "Maps port 80 on the host to port 8080 in the container",
+        "Limits the container to ports 80 and 8080",
+        "Runs nginx on both ports 8080 and 80 of the host"
+      ],
+      "correct_index": 0,
+      "explanation": "The -p flag uses the format hostPort:containerPort."
+    },
+    {
+      "difficulty": "beginner",
+      "prompt": "Which command asks a running container to shut down gracefully?",
+      "options": [
+        "docker pause",
+        "docker stop",
+        "docker rm",
+        "docker inspect"
+      ],
+      "correct_index": 1,
+      "explanation": "docker stop sends SIGTERM, then SIGKILL after a grace period; docker pause only freezes processes."
+    },
+    {
+      "difficulty": "beginner",
+      "prompt": "What is the relationship between a Docker image and a container?",
+      "options": [
+        "An image is a running instance of a container",
+        "They are the same thing under two names",
+        "A container is a running instance of a read-only image",
+        "A container is a backup copy of an image"
+      ],
+      "correct_index": 2,
+      "explanation": "Images are immutable templates; containers are created from them and add a writable layer."
+    },
+    {
+      "difficulty": "intermediate",
+      "prompt": "Which Dockerfile instruction provides a default command that is replaced when arguments are given to docker run?",
+      "options": [
+        "RUN",
+        "EXPOSE",
+        "LABEL",
+        "CMD"
+      ],
+      "correct_index": 3,
+      "explanation": "CMD sets the default command/arguments and is overridden by anything passed after the image name in docker run."
+    },
+    {
+      "difficulty": "intermediate",
+      "prompt": "Which capability does ADD have that COPY does not?",
+      "options": [
+        "It can copy files from the build context",
+        "It automatically extracts a local tar archive into the destination",
+        "It can set the owner of copied files",
+        "It can copy files from an earlier build stage"
+      ],
+      "correct_index": 1,
+      "explanation": "ADD unpacks recognized local tar archives (and can fetch URLs); COPY only copies files as they are."
+    },
+    {
+      "difficulty": "intermediate",
+      "prompt": "What does the EXPOSE instruction in a Dockerfile do?",
+      "options": [
+        "Documents the port the container listens on without publishing it",
+        "Publishes the port on the host automatically",
+        "Opens the port in the host firewall",
+        "Forces the application to bind to that port"
+      ],
+      "correct_index": 0,
+      "explanation": "EXPOSE is metadata; you still need -p or -P at run time to publish ports."
+    },
+    {
+      "difficulty": "intermediate",
+      "prompt": "A container uses a named volume. What happens to the volume data when the container is removed with docker rm?",
+      "options": [
+        "It is deleted with the container",
+        "It is merged into the image",
+        "It persists until the volume is explicitly removed",
+        "It is pushed to the registry"
+      ],
+      "correct_index": 2,
+      "explanation": "Named volumes have a lifecycle independent of containers; use docker volume rm to delete them."
+    },
+    {
+      "difficulty": "intermediate",
+      "prompt": "Which network driver is used by default for standalone containers on a single host?",
+      "options": [
+        "host",
+        "bridge",
+        "overlay",
+        "none"
+      ],
+      "correct_index": 1,
+      "explanation": "Containers join the default bridge network unless another network is specified."
+    },
+    {
+      "difficulty": "intermediate",
+      "prompt": "Which command starts all services defined in a Compose file in the background?",
+      "options": [
+        "docker compose up -d",
+        "docker compose run --all",
+        "docker compose start --build",
+        "docker compose create -d"
+      ],
+      "correct_index": 0,
+      "explanation": "up builds/creates/starts services; -d runs them detached."
+    },
+    {
+      "difficulty": "intermediate",
+      "prompt": "Which flag sets an environment variable inside a container at run time?",
+      "options": [
+        "-p",
+        "-v",
+        "-e",
+        "-u"
+      ],
+      "correct_index": 2,
+      "explanation": "docker run -e KEY=value sets an environment variable; -p publishes ports, -v mounts volumes, -u sets the user."
+    },
+    {
+      "difficulty": "advanced",
+      "prompt": "In a Node.js Dockerfile, why is package.json copied and npm install run before copying the rest of the source?",
+      "options": [
+        "Because npm install cannot read files copied later",
+        "To make the final image smaller by deduplicating files",
+        "Because COPY . . would otherwise skip package.json",
+        "So the dependency layer stays cached until package.json changes"
+      ],
+      "correct_index": 3,
+      "explanation": "Layer caching invalidates a layer and all later ones when its inputs change; keeping dependencies first avoids reinstalling on every code change."
+    },
+    {
+      "difficulty": "advanced",
+      "prompt": "What is the main benefit of a multi-stage build?",
+      "options": [
+        "The final image contains only the artifacts needed at runtime, not the build toolchain",
+        "Stages build in parallel on separate hosts",
+        "Each stage shares a writable layer with the others",
+        "It lets one image run multiple processes safely"
+      ],
+      "correct_index": 0,
+      "explanation": "You compile in one stage and COPY --from the result into a slim final stage, so compilers and sources are left out."
+    },
+    {
+      "difficulty": "advanced",
+      "prompt": "Why can containers on a user-defined bridge network reach each other by container name, while the default bridge network cannot?",
+      "options": [
+        "The default bridge blocks all container-to-container traffic",
+        "User-defined bridges provide automatic DNS resolution of container names",
+        "User-defined bridges assign the same IP to all containers",
+        "Names are resolved through the host /etc/hosts file only"
+      ],
+      "correct_index": 1,
+      "explanation": "Docker's embedded DNS server resolves container and service names on user-defined networks; the legacy default bridge needs IPs or --link."
+    },
+    {
+      "difficulty": "advanced",
+      "prompt": "A Dockerfile uses ENTRYPOINT in shell form (ENTRYPOINT node app.js). What is a likely consequence when running docker stop?",
+      "options": [
+        "The container cannot start because shell form is invalid",
+        "The app receives SIGKILL immediately without a grace period",
+        "The app runs twice, once under the shell and once directly",
+        "The shell is PID 1 and the app may not receive SIGTERM, so it gets killed after the timeout"
+      ],
+      "correct_index": 3,
+      "explanation": "Shell form wraps the command in /bin/sh -c, so signals go to the shell; exec form makes the app PID 1 and lets it handle SIGTERM."
+    },
+    {
+      "difficulty": "advanced",
+      "prompt": "A RUN step downloads a 500 MB file, and a later RUN step deletes it. What happens to the final image size?",
+      "options": [
+        "It still includes the 500 MB, because the earlier layer is immutable",
+        "It shrinks, because deleting removes the data from all layers",
+        "It shrinks only if the image is built with --squash by default",
+        "It grows slightly because the deletion layer duplicates the data"
+      ],
+      "correct_index": 0,
+      "explanation": "Layers are additive; a delete only masks the file in a later layer. Delete in the same RUN step or use multi-stage builds."
+    },
+    {
+      "difficulty": "advanced",
+      "prompt": "When a container modifies a file that comes from a read-only image layer, what happens?",
+      "options": [
+        "The image layer is modified in place for all containers",
+        "The container fails with a read-only filesystem error",
+        "The file is copied up into the container's writable layer and modified there",
+        "The change is written to a new image layer automatically"
+      ],
+      "correct_index": 2,
+      "explanation": "Union filesystems use copy-on-write; the original image layer remains unchanged and other containers are unaffected."
+    },
+    {
+      "difficulty": "advanced",
+      "prompt": "On Linux, what is the effect of \"-p 8080:80\" when a container runs with --network host?",
+      "options": [
+        "Traffic is routed through NAT to the mapped port",
+        "The container gets a second network interface",
+        "Docker refuses to start the container",
+        "Port mappings are ignored because the container uses the host network stack directly"
+      ],
+      "correct_index": 3,
+      "explanation": "With host networking there is no network namespace isolation or NAT, so the app binds to host ports itself and -p has no effect."
+    }
+  ]
+}

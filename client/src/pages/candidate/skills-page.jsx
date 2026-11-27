@@ -53,7 +53,11 @@ function SkillRow({ item, busy, onLevel, onRemove }) {
             >
               {LEVELS.map((l) => <option key={l} value={l}>{capitalize(l)}</option>)}
             </select>
-            <Button size="sm" variant="secondary" to="/assessments" className="!bg-brand-light !text-brand">Verify this skill</Button>
+            {item.assessment_id === null ? (
+              <span className="text-xs text-text-muted" title="No platform test exists for this skill yet">No test available yet</span>
+            ) : (
+              <Button size="sm" variant="secondary" to="/assessments" className="!bg-brand-light !text-brand">Verify this skill</Button>
+            )}
           </>
         )}
         {confirming ? (
@@ -119,7 +123,7 @@ function AddSkillCard({ existingIds, onAdd }) {
           <label htmlFor="skill-pick" className="mb-1.5 block text-[13px] font-medium">Skill</label>
           <select id="skill-pick" value={skillId} onChange={(e) => setSkillId(e.target.value)} className={`${selectClass} w-full`}>
             <option value="">{available.length ? "Choose a skill" : "No matching skills"}</option>
-            {available.map((s) => <option key={s.id} value={s.id}>{s.name}</option>)}
+            {available.map((s) => <option key={s.id} value={s.id}>{s.name}{s.assessment_id ? " · test available" : ""}</option>)}
           </select>
         </div>
         <div>

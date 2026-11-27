@@ -41,7 +41,7 @@ function Stepper({ step }) {
 }
 
 function Register() {
-  const { user, loading, register } = useAuth();
+  const { user, register } = useAuth();
   const navigate = useNavigate();
   const [params] = useSearchParams();
   const requestedRole = params.get("role");
@@ -54,7 +54,6 @@ function Register() {
   const [fieldErrors, setFieldErrors] = useState({});
   const [submitting, setSubmitting] = useState(false);
 
-  if (loading) return null;
   if (user) return <Navigate to="/dashboard" replace />;
 
   const update = (field) => (event) => setForm((prev) => ({ ...prev, [field]: event.target.value }));

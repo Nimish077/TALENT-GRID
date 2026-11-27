@@ -13,6 +13,7 @@
 
 import "dotenv/config";
 import { hkdfSync } from "node:crypto";
+import { resolveDemoLogin } from "./demo.js";
 
 const NODE_ENV = process.env.NODE_ENV ?? "development";
 const isProduction = NODE_ENV === "production";
@@ -185,6 +186,9 @@ const assessmentSubmitGraceSeconds = intVar(
 );
 const assessmentPassMark = intVar("ASSESSMENT_PASS_MARK", 40);
 
+// Show the one-click demo accounts on the login pages (see config/demo.js).
+const demoLogin = resolveDemoLogin(process.env);
+
 // ---------------------------------------------------------------------------
 // Misc
 // ---------------------------------------------------------------------------
@@ -224,6 +228,7 @@ export const env = Object.freeze({
   assessmentRetakeCooldownMinutes,
   assessmentSubmitGraceSeconds,
   assessmentPassMark,
+  demoLogin,
   sessionTtlSeconds: sessionTtlDays * 24 * 60 * 60,
   refreshReuseGraceSeconds,
   cookieSecure,

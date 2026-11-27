@@ -7,6 +7,7 @@ import { validate } from "../../middleware/validate.js";
 import { authenticate } from "../../middleware/authenticate.js";
 import { requireRole } from "../../middleware/authorize.js";
 import { parsePagination, paginatedData } from "../../utils/pagination.js";
+import { withAssessment } from "../../services/skill-tests.js";
 import { idParam } from "../candidates/candidates.schemas.js";
 
 const router = Router();
@@ -54,7 +55,9 @@ router.get(
       prisma.skill.findMany({ where, orderBy: { name: "asc" }, skip, take }),
       prisma.skill.count({ where }),
     ]);
-    return sendSuccess(res, { data: paginatedData(items, total, page, limit) });
+    return sendSuccess(res, {
+      data: paginatedData(await withAssessment(items), total, page, limit),
+    });
   })
 );
 

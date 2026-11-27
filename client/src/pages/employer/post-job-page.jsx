@@ -112,7 +112,7 @@ function PostJobPage() {
                     <div className="flex-1">
                       <Select label={index === 0 ? "Skill" : ""} aria-label={`Skill ${index + 1}`} value={row.skillId} onChange={(e) => setRow(index, { skillId: e.target.value })}>
                         <option value="">Select a skill</option>
-                        {data.skills.map((skill) => <option key={skill.id} value={skill.id}>{skill.name}</option>)}
+                        {data.skills.map((skill) => <option key={skill.id} value={skill.id}>{skill.name}{skill.assessment_id === null ? " (no platform test yet)" : ""}</option>)}
                       </Select>
                     </div>
                     <div className="w-40">

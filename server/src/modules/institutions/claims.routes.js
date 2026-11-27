@@ -23,6 +23,7 @@ import { generateOtp, hashOtp, verifyOtp } from "../../utils/otp.js";
 import { mailer } from "../../services/mailer.js";
 import { idParam } from "../candidates/candidates.schemas.js";
 import {
+  claimByLoginSchema,
   claimCreateSchema,
   claimVerifySchema,
 } from "./institutions.schemas.js";
@@ -46,6 +47,91 @@ router.get(
       orderBy: { created_at: "desc" },
     });
     return sendSuccess(res, { data: { claims } });
+  })
+);
+
+// ---------------------------------------------------------------------------
+// Claiming an imported ("shadow") student profile by signing in
+//
+// An institute imports its roster, which creates a profile for each student that
+// no account owns yet. A student who registers with the SAME email the institute
+// listed can see it here and claim it by confirming their enrollment id. That is
+// two facts only the real student and their institute know (email + enrollment
+// id), so no emailed code is needed.
+// ---------------------------------------------------------------------------
+
+function maskEnrollment(id) {
+  if (id.length <= 3) return "*".repeat(id.length);
+  return `${id.slice(0, 2)}${"*".repeat(id.length - 3)}${id.slice(-1)}`;
+}
+
+function matchingWhere(email) {
+  return {
+    user_id: null,
+    membership_status: "active",
+    institution: { status: "active" },
+    OR: [
+      { institutional_email: { equals: email, mode: "insensitive" } },
+      { personal_email: { equals: email, mode: "insensitive" } },
+    ],
+  };
+}
+
+router.get(
+  "/matches",
+  requireRole("candidate"),
+  asyncHandler(async (req, res) => {
+    const rows = await prisma.institutionMembership.findMany({
+      where: matchingWhere(req.auth.user.email),
+      include: { institution: { select: { id: true, name: true, code: true } } },
+      orderBy: { created_at: "desc" },
+    });
+    const matches = rows.map((row) => ({
+      id: row.id,
+      full_name: row.full_name,
+      institution: row.institution,
+      enrollment_hint: maskEnrollment(row.enrollment_id),
+      program: row.program,
+      department: row.department,
+      batch: row.batch,
+    }));
+    return sendSuccess(res, { data: { matches } });
+  })
+);
+
+router.post(
+  "/claim",
+  requireRole("candidate"),
+  otpVerifyLimiter,
+  validate({ body: claimByLoginSchema }),
+  asyncHandler(async (req, res) => {
+    const membership = await prisma.institutionMembership.findFirst({
+      where: { id: req.body.membership_id, ...matchingWhere(req.auth.user.email) },
+    });
+    // Same answer for "not yours" and "does not exist": nothing to probe.
+    if (!membership) throw new ApiError(404, "No unclaimed profile found for your email");
+
+    if (membership.enrollment_id.trim().toLowerCase() !== req.body.enrollment_id.trim().toLowerCase()) {
+      throw new ApiError(403, "That enrollment id does not match this profile");
+    }
+
+    // The conditional update makes the claim atomic: only one account can win.
+    const claimed = await prisma.institutionMembership.updateMany({
+      where: { id: membership.id, user_id: null },
+      data: {
+        user_id: req.auth.user.id,
+        verification_status: "verified",
+        verification_source: "login_email_match",
+        verified_at: new Date(),
+      },
+    });
+    if (claimed.count !== 1) throw new ApiError(409, "This profile has already been claimed");
+
+    const updated = await prisma.institutionMembership.findUnique({
+      where: { id: membership.id },
+      include: { institution: { select: { id: true, name: true, code: true } } },
+    });
+    return sendSuccess(res, { message: "Profile claimed", data: { membership: updated } });
   })
 );
 

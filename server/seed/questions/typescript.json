@@ -1,0 +1,257 @@
+{
+  "skill": "TypeScript",
+  "questions": [
+    {
+      "difficulty": "beginner",
+      "prompt": "Which declaration correctly annotates a variable as a number?",
+      "options": [
+        "let count = number 5;",
+        "number count = 5;",
+        "let count: number = 5;",
+        "let count <number> = 5;"
+      ],
+      "correct_index": 2,
+      "explanation": "TypeScript uses a colon after the variable name followed by the type."
+    },
+    {
+      "difficulty": "beginner",
+      "prompt": "Which type describes an array of strings?",
+      "options": [
+        "string()",
+        "[string]string",
+        "array<string>",
+        "string[]"
+      ],
+      "correct_index": 3,
+      "explanation": "string[] or Array<string> is the array type syntax."
+    },
+    {
+      "difficulty": "beginner",
+      "prompt": "What does the any type do?",
+      "options": [
+        "Opts a value out of type checking",
+        "Allows only numbers",
+        "Makes a value read-only",
+        "Forces runtime checks"
+      ],
+      "correct_index": 0,
+      "explanation": "any disables type checking for that value, which is why it should be used sparingly."
+    },
+    {
+      "difficulty": "beginner",
+      "prompt": "Which declares an object shape with a string name?",
+      "options": [
+        "class User = { name: string }",
+        "interface User { name: string }",
+        "object User { name: string }",
+        "type User: { name = string }"
+      ],
+      "correct_index": 1,
+      "explanation": "An interface describes the structure of an object type."
+    },
+    {
+      "difficulty": "beginner",
+      "prompt": "How do you make a property optional in an interface?",
+      "options": [
+        "age?: number;",
+        "age: number?;",
+        "optional age: number;",
+        "age: number | optional;"
+      ],
+      "correct_index": 0,
+      "explanation": "A question mark after the property name makes it optional."
+    },
+    {
+      "difficulty": "beginner",
+      "prompt": "What does the TypeScript compiler (tsc) primarily do?",
+      "options": [
+        "Runs TypeScript directly in the browser",
+        "Bundles CSS files",
+        "Type-checks code and compiles it to JavaScript",
+        "Adds runtime types to JavaScript"
+      ],
+      "correct_index": 2,
+      "explanation": "tsc checks types at compile time and emits JavaScript; types are erased."
+    },
+    {
+      "difficulty": "beginner",
+      "prompt": "What does the type string | number mean?",
+      "options": [
+        "A value that is both a string and a number",
+        "A string converted to a number",
+        "An array of strings and numbers",
+        "A value that can be either a string or a number"
+      ],
+      "correct_index": 3,
+      "explanation": "The | operator creates a union type."
+    },
+    {
+      "difficulty": "intermediate",
+      "prompt": "Which signature is a correct generic identity function?",
+      "options": [
+        "function identity<T>(value: any): T",
+        "function identity<T>(value: T): T",
+        "function identity(value: <T>): T",
+        "function <T>identity(value: T): T"
+      ],
+      "correct_index": 1,
+      "explanation": "The type parameter is declared in angle brackets after the function name and links input to output."
+    },
+    {
+      "difficulty": "intermediate",
+      "prompt": "What does Partial<T> do?",
+      "options": [
+        "Makes every property required",
+        "Removes all methods",
+        "Makes every property readonly",
+        "Makes every property of T optional"
+      ],
+      "correct_index": 3,
+      "explanation": "Partial<T> maps each property to optional."
+    },
+    {
+      "difficulty": "intermediate",
+      "prompt": "Which narrows a variable x of type string | number to string?",
+      "options": [
+        "if (typeof x === \"string\") { ... }",
+        "if (x instanceof string) { ... }",
+        "if (x is string) { ... }",
+        "if (typeof x == String) { ... }"
+      ],
+      "correct_index": 0,
+      "explanation": "typeof guards narrow union types inside the branch."
+    },
+    {
+      "difficulty": "intermediate",
+      "prompt": "What does the readonly modifier on a property guarantee?",
+      "options": [
+        "The value is frozen at runtime",
+        "The property is hidden from JSON",
+        "The compiler rejects reassignment of that property, though it has no runtime effect",
+        "The property becomes private"
+      ],
+      "correct_index": 2,
+      "explanation": "readonly is enforced only at compile time."
+    },
+    {
+      "difficulty": "intermediate",
+      "prompt": "What is the type of const dirs = [\"up\", \"down\"] as const?",
+      "options": [
+        "string[]",
+        "readonly [\"up\", \"down\"]",
+        "(\"up\" | \"down\")[]",
+        "readonly string[]"
+      ],
+      "correct_index": 1,
+      "explanation": "as const infers a readonly tuple of literal types."
+    },
+    {
+      "difficulty": "intermediate",
+      "prompt": "What can an interface do that a type alias cannot?",
+      "options": [
+        "Describe object shapes",
+        "Use generics",
+        "Be extended through declaration merging by declaring it again",
+        "Be implemented by a class"
+      ],
+      "correct_index": 2,
+      "explanation": "Interfaces with the same name merge; type aliases cannot be redeclared."
+    },
+    {
+      "difficulty": "intermediate",
+      "prompt": "What does Pick<User, \"id\" | \"name\"> produce?",
+      "options": [
+        "A type with only the id and name properties of User",
+        "A type without id and name",
+        "A union of the id and name values",
+        "A type with all properties optional"
+      ],
+      "correct_index": 0,
+      "explanation": "Pick selects a subset of keys; Omit removes keys."
+    },
+    {
+      "difficulty": "advanced",
+      "prompt": "Given type Shape = { kind: \"circle\"; r: number } | { kind: \"square\"; s: number }, how do you get exhaustiveness checking in a switch on shape.kind?",
+      "options": [
+        "Cast shape to any in the default branch",
+        "Assign shape to a never-typed variable in the default branch",
+        "Add an else-if for each kind",
+        "Use typeof shape in the default branch"
+      ],
+      "correct_index": 1,
+      "explanation": "After all cases are handled, shape narrows to never, so adding a new variant causes a compile error."
+    },
+    {
+      "difficulty": "advanced",
+      "prompt": "How does unknown differ from any?",
+      "options": [
+        "unknown permits any operation",
+        "any must be narrowed first",
+        "They are identical",
+        "You must narrow or assert an unknown value before using it, while any permits any operation"
+      ],
+      "correct_index": 3,
+      "explanation": "unknown is the type-safe counterpart to any."
+    },
+    {
+      "difficulty": "advanced",
+      "prompt": "What is X<string | number> given type X<T> = T extends string ? 1 : 0?",
+      "options": [
+        "0, because the union is not a string",
+        "1 | 0, because the conditional type distributes over the union",
+        "1, because string is part of the union",
+        "never"
+      ],
+      "correct_index": 1,
+      "explanation": "Distributive conditional types evaluate each union member separately and union the results."
+    },
+    {
+      "difficulty": "advanced",
+      "prompt": "Given const cfg = { host: \"a\", port: 1 }, which gives the union \"host\" | \"port\"?",
+      "options": [
+        "typeof keyof cfg",
+        "keyof cfg",
+        "keyof typeof cfg",
+        "typeof cfg[number]"
+      ],
+      "correct_index": 2,
+      "explanation": "typeof cfg takes the value's type; keyof then yields its keys. keyof cfg alone is invalid because cfg is a value."
+    },
+    {
+      "difficulty": "advanced",
+      "prompt": "Given function f() { return { a: 1 }; }, what is ReturnType<typeof f>?",
+      "options": [
+        "() => { a: number }",
+        "{ a: 1 }",
+        "number",
+        "{ a: number }"
+      ],
+      "correct_index": 3,
+      "explanation": "ReturnType extracts the function's return type; the literal is widened to number."
+    },
+    {
+      "difficulty": "advanced",
+      "prompt": "What does the signature function isString(x: unknown): x is string let you do?",
+      "options": [
+        "Narrow the argument to string in code branches where the call returns true",
+        "Convert x to a string",
+        "Throw if x isn't a string",
+        "Skip the check at runtime"
+      ],
+      "correct_index": 0,
+      "explanation": "A type predicate tells the compiler how to narrow after a boolean check."
+    },
+    {
+      "difficulty": "advanced",
+      "prompt": "What does the satisfies operator do in const palette = { red: [255, 0, 0] } satisfies Record<string, number[]>?",
+      "options": [
+        "Casts the value to Record<string, number[]>",
+        "Makes the object readonly",
+        "Removes excess properties at runtime",
+        "Checks the value against the type while keeping its narrower inferred type"
+      ],
+      "correct_index": 3,
+      "explanation": "satisfies validates without widening the inferred type, unlike a type annotation."
+    }
+  ]
+}

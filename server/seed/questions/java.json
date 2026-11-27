@@ -1,0 +1,257 @@
+{
+  "skill": "Java",
+  "questions": [
+    {
+      "difficulty": "beginner",
+      "prompt": "What is the correct signature of the Java program entry point?",
+      "options": [
+        "public void main(String[] args)",
+        "public static void main(String[] args)",
+        "static int main(String args)",
+        "public static main(String[] args)"
+      ],
+      "correct_index": 1,
+      "explanation": "The JVM looks for a public static void main method taking a String array."
+    },
+    {
+      "difficulty": "beginner",
+      "prompt": "Which of these is a primitive type in Java?",
+      "options": [
+        "int",
+        "String",
+        "Integer",
+        "ArrayList"
+      ],
+      "correct_index": 0,
+      "explanation": "int is primitive; Integer is its wrapper class, and String and ArrayList are reference types."
+    },
+    {
+      "difficulty": "beginner",
+      "prompt": "Which keyword is used to make one class inherit from another?",
+      "options": [
+        "implements",
+        "inherits",
+        "extends",
+        "super"
+      ],
+      "correct_index": 2,
+      "explanation": "A class uses extends for class inheritance; implements is for interfaces."
+    },
+    {
+      "difficulty": "beginner",
+      "prompt": "What is the default value of an int instance field that is not explicitly initialized?",
+      "options": [
+        "null",
+        "1",
+        "undefined",
+        "0"
+      ],
+      "correct_index": 3,
+      "explanation": "Numeric fields default to 0; object references default to null."
+    },
+    {
+      "difficulty": "beginner",
+      "prompt": "Which method should be used to compare the contents of two strings?",
+      "options": [
+        "equals()",
+        "==",
+        "compare()",
+        "sameAs()"
+      ],
+      "correct_index": 0,
+      "explanation": "== compares references; equals() compares character content."
+    },
+    {
+      "difficulty": "beginner",
+      "prompt": "Which collection type does not allow duplicate elements?",
+      "options": [
+        "List",
+        "Queue",
+        "Set",
+        "ArrayList"
+      ],
+      "correct_index": 2,
+      "explanation": "A Set models a mathematical set and rejects duplicates."
+    },
+    {
+      "difficulty": "beginner",
+      "prompt": "Which keyword prevents a variable from being reassigned after initialization?",
+      "options": [
+        "static",
+        "final",
+        "const",
+        "volatile"
+      ],
+      "correct_index": 1,
+      "explanation": "A final variable can be assigned only once. const is reserved but unused in Java."
+    },
+    {
+      "difficulty": "intermediate",
+      "prompt": "What does the expression new String(\"hi\") == new String(\"hi\") evaluate to?",
+      "options": [
+        "true",
+        "false",
+        "It does not compile",
+        "It throws an exception"
+      ],
+      "correct_index": 1,
+      "explanation": "Each new String creates a distinct object, and == compares references."
+    },
+    {
+      "difficulty": "intermediate",
+      "prompt": "Which of these is a checked exception?",
+      "options": [
+        "IOException",
+        "NullPointerException",
+        "ArithmeticException",
+        "IllegalArgumentException"
+      ],
+      "correct_index": 0,
+      "explanation": "IOException extends Exception (not RuntimeException), so it must be caught or declared."
+    },
+    {
+      "difficulty": "intermediate",
+      "prompt": "Which statement about a class and interfaces is true?",
+      "options": [
+        "A class can extend multiple classes but implement one interface",
+        "A class can neither extend nor implement more than one type",
+        "A class can implement multiple interfaces but extend only one class",
+        "A class can extend multiple abstract classes"
+      ],
+      "correct_index": 2,
+      "explanation": "Java has single class inheritance but allows multiple interface implementation."
+    },
+    {
+      "difficulty": "intermediate",
+      "prompt": "Which statement about HashMap is true?",
+      "options": [
+        "It permits no null keys or values",
+        "It is thread-safe by default",
+        "It keeps entries in insertion order",
+        "It permits one null key and multiple null values"
+      ],
+      "correct_index": 3,
+      "explanation": "HashMap allows one null key and many null values; it is not synchronized and its ordering is unspecified."
+    },
+    {
+      "difficulty": "intermediate",
+      "prompt": "What does try-with-resources do?",
+      "options": [
+        "Automatically closes resources that implement AutoCloseable when the block exits",
+        "Retries the block until it succeeds",
+        "Catches all exceptions silently",
+        "Runs the finally block before the try block"
+      ],
+      "correct_index": 0,
+      "explanation": "Resources declared in the try header are closed in reverse order, even if an exception occurs."
+    },
+    {
+      "difficulty": "intermediate",
+      "prompt": "What is method overriding?",
+      "options": [
+        "Defining several methods with the same name but different parameters",
+        "A subclass providing its own implementation of a method with the same signature",
+        "Hiding a field of the superclass",
+        "Declaring a method as static in the subclass"
+      ],
+      "correct_index": 1,
+      "explanation": "Overriding replaces inherited behavior at runtime; defining same-named methods with different parameters is overloading."
+    },
+    {
+      "difficulty": "intermediate",
+      "prompt": "Which statement about static methods is true?",
+      "options": [
+        "They can directly access instance fields",
+        "They can be overridden by subclasses polymorphically",
+        "They belong to the class and can be called without creating an instance",
+        "They are only callable from within the same object"
+      ],
+      "correct_index": 2,
+      "explanation": "Static methods are class-level; they have no this reference and are resolved at compile time."
+    },
+    {
+      "difficulty": "advanced",
+      "prompt": "In the JVM memory model, where are objects and local primitive variables normally stored?",
+      "options": [
+        "Both on the heap",
+        "Objects on the stack; local primitives on the heap",
+        "Both in the metaspace",
+        "Objects on the heap; local primitives on the thread stack"
+      ],
+      "correct_index": 3,
+      "explanation": "Each thread has its own stack holding frames with locals; all objects are allocated on the shared heap."
+    },
+    {
+      "difficulty": "advanced",
+      "prompt": "What does declaring a field volatile guarantee?",
+      "options": [
+        "Visibility of writes across threads and ordering, but not atomicity of compound operations like count++",
+        "Atomic increments and mutual exclusion",
+        "That the field is stored in thread-local memory",
+        "That the field is never garbage collected"
+      ],
+      "correct_index": 0,
+      "explanation": "volatile gives happens-before visibility; count++ is still a read-modify-write that needs synchronization or AtomicInteger."
+    },
+    {
+      "difficulty": "advanced",
+      "prompt": "Which statement correctly contrasts ConcurrentHashMap with HashMap?",
+      "options": [
+        "ConcurrentHashMap allows null keys but not null values",
+        "ConcurrentHashMap locks the whole map for every operation",
+        "ConcurrentHashMap does not allow null keys or values",
+        "HashMap is safe for concurrent writes if keys are distinct"
+      ],
+      "correct_index": 2,
+      "explanation": "ConcurrentHashMap rejects nulls because null would be ambiguous in concurrent get calls; it uses fine-grained synchronization and CAS."
+    },
+    {
+      "difficulty": "advanced",
+      "prompt": "What does Integer a = 1000, b = 1000; System.out.println(a == b); print with default JVM settings?",
+      "options": [
+        "true",
+        "false",
+        "It does not compile",
+        "It throws NullPointerException"
+      ],
+      "correct_index": 1,
+      "explanation": "Autoboxing caches Integer objects only for -128 to 127 by default, so 1000 creates two distinct objects."
+    },
+    {
+      "difficulty": "advanced",
+      "prompt": "A class overrides equals() but not hashCode(). What problem can occur when instances are used in a HashSet?",
+      "options": [
+        "The HashSet throws an exception on insertion",
+        "The equals method is ignored completely",
+        "The objects are always rejected as duplicates",
+        "Two logically equal objects may land in different buckets, so duplicates or failed lookups occur"
+      ],
+      "correct_index": 3,
+      "explanation": "The contract requires equal objects to have equal hash codes; otherwise hash-based collections may not find the equal element."
+    },
+    {
+      "difficulty": "advanced",
+      "prompt": "When is an object eligible for garbage collection in the HotSpot JVM?",
+      "options": [
+        "When its reference count drops to zero",
+        "When System.gc() is called on it",
+        "When it is no longer reachable from any GC root, even if objects in a cycle reference each other",
+        "When its finalize method returns"
+      ],
+      "correct_index": 2,
+      "explanation": "The JVM uses reachability analysis from GC roots, not reference counting, so unreachable cycles are collected."
+    },
+    {
+      "difficulty": "advanced",
+      "prompt": "What happens if a thread calls obj.wait() without holding obj's monitor?",
+      "options": [
+        "It waits normally and is woken by notify",
+        "It throws IllegalMonitorStateException",
+        "It blocks forever and cannot be interrupted",
+        "It acquires the monitor automatically"
+      ],
+      "correct_index": 1,
+      "explanation": "wait, notify and notifyAll must be called from a synchronized block or method on the same object."
+    }
+  ]
+}

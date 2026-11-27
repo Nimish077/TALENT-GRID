@@ -14,6 +14,7 @@ vi.mock("../../lib/endpoints.js", () => ({
   jobsApi: { list: vi.fn(), apply: vi.fn(), applications: vi.fn() },
   applicationsApi: { mine: vi.fn() },
   assessmentsApi: { list: vi.fn() },
+  claimsApi: { matches: vi.fn().mockResolvedValue({ matches: [] }), claim: vi.fn() },
   organizationsApi: { mine: vi.fn(), jobs: vi.fn() },
   institutionsApi: { mine: vi.fn(), memberships: vi.fn(), drives: vi.fn(), skillsSummary: vi.fn() },
 }));

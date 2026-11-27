@@ -20,6 +20,7 @@ import drivesRoutes from "./modules/drives/drives.routes.js";
 import institutionDrivesRoutes from "./modules/drives/institution-drives.routes.js";
 import adminRoutes from "./modules/admin/admin.routes.js";
 import talentRoutes from "./modules/talent/talent.routes.js";
+import configRoutes from "./modules/config/config.routes.js";
 
 export function createApp() {
   const app = express();
@@ -47,6 +48,7 @@ export function createApp() {
     res.json({ success: true, message: "OK", data: { status: "healthy" } });
   });
 
+  app.use("/api/v1/config", configRoutes);
   app.use("/api/v1/auth", authRoutes);
   app.use("/api/v1/candidates", candidatesRoutes);
   app.use("/api/v1/skills", skillsRoutes);

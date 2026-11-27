@@ -66,16 +66,19 @@ const SKILLS = [
   ["Machine Learning", "Data"],
   ["TypeScript", "Programming Language"],
   ["Docker", "DevOps"],
+  ["HTML", "Frontend"],
+  ["CSS", "Frontend"],
+  ["Git", "DevOps"],
+  ["Java", "Programming Language"],
 ];
 
-const QUESTION_FILES = {
-  JavaScript: "javascript.json",
-  Python: "python.json",
-  React: "react.json",
-  "Node.js": "nodejs.json",
-  SQL: "sql.json",
-  "Machine Learning": "machine-learning.json",
-};
+// One assessment per question bank in seed/questions/*.json (the file names its skill).
+const QUESTION_FILES = Object.fromEntries(
+  fs
+    .readdirSync(QUESTION_DIR)
+    .filter((file) => file.endsWith(".json"))
+    .map((file) => [JSON.parse(fs.readFileSync(path.join(QUESTION_DIR, file), "utf8")).skill, file]),
+);
 
 const LEVEL_SCORE = { beginner: 42, intermediate: 66, advanced: 91 };
 

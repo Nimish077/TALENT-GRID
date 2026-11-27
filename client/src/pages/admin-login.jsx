@@ -5,21 +5,22 @@ import AuthLayout from "../components/layout/auth-layout.jsx";
 import Button from "../components/ui/button.jsx";
 import FormField from "../components/ui/form-field.jsx";
 import { useAuth } from "../context/auth-context.js";
-import { DEMO_ACCOUNTS, UNSEEDED_HINT, isDemoLoginEnabled } from "../lib/demo-accounts.js";
+import { DEMO_ACCOUNTS, UNSEEDED_HINT } from "../lib/demo-accounts.js";
+import { useDemoLogin } from "../lib/use-demo-login.js";
 
 // Same API as the regular sign in, but only administrator accounts get through:
 // anyone else is signed straight back out. (The real protection is the role
 // check on every admin API route; this page just keeps the entry point honest.)
 function AdminLogin() {
-  const { user, loading, login, logout } = useAuth();
+  const { user, login, logout } = useAuth();
   const navigate = useNavigate();
 
   const [form, setForm] = useState({ email: "", password: "" });
   const [error, setError] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [demoBusy, setDemoBusy] = useState(null);
+  const demoEnabled = useDemoLogin();
 
-  if (loading) return null;
   if (user?.role === "admin") return <Navigate to="/dashboard" replace />;
 
   const update = (field) => (event) => setForm((prev) => ({ ...prev, [field]: event.target.value }));
@@ -78,7 +79,7 @@ function AdminLogin() {
           </Button>
         </form>
 
-        {isDemoLoginEnabled() && (
+        {demoEnabled && (
           <DemoAccounts accounts={DEMO_ACCOUNTS.filter((account) => account.role === "admin")} onSelect={handleDemo} busyId={demoBusy} />
         )}
 
